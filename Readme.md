@@ -14,7 +14,7 @@ Sofern allerdings Interesse besteht, kann der Nutzen der Komponenten mithilfe de
 
 ## Installation des Plugins
 Um das Plugin zu installieren, führen Sie bitte folgende Schritte aus:
-* Navigieren Sie mit der Git Bash in den Ordner `{moodle-pfad}/mod` und klonen Sie dieses Repository mit <br />`git clone git@gitlab.pi6.fernuni-hagen.de:ks/fapra/fachpraktikum-2022/write.git`.
+* Navigieren Sie mit der Git Bash in den Ordner `{moodle-pfad}/mod` und klonen Sie dieses Repository mit <br />`git clone ***REMOVED***`.
 Achten Sie darauf, dass Sie die neuste Version des Plugins haben. Dies kann jederzeit mit dem Ausführen von `git pull origin master` (im vorher erstellten Plugin-Ordner) gewährleistet werden.
 * Navigieren Sie in den dadurch erstellten `template/vue`-Ordner und führen Sie den Befehl `npm install` aus. Hierbei werden alle benötigten JavaScript-Module durch den `Node Package Manager` installiert. Mehr informationen zum Package Manager finden Sie [hier](https://www.npmjs.com/).
 * Navigieren Sie zur Moodle-Hauptseite und folgen Sie dem angezeigten Dialog zur Installation des Plugins.
