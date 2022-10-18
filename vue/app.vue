@@ -9,10 +9,10 @@
         </transition>
         <ul class="nav nav-tabs nav-vue">
             <li class="nav-item">
-                <router-link to="/" class="nav-link">Aufgabe</router-link>                
+                <router-link to="/" class="nav-link">Aufgabenstellung</router-link>                
             </li>
             <li class="nav-item">
-                <router-link to="/editor" class="nav-link">Editor</router-link>                
+                <router-link to="/editor" class="nav-link">Texteditor</router-link>                
             </li>  
             <li class="nav-item">                
                 <router-link to="/teacherdashboard" class="nav-link">Lehrenden-Dashboard</router-link>
