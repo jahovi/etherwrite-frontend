@@ -24,4 +24,4 @@ Für das Frontend sollten Sie hauptsächlich im Ordner `vue` arbeiten. Dort kön
 Führen Sie den Befehl `npm run build` mithilfe des Terminals in diesen Verzeichnis des Plugins aus, um die Änderungen minifiziert einmalig zu übernehmen. 
 Möchten Sie, dass die Änderungen automatisch nach dem Speichern übernommen werden, rufen Sie den Befehl `npm run nodemon` auf.
 
-Verwendet wird die Vue-Version 2.6.12. Ein Guide ist unter [https://vuejs.org/v2
+Verwendet wird die Vue-Version 2.6.12. Ein Guide ist unter [https://vuejs.org/v2](https://vuejs.org/v2).
