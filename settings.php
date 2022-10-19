@@ -30,3 +30,12 @@
             40
         )
     );
+
+    $settings->add(
+        new admin_setting_configcheckbox(
+            'write/localinstallation',
+            get_string('localinstallation', 'write'),
+            get_string('localinstallationdescription', 'write'), 
+            0,1,0
+        )
+    );

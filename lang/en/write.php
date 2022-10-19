@@ -15,6 +15,8 @@ $string['serverurl'] = 'Etherpad Server URL.';
 $string['serverurldescription'] = 'The server URL of the Etherpad instance.';
 $string['apikey'] = 'Etherpad API Key';
 $string['apikeydescription'] = 'The API key for the Etherpad instance.';
+$string['localinstallation'] = 'Local installation';
+$string['localinstallationdescription'] = 'Select this option if the installation is located locally on your computer.';
 
 // CM
 $string['grouping'] = 'Grouping';

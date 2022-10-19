@@ -29,7 +29,7 @@ class mod_write_external extends external_api {
             global $DB, $USER;
             $config = get_config('write');
             // Get the serverurl.
-            if(!isset($config->serverurl) || is_null($config->serverurl) || !is_string($config->serverurl)){                    
+            if($config->localinstallation !== 1 && (!isset($config->serverurl) || is_null($config->serverurl) || !is_string($config->serverurl))){                    
                 return array('success' => false, 'data' => get_string('novalidepurl', 'mod_write'));
             }
             $url = rtrim(str_replace(' ', '', $config->serverurl), '/');   
@@ -58,6 +58,9 @@ class mod_write_external extends external_api {
             }
             $group = array_shift($group);
             $groupid = intval($group->id);
+            if($config->localinstallation === 1){
+                $url = 'http://etherpad:9001';
+            }                      
             $api = new mod_write\etherpad\client($apikey, $url.'/api');
             // Now we create a etherpad group via api.
             $epgroup = $api->create_group_if_not_exists_for($groupid); 
@@ -87,7 +90,11 @@ class mod_write_external extends external_api {
             if($sessionid === false){
                 return array('success' => false, 'data' => get_string('couldnotcreatesession', 'mod_cwr'));
             }
-            $link = rtrim($url, '/').'/auth_session?sessionID='.$sessionid.'&groupId='.$epgroup.'&padName='.$padName;                       
+            if($config->localinstallation === 1){
+                $link = 'http://localhost:9001/auth_session?sessionID='.$sessionid.'&groupId='.$epgroup.'&padName='.$padName;
+            } else {
+                $link = rtrim($url, '/').'/auth_session?sessionID='.$sessionid.'&groupId='.$epgroup.'&padName='.$padName;  
+            }                                 
             return array('success' => true, 'data' => $link);
         } catch(Exception $ex){
             return array('success' => false, 'data' => $ex->getMessage());

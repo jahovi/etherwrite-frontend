@@ -15,6 +15,8 @@ $string['serverurl'] = 'Etherpad Server URL.';
 $string['serverurldescription'] = 'Die Server-URL der Etherpad-Instanz.';
 $string['apikey'] = 'Etherpad API-Schlüssel';
 $string['apikeydescription'] = 'Der API-Schlüssel für die Etherpad-Instanz.';
+$string['localinstallation'] = 'Lokale Installation';
+$string['localinstallationdescription'] = 'Wählen Sie diese Option, sofern die Moodle-Instanz nicht auf dem Server liegt.';
 
 // CM
 $string['grouping'] = 'Gruppierung';
