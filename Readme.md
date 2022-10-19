@@ -19,6 +19,23 @@ Achten Sie darauf, dass Sie die neuste Version des Plugins haben. Dies kann jede
 * Navigieren Sie in den dadurch erstellten `write/vue`-Ordner und führen Sie den Befehl `npm install` aus. Hierbei werden alle benötigten JavaScript-Module durch den `Node Package Manager` installiert. Mehr informationen zum Package Manager finden Sie [hier](https://www.npmjs.com/).
 * Navigieren Sie zur Moodle-Hauptseite und folgen Sie dem angezeigten Dialog zur Installation des Plugins.
 
+## Konfiguration
+Das Plugin verwendet die folgenden drei Konfigurationseinstellungen:
+<table>
+    <tr>
+        <td>Etherpad Server URL</td>
+        <td>Die URL zur Etherpad-Instanz.</td>
+    </tr>
+    <tr>
+        <td>Etherpad API-Schlüssel</td>
+        <td>Der API-Schlüssel von Etherpad. (s. APIKEY.txt im Etherpad-Root-Verzeichnis)</td>
+    </tr>
+    <tr>
+        <td>Lokale Installation</td>
+        <td>Sofern Moodle und Etherpad in einem Docker-Container auf demselben Hostsystem laufen.</td>
+    </tr>
+</table>
+
 ## JavaScript-Änderungen bzw. Vue-Änderungen übernehmen
 Für das Frontend sollten Sie hauptsächlich im Ordner `vue` arbeiten. Dort können Sie JavaScript- bzw. Vue-Dateien anlegen.
 Führen Sie den Befehl `npm run build` mithilfe des Terminals in diesen Verzeichnis des Plugins aus, um die Änderungen minifiziert einmalig zu übernehmen. 

@@ -11,7 +11,7 @@ $string['pluginname'] = 'Write';
 $string['unknown_error'] = 'Es ist ein unbekannter Fehler aufgetreten.';
 
 // Settings
-$string['serverurl'] = 'Etherpad Server URL.';
+$string['serverurl'] = 'Etherpad Server URL';
 $string['serverurldescription'] = 'Die Server-URL der Etherpad-Instanz.';
 $string['apikey'] = 'Etherpad API-Schlüssel';
 $string['apikeydescription'] = 'Der API-Schlüssel für die Etherpad-Instanz.';
