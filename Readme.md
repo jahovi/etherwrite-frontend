@@ -24,7 +24,7 @@ Das Plugin verwendet die folgenden drei Konfigurationseinstellungen:
 <table>
     <tr>
         <td>Etherpad Server URL</td>
-        <td>Die URL zur Etherpad-Instanz.</td>
+        <td>Die URL zur Etherpad-Instanz. (http://etherpad:9001 sofern Sie MoodleDocker und Etherpad Serverside auf dem selben Host verwenden)</td>
     </tr>
     <tr>
         <td>Etherpad API-Schlüssel</td>
@@ -32,7 +32,7 @@ Das Plugin verwendet die folgenden drei Konfigurationseinstellungen:
     </tr>
     <tr>
         <td>Lokale Installation</td>
-        <td>Sofern Moodle und Etherpad in einem Docker-Container auf demselben Hostsystem laufen.</td>
+        <td>Muss ausgewählt werden, sofern MoodleDocker und Etherpad Serverside auf demselben Hostsystem laufen.</td>
     </tr>
 </table>
 
