@@ -7,6 +7,8 @@
  * 
  */
 
+// Example $permission = new mod_write\permission\course($USER->id, $cid);
+
 namespace mod_write\permission;
 
 defined('MOODLE_INTERNAL') || die();
