@@ -3,7 +3,7 @@
     <h4>Beispielgrafik</h4>
     <div class="container-chart text-align-left">
       <div class="chart"></div>
-    </div>    
+    </div>
     <a href="https://github.com/gywgithub/vue-d3-examples/blob/master/src/components/BarChartI.vue">Quelle des Beispieldiagramms</a>
     <div class="text-danger">Nutzen Sie am besten Componenten um Grafiken zu erstellen. (s. Quellcode)</div>
   </div>
@@ -27,9 +27,6 @@ export default {
 }
 </script>
 <style scoped>
-</style>
-
-<style>
 .chart div {
   font: 10px sans-serif;
   background-color: steelblue;
