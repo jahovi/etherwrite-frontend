@@ -1,28 +1,19 @@
-import Vue from 'vue';
-import VueRouter from 'vue-router';
-import { store } from './store';
-import generateRouter from "./router";
+import {createApp} from "vue";
+import store from "./src/store";
 import App from "./app.vue";
+import router from "./src/router";
 
-
-function init(coursemoduleid, contextid) {
-    // We need to overwrite the variable for lazy loading.
-    __webpack_public_path__ = M.cfg.wwwroot + '/mod/write/amd/build/';
-
-    Vue.use(VueRouter);
-
-    store.commit('setCourseModuleID', coursemoduleid);
-    store.commit('setContextID', contextid);
-    store.dispatch('loadComponentStrings');  
-
-    const router = generateRouter(coursemoduleid);
-
-    new Vue({
-        el: '#mod-write-app',
-        store,
-        router,
-        render: (h) => h(App),
-    });
+export function init(coursemoduleid, contextid) {
+	store.commit("setCourseModuleID", coursemoduleid);
+	store.commit("setContextID", contextid);
+	store.dispatch("loadComponentStrings");
 }
 
-export { init };
+// We need to overwrite the variable for lazy loading.
+/* eslint-disable-next-line no-undef */
+__webpack_public_path__ = M.cfg.wwwroot + "/mod/write/amd/build/";
+
+createApp(App)
+	.use(router)
+	.use(store)
+	.mount("#mod-write-app");
