@@ -15,10 +15,7 @@
                 <router-link to="/editor" class="nav-link">Texteditor</router-link>
             </li>
             <li class="nav-item">
-                <router-link to="/teacherdashboard" class="nav-link">Lehrenden-Dashboard</router-link>
-            </li>
-            <li class="nav-item">
-                <router-link to="/learnerdashboard" class="nav-link">Lernenden-Dashboard</router-link>
+                <router-link to="/dashboard" class="nav-link">Dashboard</router-link>
             </li>
         </ul>
         <div class="tab-content main-vue">

@@ -1,8 +1,7 @@
 import {createRouter, createWebHistory} from "vue-router";
 import Editor from "../views/editor.vue";
 import NotFound from "../views/notfound.vue";
-import TeacherDashboard from "../views/teacherdashboard.vue";
-import LearnerDashboard from "../views/learnerdashboard.vue";
+import Dashboard from "../views/dashboard.vue";
 import Task from "../views/task.vue";
 
 /*
@@ -14,8 +13,7 @@ import Task from "../views/task.vue";
 const routes = [
 	{path: "/", name: "task", component: Task},
 	{path: "/editor", name: "editor", component: Editor},
-	{path: "/teacherdashboard", name: "teacherdashboard", component: TeacherDashboard},
-	{path: "/learnerdashboard", name: "learnerdashboard", component: LearnerDashboard},
+	{path: "/dashboard", name: "dashboard", component: Dashboard},
 	{path: "/:pathMatch(.*)*", name: "not found", component: NotFound},
 ];
 
