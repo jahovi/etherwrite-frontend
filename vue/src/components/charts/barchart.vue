@@ -1,8 +1,8 @@
 <template>
-  <div>
+  <div :id="id">
     <h4>Beispielgrafik</h4>
     <div class="container-chart text-align-left">
-      <div class="chart"></div>
+      <div :id="id + '-chart'" class="chart"></div>
     </div>
     <a href="https://github.com/gywgithub/vue-d3-examples/blob/master/src/components/BarChartI.vue">Quelle des
       Beispieldiagramms</a>
@@ -15,10 +15,15 @@ export default {
   data() {
     return {}
   },
+  props: {
+    id: String,
+  },
   name: "barCharComponent",
-  mounted() {
+  async mounted() {
     let data = [4, 8, 15, 16, 23, 42];
-    d3.select(".chart")
+    // chart will not be renderer without await
+    await document.getElementById(this.id + "-cahrt");
+    d3.select("#" + this.id + "-chart")
       .selectAll("div")
       .data(data)
       .enter().append("div")
@@ -29,7 +34,7 @@ export default {
 </script>
 
 <style scoped lang="css">
-.chart>>>div {
+.chart:deep(div) {
   font: 10px sans-serif;
   background-color: steelblue;
   text-align: right;
