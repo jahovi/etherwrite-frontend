@@ -4,23 +4,35 @@
 
 <template>
   <div class="minimap" v-dragscroll.y="true">
-    <span style="white-space: pre-line">{{ ethContent }}</span>
+    <span
+      class="textBlock"
+      :style="{ background: block.color }"
+      v-for="block in coloredBlocks"
+      :key="block.id"
+      >{{ block.content }}</span
+    >
   </div>
 </template>
     
 <script>
 import { dragscroll } from "vue-dragscroll";
 
+const ipAddress = "http://192.168.178.26:8083"; //Enter ip address of your local computer.
+
 export default {
 	data: function() {
 		return {
-			ethContent: "",
 			keepRefreshing: true,
-			response: "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat," + "\n" + "sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet," + "\n" + "consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.",
+			coloredBlocks: []
 		};
 	},
 	directives: {
 		dragscroll,
+	},
+	props: {
+		padName: {
+			required: true,
+		},
 	},
 	methods: {
 		refreshMinimap: async function() {
@@ -29,16 +41,47 @@ export default {
 			}
 			while(this.keepRefreshing) {
 
-				/// Dieser Bereich muss einkommentiert und mit der richtigen API versehen werden, sobald unser Webservice (EVA) steht.
-				/* 
-        		let response = await fetch("https://official-joke-api.appspot.com/random_joke");
+				//Cross-origin requests need to be safe
+				const response = await fetch(ipAddress + "/getBlockInfo?padName="+this.padName, {
+					method: "GET",
+					headers: {
+						"Content-Type": "application/json",
+						"Accept": "application/json",
+					},
+				});
 				const data = await response.json();
-				this.ethContent += data.setup + " ";
-        		*/
-				this.ethContent += this.response; //Dieser Codeteil muss dann entfernt werden.
+				this.processMinimapContent(data);
 
-				await sleep(1000);
+				await sleep(100);
 			}
+		},
+		processMinimapContent: async function(data) {
+
+			const response = await fetch(ipAddress + "/getAuthorInfo", {
+				method: "GET",
+				headers: {
+					"Content-Type": "application/json",
+					"Accept": "application/json",
+				},
+			});
+			const authorData = await response.json();
+
+			this.coloredBlocks = [];
+
+			data.forEach ((block) => {
+				let rndContent = "";
+				const blockColor = authorData[block.author]["color"]; //Getting the author's color for the current block.
+				for (var i=0; i<block.blockLength; i++) { 
+					if (block.lineBreakIndices.includes(i)) {
+						rndContent += "\n";
+					} 
+					else { 
+						rndContent += "c";
+					}
+    		}
+			this.coloredBlocks.push({id: this.coloredBlocks.length, color: blockColor, content: rndContent});
+			});
+			
 		},
 	},
 	mounted() {
@@ -48,16 +91,21 @@ export default {
 </script>
     
 <style scoped>
+.textBlock {
+  white-space: pre-line;
+}
+
 .minimap {
   background-color: rgba(0, 0, 0, 0.05);
   position: absolute;
   float: left;
-  width: 15%;
+  width: 10%;
   height: 620px;
   top: 40px;
   bottom: 40px;
   font-size: 3px;
   padding: 10px;
+  overflow-wrap: break-word;
   overflow: auto;
   -ms-overflow-style: none; /* Hide Scrollbar Internet Explorer 10+ */
   scrollbar-width: none; /* Hide Scrollbar Firefox */

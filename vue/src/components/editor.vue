@@ -25,7 +25,7 @@
 			</div>
 		</div>
 		<div class="holder">
-			<Minimap/>
+			<Minimap :pad-name="padName"/>
 			<iframe
 					id="writerview"
 					v-bind:src="link"
@@ -42,6 +42,7 @@ export default {
 	data: function () {
 		return {
 			link: null,
+			padName: null,
 		};
 	},
 	components: {
@@ -50,6 +51,7 @@ export default {
 	name: "EditorComponent",
 	mounted() {
 		this.link = this.$store.state.editorLink;
+		this.padName = this.$store.state.padName;
 	},
 	computed: {
 		getStrings: function () {
@@ -70,7 +72,7 @@ export default {
 
 <style scoped>
 iframe {
-	width: 80%;
+	width: 85%;
 	height: 700px;
 	border-style: none;
 	float: right;
