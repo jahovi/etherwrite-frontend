@@ -16,10 +16,12 @@
   },
   "dependencies": {
     "d3": "^7.6.1",
+    "d3-collection": "^1.0.7",
     "fetch-jsonp": "^1.2.3",
     "jsonp": "^0.2.1",
     "nodemon": "^2.0.20",
     "vue": "^3.2.41",
+    "vue-d3-charts": "^0.2.8",
     "vue-dragscroll": "^4.0.5",
     "vue-router": "^4.1.6",
     "vuex": "^4.1.0"
