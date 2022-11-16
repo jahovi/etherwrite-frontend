@@ -4,7 +4,10 @@
 		<div id="project-dashboard" class="row border-bottom dashboard">
 			<h3 class="col-12">Projekt Dashboard</h3>
 			<div class="col-12 board-area">
-				<ExampleChart />
+				<div v-for="widget in projectCharts" :key="widget.id">
+					<!-- tbd; container component with chart -->
+					<component :is="widget.component" :configuration="widget.configuration"></component>
+				</div>
 			</div>
 		</div>
 		<!-- custom dashboard -->
@@ -12,19 +15,21 @@
 			<h3 class="col-6">Dein Dashboard</h3>
 			<div class="col-6">
 				<button id="add-chart-btn" class="btn btn-primary rounded pull-right"
-					@click.prevent="this.addChartContainer()">Diagramm
-					hinzufügen</button>
+								@click.prevent="this.addChartContainer()">Diagramm
+					hinzufügen
+				</button>
 			</div>
 			<div class="col-12 board-area">
-				<div v-for="container in chartContainers">
+				<div v-for="widget in userCharts" :key="widget.id">
 					<!-- tbd; container component with chart -->
+					<component :is="widget.component" :configuration="widget.configuration"></component>
 				</div>
 			</div>
 		</div>
 		<!-- extend custom dashboard -->
 		<div class="row extend">
 			<button id="extend-custom-dashboard-btn" type="button" class="btn btn-primary btn-circle"
-				@click.prevent="this.extendDashboard()">
+							@click.prevent="this.extendDashboard()">
 				<i class="arrow down"></i>
 			</button>
 			<p>Dashboard erweitern</p>
@@ -33,22 +38,25 @@
 </template>
 
 <script lang="js">
-import ExampleChart from "../components/charts/barchart.vue";
+import Communication from "../classes/communication";
+import {defineAsyncComponent} from "vue";
 
 export default {
 	name: "dashboardView",
 	components: {
-		ExampleChart,
+		// eslint-disable-next-line vue/no-unused-components
+		barchart: defineAsyncComponent(() => import("../components/charts/barchart.vue")),
 	},
-	data: function () {
-		return {
-			chartContainers: [],
-		};
-	},
+	data: () => ({
+		projectCharts: [],
+		userCharts: [],
+	}),
 	computed: {
+		getStrings() {
+			return this.$store.getters.getStrings;
+		},
 	},
-	watch: {
-	},
+	watch: {},
 	methods: {
 		extendDashboard() {
 			let customDashboard = document.getElementById("custom-dashboard");
@@ -57,11 +65,23 @@ export default {
 		},
 		addChartContainer() {
 			console.log("tbd; add an instance of chart container component");
-		}
+		},
+		transformWidget(widgetData) {
+			// TODO eventually parse the backend's widget configuration.
+			return {
+				id: widgetData.id,
+				component: widgetData.component,
+				configuration: {},
+			};
+		},
 	},
 	mounted() {
-		console.log("tbd; load chart containers & custom dashboard layout");
-	}
+		const cmid = this.$store.getters.getCMID;
+		Communication.webservice("getDashboards", {cmid}).then(result => {
+			this.projectCharts = result.project.map(this.transformWidget);
+			this.userCharts = result.user.map(this.transformWidget);
+		});
+	},
 };
 </script>
 

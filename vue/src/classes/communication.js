@@ -9,18 +9,18 @@ import ajax from "core/ajax";
  *
  */
 
-export default class Communication{
-	static webservice(method, param = {}){
+export default class Communication {
+	static webservice(method, param = {}) {
 		return new Promise(
 			(resolve, reject) => {
 				ajax.call([{
-					methodname: "mod_write_"+method,
-					args: param?param:{},
+					methodname: "mod_write_" + method,
+					args: param ? param : {},
 					timeout: 3000,
-					done: function(data){
+					done: function (data) {
 						return resolve(data);
 					},
-					fail: function(error){
+					fail: function (error) {
 						return reject(error);
 					},
 				}]);

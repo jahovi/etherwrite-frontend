@@ -21,7 +21,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version = 2019041615;
+$plugin->version = 2022111901;
 $plugin->requires = 2017111302;
 $plugin->component = 'mod_write';
 $plugin->maturity = MATURITY_ALPHA;

@@ -1,9 +1,9 @@
 <template>
-    <div>Page not found</div>
+	<div>Page not found {{ $route.path }}</div>
 </template>
 <script>
 export default {
-	data: function(){
+	data: function () {
 		return {};
 	},
 	name: "notFoundView",

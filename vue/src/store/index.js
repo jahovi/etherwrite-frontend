@@ -3,6 +3,7 @@
 import moodleAjax from "core/ajax";
 import moodleStorage from "core/localstorage";
 import {createStore} from "vuex";
+import base from "./base";
 
 /*
     @author Marc Burchart
@@ -20,40 +21,40 @@ export default createStore({
 	},
 	//strict: process.env.NODE_ENV !== 'production',
 	getters: {
-		getStrings: function(state){
+		getStrings: function (state) {
 			return state.strings;
 		},
-		getCMID: function(state){
+		getCMID: function (state) {
 			return state.courseModuleID;
 		},
-		getAlertShow: function(state){
+		getAlertShow: function (state) {
 			return state.alertShow;
 		},
-		getAlertType: function(state){
+		getAlertType: function (state) {
 			return state.alertType;
 		},
-		getAlertMessage: function(state){
+		getAlertMessage: function (state) {
 			return state.alertMessage;
 		},
 	},
 	mutations: {
-		setCourseModuleID: function(state, id) {
+		setCourseModuleID: function (state, id) {
 			state.courseModuleID = id;
 		},
-		setContextID: function(state, id) {
+		setContextID: function (state, id) {
 			state.contextID = id;
 		},
-		setStrings: function(state, strings) {
+		setStrings: function (state, strings) {
 			state.strings = strings;
 		},
-		setAlertPermanent: function(state, arr){
-			scroll(0,0);
+		setAlertPermanent: function (state, arr) {
+			scroll(0, 0);
 			state.alertShow = true;
 			state.alertType = arr[0];
 			state.alertMessage = arr[1];
 		},
-		setAlertWithTimeout: function(state, arr){
-			scroll(0,0);
+		setAlertWithTimeout: function (state, arr) {
+			scroll(0, 0);
 			state.alertShow = true;
 			state.alertType = arr[0];
 			state.alertMessage = arr[1];
@@ -67,7 +68,7 @@ export default createStore({
 				},
 			);
 		},
-		removeAlert: function (state){
+		removeAlert: function (state) {
 			state.alertShow = false;
 			state.alertType = "alert-primary";
 			state.alertMessage = "";
@@ -97,5 +98,8 @@ export default createStore({
 				moodleStorage.set(cacheKey, JSON.stringify(strings));
 			}
 		},
+	},
+	modules: {
+		base,
 	},
 });

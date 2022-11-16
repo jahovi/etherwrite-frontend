@@ -17,9 +17,9 @@ const routes = [
 	{path: "/:pathMatch(.*)*", name: "not found", component: NotFound},
 ];
 
-// base URL is /mod/vuejsdemo/view.php/[course module id]/
+// base URL is /mod/vuejsdemo/view.php/[course module id]/xyz – cut everything after "[course module id]/xyz"
 const currenturl = window.location.pathname;
-const base = currenturl.substring(0, currenturl.indexOf(".php")) + ".php/" + 2 + "/";
+const base = currenturl.replace(/(view\.php\/\d+\/?).*/, "$1");
 
 export default createRouter({
 	history: createWebHistory(base),

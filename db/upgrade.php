@@ -29,10 +29,44 @@ defined('MOODLE_INTERNAL') || die();
  *
  * @param int $oldversion the version we are upgrading from.
  */
-function xmldb_write_upgrade($oldversion = 0) {
+function xmldb_write_upgrade($oldversion = 0)
+{
     global $CFG, $DB;
 
     $dbman = $DB->get_manager();
 
+    issue_25($oldversion, $dbman);
+
     return true;
+}
+
+function issue_25($oldversion, $dbman)
+{
+    $newversion = 2022111901;
+    if ($oldversion < $newversion) {
+        // Define table write_widget to be created.
+        $table = new xmldb_table('write_widget');
+
+        // Adding fields to table write_widget.
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('write', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('user', XMLDB_TYPE_INTEGER, '10', null, null, null, null);
+        $table->add_field('component', XMLDB_TYPE_CHAR, '255', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('configuration', XMLDB_TYPE_TEXT, null, null, null, null, null);
+
+        // Adding keys to table write_widget.
+        $table->add_key('id', XMLDB_KEY_PRIMARY, ['id']);
+        $table->add_key('write', XMLDB_KEY_FOREIGN, ['write'], 'write', ['id']);
+        $table->add_key('user', XMLDB_KEY_FOREIGN, ['user'], 'user', ['id']);
+
+        // Conditionally launch create table for write_widget.
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+
+        // Write savepoint reached.
+        upgrade_mod_savepoint(true, $newversion, 'write');
+
+    }
+
 }

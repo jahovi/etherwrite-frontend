@@ -17,12 +17,14 @@ $string['apikey'] = 'Etherpad API-Schlüssel';
 $string['apikeydescription'] = 'Der API-Schlüssel für die Etherpad-Instanz.';
 $string['localinstallation'] = 'Lokale Installation';
 $string['localinstallationdescription'] = 'Wählen Sie diese Option, sofern Moodle und Etherpad als Docker-Container auf dem gleichen Host betrieben werden.';
+$string['nogroupselect'] = "(Gruppierung auswählen)";
 
 // CM
 $string['grouping'] = 'Gruppierung';
 
 // Vue
 $string['loadeditor'] = 'Versucht den Editor zu laden ...';
+$string['loading'] = 'Laden..';
 
 // Webservices
 $string['novalidepurl'] = 'Ungültige Etherpad-URL.';

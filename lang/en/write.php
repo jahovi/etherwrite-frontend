@@ -17,12 +17,14 @@ $string['apikey'] = 'Etherpad API Key';
 $string['apikeydescription'] = 'The API key for the Etherpad instance.';
 $string['localinstallation'] = 'Local installation';
 $string['localinstallationdescription'] = 'Select this option if the installation is located locally on your computer.';
+$string['nogroupselect'] = "(Select grouping)";
 
 // CM
 $string['grouping'] = 'Grouping';
 
 // Vue
 $string['loadeditor'] = 'Tries to load the editor...';
+$string['loading'] = 'Loading..';
 
 // Webservices
 $string['novalidepurl'] = 'Invalid Etherpad URL.';
