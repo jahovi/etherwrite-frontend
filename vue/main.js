@@ -3,10 +3,6 @@ import store from "./src/store";
 import App from "./app.vue";
 import router from "./src/router";
 
-// We need to overwrite the variable for lazy loading.
-/* eslint-disable-next-line no-undef */
-__webpack_public_path__ = M.cfg.wwwroot + "/mod/write/amd/build/";
-
 export function init(coursemoduleid, contextid) {
 	store.commit("setCourseModuleID", coursemoduleid);
 	store.commit("setContextID", contextid);
@@ -17,3 +13,7 @@ export function init(coursemoduleid, contextid) {
 		.use(store)
 		.mount("#mod-write-app");
 }
+
+// We need to overwrite the variable for lazy loading.
+/* eslint-disable-next-line no-undef */
+__webpack_public_path__ = M.cfg.wwwroot + "/mod/write/amd/build/";

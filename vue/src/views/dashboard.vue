@@ -3,7 +3,14 @@
 		<!-- project dashboard -->
 		<div id="project-dashboard" class="row border-bottom dashboard">
 			<h3 class="col-12">Projekt Dashboard</h3>
-			<div class="col-12 board-area">
+			<div class="col-12">
+				<strong>Aktive Benutzer(innen):</strong>
+				<br/>
+				<span class="badge badge-light badge-rounded pa-1" v-for="user in users" :key="user.id">
+					{{ user.fullName }}
+				</span>
+			</div>
+			<div class="col-12 mt-4 board-area">
 				<div v-for="widget in projectCharts" :key="widget.id">
 					<!-- tbd; container component with chart -->
 					<component :is="widget.component" :configuration="widget.configuration"></component>
@@ -29,7 +36,7 @@
 		<!-- extend custom dashboard -->
 		<div class="row extend">
 			<button id="extend-custom-dashboard-btn" type="button" class="btn btn-primary btn-circle"
-							@click.prevent="this.extendDashboard()">
+					@click.prevent="this.extendDashboard()">
 				<i class="arrow down"></i>
 			</button>
 			<p>Dashboard erweitern</p>
@@ -54,6 +61,9 @@ export default {
 	computed: {
 		getStrings() {
 			return this.$store.getters.getStrings;
+		},
+		users() {
+			return this.$store.state.users.users;
 		},
 	},
 	watch: {},
@@ -81,6 +91,7 @@ export default {
 			this.projectCharts = result.project.map(this.transformWidget);
 			this.userCharts = result.user.map(this.transformWidget);
 		});
+		this.$store.dispatch("users/load");
 	},
 };
 </script>

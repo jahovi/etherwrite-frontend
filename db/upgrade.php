@@ -35,7 +35,10 @@ function xmldb_write_upgrade($oldversion = 0)
 
     $dbman = $DB->get_manager();
 
+
     issue_25($oldversion, $dbman);
+
+    issue_17($oldversion, $dbman);
 
     return true;
 }
@@ -68,5 +71,23 @@ function issue_25($oldversion, $dbman)
         upgrade_mod_savepoint(true, $newversion, 'write');
 
     }
+}
 
+function issue_17(int $oldversion, $dbman)
+{
+    global $DB;
+    $newversion = 2022112001;
+    if ($oldversion < $newversion) {
+        $function = array(
+            "name" => "mod_write_getAuthors",
+            "classname" => "mod_write_external",
+            "methodname" => "getAuthors",
+            "classpath" => "mod/write/db/external.php",
+            "component" => "mod_write"
+        );
+        $DB->insert_record("external_functions", $function, false, false);
+
+        // Write savepoint reached.
+        upgrade_mod_savepoint(true, $newversion, 'write');
+    }
 }

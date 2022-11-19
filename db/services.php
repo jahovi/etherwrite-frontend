@@ -28,6 +28,15 @@ $functions = array(
         'ajax' => true,
         'loginrequired' => true
     ),
+    'mod_write_getAuthors' => array(
+        'classname' => 'mod_write_external',
+        'methodname' => 'getAuthors',
+        'classpath' => 'mod/write/db/external.php',
+        'description' => 'Show all users that are working in the current module.',
+        'type' => 'read',
+        'ajax' => true,
+        'loginrequired' => true
+    ),
     'mod_write_getDashboards' => array(
         'classname' => 'mod_write_external',
         'methodname' => 'getDashboards',

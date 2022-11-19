@@ -4,6 +4,7 @@ import moodleAjax from "core/ajax";
 import moodleStorage from "core/localstorage";
 import {createStore} from "vuex";
 import base from "./base";
+import users from "./users";
 
 /*
     @author Marc Burchart
@@ -101,5 +102,6 @@ export default createStore({
 	},
 	modules: {
 		base,
+		users,
 	},
 });

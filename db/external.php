@@ -228,6 +228,59 @@ class mod_write_external extends external_api
         );
     }
 
+
+    public static function getAuthors_parameters()
+    {
+        return new external_function_parameters(
+            array(
+                'cmid' => new external_value(PARAM_INT, 'id of write')
+            )
+        );
+    }
+
+    public static function getAuthors($cmid)
+    {
+        global $USER, $DB;
+        $config = get_config('write');
+        // Now we need the cm data.
+        $cm = get_coursemodule_from_id('write', $cmid, 0, false, MUST_EXIST); // Coursemodule
+        $write = $DB->get_record('write', array('id' => $cm->instance), '*', MUST_EXIST);
+        $cid = intval($write->course); // Courseid
+        if (!isset($write->grouping) || is_null($write->grouping) || intval($write->grouping) === 0) {
+            return array('success' => false, 'data' => get_string('nogrouping', 'mod_write'));
+        }
+        $grouping = intval($write->grouping);
+        $group = groups_get_all_groups($cid, $USER->id, $grouping);
+        if (!isset($write->grouping) || is_null($write->grouping) || intval($write->grouping) === 0) {
+            return array('success' => false, 'data' => get_string('nogroup', 'mod_write'));
+        }
+        $group = array_shift($group);
+        $members = groups_get_members($group->id, 'u.id, u.firstname, u.lastname');
+        $data = [];
+        foreach ($members as $member) {
+            $data[] = [
+                "id" => $member->id,
+                "fullName" => $member->firstname . ' ' . $member->lastname,
+            ];
+        }
+        return $data;
+    }
+
+    public static function getAuthors_returns()
+    {
+        return new external_multiple_structure(
+            new external_single_structure(array(
+                    'id' => new external_value(PARAM_INTEGER, 'ID of the user'),
+                    'fullName' => new external_value(PARAM_RAW, 'Full name (first name + last name) of the user.')
+                )
+            )
+        );
+    }
+
+    public static function getAuthors_is_allowed_from_ajax()
+    {
+        return true;
+    }
 }
 
 ?>
