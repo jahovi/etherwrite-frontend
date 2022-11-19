@@ -25,7 +25,7 @@
 			</div>
 		</div>
 		<div class="holder">
-			<Minimap :pad-name="padName"/>
+			<Minimap :padName="padName" v-if="!isLoading"/>
 			<iframe
 					id="writerview"
 					v-bind:src="link"
@@ -39,19 +39,17 @@
 import Minimap from "./minimap.vue";
 
 export default {
-	data: function () {
-		return {
-			link: null,
-			padName: null,
-		};
-	},
+	data: () => ({
+		link: null,
+		padName: null,
+	}),
 	components: {
 		Minimap,
 	},
 	name: "EditorComponent",
 	mounted() {
-		this.link = this.$store.state.editorLink;
-		this.padName = this.$store.state.padName;
+		this.link = this.$store.state.base.editorLink || null;
+		this.padName = this.$store.state.base.padName || null;
 	},
 	computed: {
 		getStrings: function () {

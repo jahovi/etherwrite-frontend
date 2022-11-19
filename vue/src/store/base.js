@@ -5,12 +5,14 @@ export default {
 		padName: null,
 		groupId: null,
 		editorLink: null,
+		evaUri: null,
 	},
 	mutations: {
 		setEditorInfo(state, payload) {
 			state.padName = payload.padName;
 			state.groupId = payload.groupId;
 			state.editorLink = payload.link;
+			state.evaUri = payload.eva;
 		},
 	},
 	actions: {
