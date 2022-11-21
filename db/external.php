@@ -97,7 +97,7 @@ class mod_write_external extends external_api
             $eva = "http://localhost:8083";
         } else {
             $uri = rtrim($url, '/');
-            $eva = rtrim($_SERVER['SERVER_NAME'] . ':9002', '/');
+            $eva = rtrim('http://' . $_SERVER['SERVER_NAME'] . ':9002', '/');
         }
 
         setcookie('sessionID', $sessionid);
