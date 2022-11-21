@@ -4,7 +4,7 @@
  *
  * @package mod_write
  * @copyright Marc Burchart, 2022, marc.burchart@fernuni-hagen.de
- * 
+ *
  */
 
 namespace mod_write\etherpad;
@@ -12,7 +12,8 @@ namespace mod_write\etherpad;
 require_once($CFG->libdir . '/filelib.php');
 defined('MOODLE_INTERNAL') || die();
 
-class client {
+class client
+{
 
     const API_VERSION = '1.2.14';
 
@@ -26,17 +27,18 @@ class client {
     protected $baseurl = '';
     protected $curl; // Use the moodle curl class.
 
-    public function __construct($apikey, $baseurl = null) {
-        
+    public function __construct($apikey, $baseurl = null)
+    {
+
         if (strlen($apikey) < 1) {
             throw new InvalidArgumentException("[{$apikey}] is not a valid API key");
         }
 
-        $this->apikey = $apikey; 
+        $this->apikey = $apikey;
 
         if (isset($baseurl)) {
-            $this->baseurl = $baseurl;            
-        }  
+            $this->baseurl = $baseurl;
+        }
 
         if (!filter_var($this->baseurl, FILTER_VALIDATE_URL)) {
             throw new InvalidArgumentException("[{$this->baseurl}] is not a valid URL");
@@ -46,17 +48,20 @@ class client {
 
     }
 
-    protected function get($function, array $arguments = []) {
+    protected function get($function, array $arguments = [])
+    {
         return $this->call($function, $arguments, 'GET');
     }
 
-    protected function post($function, array $arguments = []) {
+    protected function post($function, array $arguments = [])
+    {
         return $this->call($function, $arguments, 'POST');
     }
 
-    protected function call($function, array $arguments = [], $method = 'GET') {
+    protected function call($function, array $arguments = [], $method = 'GET')
+    {
         $arguments['apikey'] = $this->apikey;
-        $url = rtrim($this->baseurl, '/').'/'.self::API_VERSION.'/'.$function;      
+        $url = rtrim($this->baseurl, '/') . '/' . self::API_VERSION . '/' . $function;
         // All posts and gets use the moodle curl class.
         $config = get_config('write');
 
@@ -68,11 +73,11 @@ class client {
         ];
 
         if ($method === 'POST') {
-            $result = $this->curl->post($url, $arguments, $options);            
+            $result = $this->curl->post($url, $arguments, $options);
         } else {
             $result = $this->curl->get($url, $arguments, $options);
-        }         
-        
+        }
+
         if (!$result) {
             return false;
         }
@@ -84,7 +89,8 @@ class client {
         return $this->handle_result($result);
     }
 
-    protected function handle_result($result) {
+    protected function handle_result($result)
+    {
         if (!isset($result->code)) {
             return false;
         }
@@ -111,16 +117,18 @@ class client {
     }
 
     // Creates a new group.
-    public function create_group() {
-        $group = $this->post('createGroup');       
+    public function create_group()
+    {
+        $group = $this->post('createGroup');
         if ($group) {
             return $group->groupID;
-        }       
+        }
         return false;
     }
 
     // This functions helps you to map your application group ids to etherpad lite group ids.
-    public function create_group_if_not_exists_for($groupmapper) {
+    public function create_group_if_not_exists_for($groupmapper)
+    {
         $group = $this->post('createGroupIfNotExistsFor', [
             'groupMapper' => $groupmapper
         ]);
@@ -131,21 +139,24 @@ class client {
     }
 
     // Deletes a group.
-    public function delete_group($groupid) {
+    public function delete_group($groupid)
+    {
         return $this->post('deleteGroup', [
             'groupID' => $groupid
         ]);
     }
 
     // Returns all pads of this group.
-    public function list_pads($groupid) {
+    public function list_pads($groupid)
+    {
         return $this->get('listPads', [
             'groupID' => $groupid
         ]);
     }
 
     // Creates a new pad in this group.
-    public function create_group_pad($groupid, $padname, $text = null) {
+    public function create_group_pad($groupid, $padname, $text = null)
+    {
         $pad = $this->post('createGroupPad', [
             'groupID' => $groupid,
             'padName' => $padname,
@@ -158,7 +169,8 @@ class client {
     }
 
     // List all groups.
-    public function list_all_groups() {
+    public function list_all_groups()
+    {
         return $this->get('listAllGroups');
     }
 
@@ -166,7 +178,8 @@ class client {
     // Theses authors are bind to the attributes the users choose (color and name).
 
     // Creates a new author.
-    public function create_author($name) {
+    public function create_author($name)
+    {
         $author = $this->post('createAuthor', [
             'name' => $name
         ]);
@@ -177,26 +190,29 @@ class client {
     }
 
     // This functions helps you to map your application author ids to etherpad lite author ids.
-    public function create_author_if_not_exists_for($authormapper, $name) {
+    public function create_author_if_not_exists_for($authormapper, $name)
+    {
         $author = $this->post('createAuthorIfNotExistsFor', [
             'authorMapper' => $authormapper,
             'name' => $name
-        ]);               
+        ]);
         if ($author) {
-            return $author->authorID;            
+            return $author->authorID;
         }
         return false;
     }
 
     // Returns the ids of all pads this author as edited.
-    public function list_pads_of_author($authorid) {
+    public function list_pads_of_author($authorid)
+    {
         return $this->get('listPadsOfAuthor', [
             'authorID' => $authorid
         ]);
     }
 
     // Gets an author's name.
-    public function get_author_name($authorid) {
+    public function get_author_name($authorid)
+    {
         return $this->get('getAuthorName', [
             'authorID' => $authorid
         ]);
@@ -208,12 +224,13 @@ class client {
     // a cookie to the client and is valid until a certian date.
 
     // Creates a new session.
-    public function create_session($groupid, $authorid, $validuntil) {       
+    public function create_session($groupid, $authorid, $validuntil)
+    {
         $session = $this->post('createSession', [
             'groupID' => $groupid,
             'authorID' => $authorid,
             'validUntil' => $validuntil
-        ]);             
+        ]);
         if ($session) {
             return $session->sessionID;
         }
@@ -221,28 +238,32 @@ class client {
     }
 
     // Deletes a session.
-    public function delete_session($sessionid) {
+    public function delete_session($sessionid)
+    {
         return $this->post('deleteSession', [
             'sessionID' => $sessionid
         ]);
     }
 
     // Returns informations about a session.
-    public function get_session_info($sessionid) {
+    public function get_session_info($sessionid)
+    {
         return $this->get('getSessionInfo', [
             'sessionID' => $sessionid
         ]);
     }
 
     // Returns all sessions of a group.
-    public function list_sessions_of_group($groupid) {
+    public function list_sessions_of_group($groupid)
+    {
         return $this->get('listSessionsOfGroup', [
             'groupID' => $groupid
         ]);
     }
 
     // Returns all sessions of an author.
-    public function list_sessions_of_author($authorid) {
+    public function list_sessions_of_author($authorid)
+    {
         return $this->get('listSessionsOfAuthor', [
             'authorID' => $authorid
         ]);
@@ -252,7 +273,8 @@ class client {
     // Pad content can be updated and retrieved through the API.
 
     // Returns the text of a pad.
-    public function get_text($padid, $rev = null) {
+    public function get_text($padid, $rev = null)
+    {
         $params = ['padID' => $padid];
         if (isset($rev)) {
             $params['rev'] = $rev;
@@ -261,7 +283,8 @@ class client {
     }
 
     // Returns the text of a pad as html.
-    public function get_html($padid, $rev = null) {
+    public function get_html($padid, $rev = null)
+    {
         $params = ['padID' => $padid];
         if (isset($rev)) {
             $params['rev'] = $rev;
@@ -270,7 +293,8 @@ class client {
     }
 
     // Sets the text of a pad.
-    public function set_text($padid, $text) {
+    public function set_text($padid, $text)
+    {
         return $this->post('setText', [
             'padID' => $padid,
             'text' => $text
@@ -278,7 +302,8 @@ class client {
     }
 
     // Sets the html text of a pad.
-    public function set_html($padid, $html) {
+    public function set_html($padid, $html)
+    {
         return $this->post('setHTML', [
             'padID' => $padid,
             'html' => $html
@@ -291,7 +316,8 @@ class client {
     // forbidden for normal pads to include a $ in the name.
 
     // Creates a new pad.
-    public function create_pad($padid, $text) {
+    public function create_pad($padid, $text)
+    {
         return $this->post('createPad', [
             'padID' => $padid,
             'text' => $text
@@ -299,35 +325,40 @@ class client {
     }
 
     // Returns the number of revisions of this pad.
-    public function get_revisions_count($padid) {
+    public function get_revisions_count($padid)
+    {
         return $this->get('getRevisionsCount', [
             'padID' => $padid
         ]);
     }
 
     // Returns the number of users currently editing this pad.
-    public function pad_users_count($padid) {
+    public function pad_users_count($padid)
+    {
         return $this->get('padUsersCount', [
             'padID' => $padid
         ]);
     }
 
     // Return the time the pad was last edited as a Unix timestamp.
-    public function get_last_edited($padid) {
+    public function get_last_edited($padid)
+    {
         return $this->get('getLastEdited', [
             'padID' => $padid
         ]);
     }
 
     // Deletes a pad.
-    public function delete_pad($padid) {
+    public function delete_pad($padid)
+    {
         return $this->post('deletePad', [
             'padID' => $padid
         ]);
     }
 
     // Returns the read only link of a pad.
-    public function get_readonly_id($padid) {
+    public function get_readonly_id($padid)
+    {
         $id = $this->get('getReadOnlyID', [
             'padID' => $padid
         ]);
@@ -338,14 +369,16 @@ class client {
     }
 
     // Returns the ids of all authors who've edited this pad.
-    public function list_authors_of_pad($padid) {
+    public function list_authors_of_pad($padid)
+    {
         return $this->get('listAuthorsOfPad', [
             'padID' => $padid
         ]);
     }
 
     // Sets a boolean for the public status of a pad.
-    public function set_public_status($padid, $publicstatus) {
+    public function set_public_status($padid, $publicstatus)
+    {
         if (is_bool($publicstatus)) {
             $publicstatus = $publicstatus ? 'true' : 'false';
         }
@@ -356,14 +389,16 @@ class client {
     }
 
     // Return true of false.
-    public function get_public_status($padid) {
+    public function get_public_status($padid)
+    {
         return $this->get('getPublicStatus', [
             'padID' => $padid
         ]);
     }
 
     // Returns ok or a error message.
-    public function set_password($padid, $password) {
+    public function set_password($padid, $password)
+    {
         return $this->post('setPassword', [
             'padID' => $padid,
             'password' => $password
@@ -371,21 +406,24 @@ class client {
     }
 
     // Returns true or false.
-    public function is_password_protected($padid) {
+    public function is_password_protected($padid)
+    {
         return $this->get('isPasswordProtected', [
             'padID' => $padid
         ]);
     }
 
     // Get pad users.
-    public function pad_users($padid) {
+    public function pad_users($padid)
+    {
         return $this->get('padUsers', [
             'padID' => $padid
         ]);
     }
 
     // Send all clients a message.
-    public function send_clients_message($padid, $msg) {
+    public function send_clients_message($padid, $msg)
+    {
         return $this->post('sendClientsMessage', [
             'padID' => $padid,
             'msg' => $msg

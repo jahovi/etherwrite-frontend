@@ -39,24 +39,23 @@
 import Minimap from "./minimap.vue";
 
 export default {
-	data: () => ({
-		link: null,
-		padName: null,
-	}),
+	data: () => ({}),
 	components: {
 		Minimap,
 	},
 	name: "EditorComponent",
-	mounted() {
-		this.link = this.$store.state.base.editorLink || null;
-		this.padName = this.$store.state.base.padName || null;
-	},
 	computed: {
-		getStrings: function () {
+		getStrings() {
 			return this.$store.getters.getStrings;
 		},
-		isLoading: function () {
-			return this.link === null;
+		isLoading() {
+			return this.link === null || this.padName === null;
+		},
+		link() {
+			return this.$store.state.base.editorLink;
+		},
+		padName() {
+			return this.$store.state.base.padName;
 		},
 	},
 	methods: {

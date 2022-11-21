@@ -87,15 +87,7 @@ class mod_write_external extends external_api
             throw new Exception(get_string('couldnotcreateauthor', 'mod_write'));
         }
 
-        $openSessions = $api->list_sessions_of_author($epauthor);
-        foreach ($openSessions as $id => $openSession) {
-            if ($openSession->groupID == $epgroup) {
-                $sessionid = $id;
-            }
-        }
-        if (!isset($sessionid)) {
-            $sessionid = $api->create_session($epgroup, $epauthor, time() + 43200);
-        }
+        $sessionid = $api->create_session($epgroup, $epauthor, time() + 43200);
         if ($sessionid === false) {
             throw new Exception(get_string('couldnotcreatesession', 'mod_cwr'));
         }
@@ -107,14 +99,16 @@ class mod_write_external extends external_api
             $uri = rtrim($url, '/');
             $eva = rtrim($_SERVER['SERVER_NAME'] . ':9002', '/');
         }
-        $link = $uri . '/auth_session?sessionID=' . $sessionid . '&groupId=' . $epgroup . '&padName=' . $padName;
+
+        setcookie('sessionID', $sessionid);
+        $link = $uri . '/p/' . $padName . '?groupId=' . $epgroup;
 
         return array(
             'sessionID' => $sessionid,
             'padName' => $padName,
             'groupId' => $epgroup,
             'link' => $link,
-            'eva' => $eva
+            'eva' => $eva,
         );
     }
 
