@@ -11,7 +11,7 @@
 				</span>
 			</div>
 			<div class="col-12 mt-4 board-area">
-				<ChartWrapper v-for="widget in projectCharts" :widget="widget" :key="widget.id"></ChartWrapper>
+				<ChartWrapper v-for="widget in projectCharts" :component="widget.component" :id="widget.id"></ChartWrapper>
 			</div>
 		</div>
 		<!-- custom dashboard -->
