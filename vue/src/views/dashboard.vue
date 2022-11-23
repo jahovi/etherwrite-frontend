@@ -5,13 +5,13 @@
 			<h3 class="col-12">Projekt Dashboard</h3>
 			<div class="col-12">
 				<strong>Aktive Benutzer(innen):</strong>
-				<br />
+				<br/>
 				<span class="badge badge-light badge-rounded pa-1" v-for="user in users" :key="user.id">
 					{{ user.fullName }}
 				</span>
 			</div>
-			<div class="col-12 mt-4 board-area">
-				<PieChart :padName="padName" v-if="padName"/>
+			<div class="col-12 mt-4 board-area" v-if="padName">
+				<authoringRatios/>
 			</div>
 		</div>
 		<!-- custom dashboard -->
@@ -19,7 +19,7 @@
 			<h3 class="col-6">Dein Dashboard</h3>
 			<div class="col-6">
 				<button id="add-chart-btn" class="btn btn-primary rounded pull-right"
-					@click.prevent="this.addChartContainer()">Diagramm
+								@click.prevent="this.addChartContainer()">Diagramm
 					hinzufügen
 				</button>
 			</div>
@@ -33,7 +33,7 @@
 		<!-- extend custom dashboard -->
 		<div class="row extend">
 			<button id="extend-custom-dashboard-btn" type="button" class="btn btn-primary btn-circle"
-				@click.prevent="this.extendDashboard()">
+							@click.prevent="this.extendDashboard()">
 				<i class="arrow down"></i>
 			</button>
 			<p>Dashboard erweitern</p>
@@ -43,20 +43,18 @@
 
 <script lang="js">
 import Communication from "../classes/communication";
-import { defineAsyncComponent } from "vue";
-import PieChart from "../components/charts/pie.vue";
+import {defineAsyncComponent} from "vue";
 
 export default {
 	name: "dashboardView",
 	data: () => ({
 		projectCharts: [],
 		userCharts: [],
-		padName: null,
 	}),
 	components: {
 		// eslint-disable-next-line vue/no-unused-components
 		barchart: defineAsyncComponent(() => import("../components/charts/barchart.vue")),
-		PieChart,
+		authoringRatios: defineAsyncComponent(() => import("../components/charts/authoringRatios.vue")),
 	},
 	computed: {
 		getStrings() {
@@ -64,6 +62,9 @@ export default {
 		},
 		users() {
 			return this.$store.state.users.users;
+		},
+		padName() {
+			return this.$store.state.base.padName;
 		},
 	},
 	watch: {},
@@ -86,9 +87,8 @@ export default {
 		},
 	},
 	mounted() {
-		this.padName = this.$store.state.base.padName;
 		const cmid = this.$store.getters.getCMID;
-		Communication.webservice("getDashboards", { cmid }).then(result => {
+		Communication.webservice("getDashboards", {cmid}).then(result => {
 			this.projectCharts = result.project.map(this.transformWidget);
 			this.userCharts = result.user.map(this.transformWidget);
 		});
