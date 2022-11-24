@@ -17,35 +17,23 @@
 			</div>
 		</div>
 		<!-- custom dashboard -->
-		<div id="custom-dashboard" class="row dashboard">
-			<h3 class="col-12">Dein Dashboard</h3>
+		<div id="custom-dashboard" class="row d-flex dashboard">
+			<h3 class="col-12 col-md-6 mr-auto p-2">Dein Dashboard</h3>
 			<!-- add chart wrapper button -->
-			<button id="add-chart-btn" class="btn btn-primary rounded" @click.prevent="openWidgetCatalog()">Hinzufügen
+			<button id="add-chart-btn" class="btn btn-primary rounded p-2" @click.prevent="openWidgetCatalog()">
+				<i class="fa fa-plus-square-o"></i>
 			</button>
-			<!-- save dashboard button -->
-			<button id="save-dashboard-btn" class="btn btn-primary rounded" @click.prevent="saveGrid">Speichern</button>
-			<!-- load dashboard button -->
-			<button id="load-dashboard-btn" class="btn btn-primary rounded" @click.prevent="loadGrid">Laden</button>
 			<!-- compact dashboard button -->
-			<button id="compact-btn" class="btn btn-primary rounded" @click.prevent="compact()">Verdichten</button>
-			<!-- clear dashboard button -->
-			<button id="clear-btn" class="btn btn-primary rounded" @click.prevent="clear()">Leeren</button>
-			<!-- toggle float button -->
-			<button id="toggle-float-btn" class="btn btn-primary rounded" @click.prevent="toggleFloat()">Toggle
-				Float: {{ floatOption }}
+			<button id="compact-btn" class="btn btn-primary rounded p-2" v-if="!oneColumnMode"
+				@click.prevent="compact()">
+				<i class="fa fa-compress"></i>
 			</button>
 			<!-- trash -->
-			<div class="col-12 text-danger text-center">Toggle Float muss false sein, wenn ein Diagramm
-				hinzugefügt wird, sonst alles &#128163; &#129327; &#9760; !!!
-			</div>
-			<div class="col-6 offset-3 delete-wrapper">
+			<div class="delete-wrapper p-2">
 				<i class="fa fa-trash-o"></i>
 			</div>
 			<!-- gridstack -->
-			<div id="grid-stack" class="col-12 ">
-				<div class="grid-stack">
-				</div>
-			</div>
+			<div class="col-12 grid-stack"></div>
 		</div>
 		<WidgetCatalog @add-widget-event="addWidget($event)"/>
 	</div>
@@ -77,7 +65,8 @@ export default {
 			}],
 		userCharts: [],
 		grid: null,
-		floatOption: false,
+		widgetCount: 0,
+		windowWidth: window.innerWidth,
 	}),
 	computed: {
 		getStrings() {
@@ -88,6 +77,9 @@ export default {
 		},
 		padName() {
 			return this.$store.state.base.padName;
+		},
+		oneColumnMode() {
+				return this.grid && this.grid.opts.oneColumnSize > this.windowWidth;
 		},
 		isLoading() {
 			return !this.$store.state.base.initialized;
@@ -184,6 +176,17 @@ export default {
 				content: div.innerHTML,
 			});
 
+			createApp(chartWrapper, props).mount(div);
+			this.widgetCount += 1;
+			this.grid.addWidget({
+				x: newWidget.options.x,
+				y: newWidget.options.y,
+				minW: newWidget.options.minW,
+				minH: newWidget.options.minH,
+				w: newWidget.options.w,
+				h: newWidget.options.h,
+				content: div.innerHTML,
+			});
 		},
 		transformWidget(widgetData) {
 			return {
@@ -209,17 +212,10 @@ export default {
 		},
 	},
 	mounted() {
-		// init grid
-		let options = {
-			float: false, // TODO: fix: float option true crashes on addWidget() and makeWidget()
-			// TODO: move widgets by single column, not only by w columns
-			removable: ".delete-wrapper",
-			minRow: 1,
-			cellHeight: "300px",
-			alwaysShowResizeHandle: true,
+		// window resize listener
+		window.onresize = () => {
+			this.windowWidth = window.innerWidth;
 		};
-		let selector = ".grid-stack";
-		this.grid = GridStack.init(options, selector);
 
 		const cmid = this.$store.getters.getCMID;
 		Communication.webservice("getDashboards", {cmid}).then(result => {
@@ -228,6 +224,15 @@ export default {
 			result.user.map(this.transformWidget).map(this.addWidget);
 		});
 		this.$store.dispatch("users/load");
+
+		// init grid
+		this.grid = GridStack.init({
+			// TODO: move widgets by single column, not only by w columns
+			removable: ".delete-wrapper",
+			minRow: 2,
+			cellHeight: "300px",
+			alwaysShowResizeHandle: true,
+		});
 
 		this.grid.load(this.userCharts);
 
@@ -255,7 +260,6 @@ export default {
 h3 {
 	align-self: flex-start;
 	text-decoration: underline;
-	margin-bottom: 20px;
 }
 
 /* dashboards */
@@ -269,8 +273,9 @@ h3 {
 
 .delete-wrapper {
 	display: flex;
-	height: 100px;
-	margin: 0;
+	height: 50px;
+	width: 50px;
+	margin: 5px;
 	background-color: rgba(255, 0, 0, 0.2);
 	border: 0 transparent;
 	border-radius: 5px;
@@ -283,14 +288,24 @@ h3 {
 }
 
 .btn {
-	width: 150px;
-	margin: 0 10px 10px 10px;
+	width: 50px;
+	height: 50px;
+	margin: 5px;
 	justify-self: center;
+}
+
+/* grid stack */
+.grid-stack:deep(.grid-stack-item-content) {
+	border: 1px solid rgba(0, 0, 0, 0.125);
 }
 
 /* fontawesome */
 .fa {
-	font-size: 3em;
+	font-size: 2em;
+	color: lightgray;
+}
+
+.fa-trash-o {
 	color: lightslategray;
 }
 </style>
