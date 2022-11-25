@@ -52,9 +52,9 @@
 </template>
 
 <script lang="js">
-import { createApp, defineComponent, reactive } from "vue";
+import {createApp, defineAsyncComponent, defineComponent, reactive} from "vue";
 import store from "../store";
-import { GridStack } from "gridstack";
+import {GridStack} from "gridstack";
 import ChartWrapper from "../components/chart-wrapper.vue";
 import WidgetCatalog from "../components/widget-catalog.vue";
 import "gridstack/dist/gridstack.css";
@@ -65,6 +65,10 @@ export default {
 	components: {
 		ChartWrapper,
 		WidgetCatalog,
+		// eslint-disable-next-line vue/no-unused-components
+		barchart: defineAsyncComponent(() => import("../components/charts/barchart.vue")),
+		// eslint-disable-next-line vue/no-unused-components
+		authoringRatios: defineAsyncComponent(() => import("../components/charts/authoringRatios.vue")),
 	},
 	data: () => ({
 		projectCharts: [],

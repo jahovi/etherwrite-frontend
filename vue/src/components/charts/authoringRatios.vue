@@ -1,10 +1,10 @@
 <template>
-	<div>
-		<h4>Schreibanteil p.P.</h4>
+	<h4>Schreibanteil pro Person</h4>
+	<div class="chart-container">
 		<svg width="300" height="200"></svg>
 		<ul class="legend mt-3" v-if="colorFn">
 			<li v-for="author in pad.authors" :key="author">
-				<i class="fa fa-square" :style="{color: colorFn(author)}"></i> {{ author }}
+				<i class="fa fa-square" :style="{ color: colorFn(author) }"></i> {{ author }}
 			</li>
 		</ul>
 	</div>
@@ -12,7 +12,7 @@
 
 <script>
 import * as d3 from "d3";
-import Communication from "../../classes/communication";
+import Communication from '../../classes/communication';
 
 export default {
 	data() {
@@ -25,24 +25,37 @@ export default {
 			colorFn: null,
 		};
 	},
+	props: {
+		isMock: false
+	},
 	name: "authoringRatios",
 	mounted() {
-		this.getData().then(() =>
+		if (this.isMock) {
+			this.pad = {
+				authors: ["Mueller", "Fuchs", "Gamma"],
+				ratios: [15, 35, 50],
+				colors: ["#00B2EE", "#FF7F24", "#008B45"],
+			};
+			this.loadPie();
+		} else {
+			this.getData().then(() =>
 				this.loadPie());
+		}
 	},
 	methods: {
 		async getData() {
-			return Communication.getFromEVA("authoring_ratios", {pad: this.$store.state.base.padName})
-					.then(data => {
-						this.pad = {
-							authors: data.authors,
-							ratios: data.ratios,
-							colors: data.colors,
-						};
-					})
-					.catch(() => {
-						this.$store.commit("setAlertWithTimeout", ["alert-danger", this.$store.getters.getStrings.unknown_error, 3000]);
-					});
+				return Communication.getFromEVA("authoring_ratios", { pad: this.$store.state.base.padName })
+				.then(data => {
+					this.pad = {
+						authors: data.authors,
+						ratios: data.ratios,
+						colors: data.colors,
+					};
+				})
+				.catch(() => {
+					this.$store.commit("setAlertWithTimeout", ["alert-danger", this.$store.getters.getStrings.unknown_error, 3000]);
+				});
+			
 		},
 
 		loadPie() {
@@ -52,7 +65,7 @@ export default {
 
 			// Add a filler if the given numbers don't add up to 100%.
 			// Can happen with weird test data.
-			const sum = data.reduce((result, entry) => result + entry, 0);
+			const sum = data.reduce((result, entry) => result + entry);
 			if (sum < 1) {
 				keys.push("Unbekannt");
 				data.push(1 - sum);
@@ -62,33 +75,40 @@ export default {
 			this.colorFn = d3.scaleOrdinal(this.pad.colors);
 
 			const svg = d3.select("svg"),
-					width = svg.attr("width"),
-					height = svg.attr("height"),
-					radius = Math.min(width, height) / 2;
+				width = svg.attr("width"),
+				height = svg.attr("height"),
+				radius = Math.min(width, height) / 2;
 
 			const chart = svg.append("g")
-					.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+				.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
 			const pie = d3.pie();
 			const arc = d3.arc()
-					.innerRadius(0)
-					.outerRadius(radius);
+				.innerRadius(0)
+				.outerRadius(radius);
 
 
 			const arcs = chart.selectAll("arc")
-					.data(pie(data))
-					.enter().append("g")
-					.attr("class", "arc");
+				.data(pie(data))
+				.enter().append("g")
+				.attr("class", "arc");
 
 			arcs.append("path")
-					.attr("fill", (d, i) => this.colorFn(i))
-					.attr("d", arc)
-					.append("title")
-					.text(d => d.value * 100);
+				.attr("fill", (d, i) => this.colorFn(i))
+				.attr("d", arc)
+				.append("title")
+				.text(d => d.value);
 		},
 	},
 };
 </script>
 <style scoped>
+.chart-container {
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-start;
+	align-items: center;
+}
+
 @import "../../style/charts.scss";
 </style>
