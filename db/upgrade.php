@@ -40,6 +40,8 @@ function xmldb_write_upgrade($oldversion = 0)
 
     issue_17($oldversion, $dbman);
 
+    issue_8($oldversion, $dbman);
+
     return true;
 }
 
@@ -86,6 +88,62 @@ function issue_17(int $oldversion, $dbman)
             "component" => "mod_write"
         );
         $DB->insert_record("external_functions", $function, false, false);
+
+        $getFunction = array(
+            "name" => "mod_write_getDashboards",
+            "classname" => "mod_write_external",
+            "methodname" => "getDashboards",
+            "classpath" => "mod/write/db/external.php",
+            "component" => "mod_write"
+        );
+        $DB->insert_record("external_functions", $getFunction, false, false);
+
+
+        // Write savepoint reached.
+        upgrade_mod_savepoint(true, $newversion, 'write');
+    }
+}
+
+function issue_8(int $oldversion, $dbman)
+{
+    global $DB;
+
+    $newversion = 2022112701;
+
+    if ($oldversion < $newversion) {
+
+        $saveFunction = array(
+            "name" => "mod_write_saveDashboard",
+            "classname" => "mod_write_external",
+            "methodname" => "saveDashboard",
+            "classpath" => "mod/write/db/external.php",
+            "component" => "mod_write"
+        );
+        $DB->insert_record("external_functions", $saveFunction, false, false);
+
+        // Define field w to be added to write_widget.
+        $table = new xmldb_table('write_widget');
+        $newFields = [];
+        $w = new xmldb_field('w', XMLDB_TYPE_INTEGER, '2', null, XMLDB_NOTNULL, null, '1', 'The widget\'s display width.');
+        $newFields[] = $w;
+        $h = new xmldb_field('h', XMLDB_TYPE_INTEGER, '2', null, XMLDB_NOTNULL, null, '1', 'The widget\'s display height.');
+        $newFields[] = $h;
+        $x = new xmldb_field('x', XMLDB_TYPE_INTEGER, '2', null, XMLDB_NOTNULL, null, '1', 'The widget\'s x position.');
+        $newFields[] = $x;
+        $y = new xmldb_field('y', XMLDB_TYPE_INTEGER, '2', null, XMLDB_NOTNULL, null, '1', 'The widget\'s y position.');
+        $newFields[] = $y;
+
+        foreach ($newFields as $newField) {
+            // Conditionally launch add field w.
+            if (!$dbman->field_exists($table, $newField)) {
+                $dbman->add_field($table, $newField);
+            }
+        }
+
+        $field = new xmldb_field('user', XMLDB_TYPE_INTEGER, '10', null, null, null, null, 'write');
+
+        // Launch rename field user.
+        $dbman->rename_field($table, $field, 'user_id');
 
         // Write savepoint reached.
         upgrade_mod_savepoint(true, $newversion, 'write');

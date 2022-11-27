@@ -45,5 +45,14 @@ $functions = array(
         'type' => 'read',
         'ajax' => true,
         'loginrequired' => true
+    ),
+    'mod_write_saveDashboard' => array(
+        'classname' => 'mod_write_external',
+        'methodname' => 'saveDashboard',
+        'classpath' => 'mod/write/db/external.php',
+        'description' => 'Save the user dashboard configuration of the current user.',
+        'type' => 'write',
+        'ajax' => true,
+        'loginrequired' => true
     )
 );

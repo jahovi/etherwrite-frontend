@@ -88,27 +88,10 @@ export default {
 			let saveData = this.grid.save(true, true);
 			localStorage.removeItem("modWriteCustomDashboardSave");
 			localStorage.setItem("modWriteCustomDashboardSave", JSON.stringify(saveData));
-		},
-		/**
-		 * Load custom dashboard.
-		 */
-		loadGrid() {
-			let jsonData = localStorage.getItem("modWriteCustomDashboardSave");
-
-			if (jsonData !== null) {
-				let loadData = JSON.parse(jsonData);
-				this.grid.destroy();
-				this.grid = GridStack.addGrid(document.getElementById("grid-stack"), loadData);
-				this.floatOption = this.grid.getFloat();
-				// border will get lost after load custom dashboard
-				let items = document.getElementsByClassName("grid-stack-item-content");
-				for (let item of items) {
-					item.style.border = "1px solid rgba(0, 0, 0, 0.125)";
-				}
-			}
-			if (jsonData === null) {
-				alert("Es gibt keine gespeicherten Daten.");
-			}
+			Communication.webservice("saveDashboard", {
+				cmid: this.$store.getters.getCMID,
+				widgets: this.userCharts.map(this.detransformWidget),
+			});
 		},
 		/**
 		 * Toggle float option for gridstack.
@@ -133,9 +116,12 @@ export default {
 		 * Add an chart wrapper to the custom dashboard.
 		 */
 		addChartWrapper(newWidget = {
-			id: this.widgetCount + 1,
 			component: "barchart",
 			configuration: {},
+			x: 0,
+			y: 0,
+			w: 0,
+			h: 0,
 		}) {
 			this.userCharts.push(newWidget);
 			let chartWrapper = defineComponent(ChartWrapper);
@@ -154,6 +140,12 @@ export default {
 				id: widgetData.id,
 				component: widgetData.component,
 				configuration: {},
+			};
+		},
+		detransformWidget(widgetData) {
+			return {
+				...widgetData,
+				configuration: JSON.stringify({}),
 			};
 		},
 	},

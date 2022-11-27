@@ -7,6 +7,8 @@
  *
  */
 
+use mod_write\util\Util;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir . '/filelib.php');
@@ -16,6 +18,23 @@ require_once($CFG->dirroot . '/group/lib.php');
 
 class mod_write_external extends external_api
 {
+
+    private static $TABLE_WIDGETS = 'write_widget';
+
+    private static function getWidgetStructure(): external_single_structure
+    {
+        return new external_single_structure(array(
+            'id' => new external_value(PARAM_INT, 'widget id', VALUE_OPTIONAL),
+            'component' => new external_value(PARAM_RAW, 'A string representing the frontend component to render this widget.'),
+            'x' => new external_value(PARAM_INT, 'The widget\'s x position.'),
+            'y' => new external_value(PARAM_INT, 'The widget\'s y position.'),
+            'w' => new external_value(PARAM_INT, 'The widget\'s width.'),
+            'h' => new external_value(PARAM_INT, 'The widget\'s height.'),
+            'configuration' => new external_value(PARAM_RAW, 'Optional additional configuration for the frontend component to evaluate.', VALUE_OPTIONAL)
+        ));
+    }
+
+    // getEditorLink ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     public static function getEditorLink_parameters()
     {
@@ -128,6 +147,8 @@ class mod_write_external extends external_api
         return true;
     }
 
+    // getTaskDescription ////////////////////////////////////////////////////////////////////////////////////////////////////
+
     public static function getTaskDescription_parameters()
     {
         return new external_function_parameters(
@@ -162,66 +183,7 @@ class mod_write_external extends external_api
         return true;
     }
 
-    public static function getDashboards_parameters()
-    {
-        return new external_function_parameters(
-            array(
-                'cmid' => new external_value(PARAM_INT, 'id of write')
-            )
-        );
-    }
-
-    public static function getDashboards_returns()
-    {
-        $dashboards = new external_multiple_structure(
-            new external_single_structure(array(
-                'id' => new external_value(PARAM_INT, 'widget id'),
-                'component' => new external_value(PARAM_RAW, 'A string representing the frontend component to render this widget.'),
-                'configuration' => new external_value(PARAM_RAW, 'Optional additional configuration for the frontend component to evaluate.', VALUE_OPTIONAL)
-            ))
-        );
-
-        return new external_single_structure(array(
-            'project' => $dashboards,
-            'user' => $dashboards,
-        ));
-    }
-
-    public static function getDashboards_is_allowed_from_ajax()
-    {
-        return true;
-    }
-
-    public static function getDashboards($cmid)
-    {
-        global $USER, $DB;
-        $cm = get_coursemodule_from_id('write', $cmid, 0, false, MUST_EXIST); // Coursemodule
-        $widgets = $DB->get_records('write_widget', array('write' => $cm->instance));
-
-        $usersWidgets = [];
-        $projectWidgets = [];
-        foreach ($widgets as $widget) {
-            if ($widget->user == $USER->id) {
-                $usersWidgets[] = self::mapDashboardWidget($widget);
-            } else if ($widget->user == null) {
-                $projectWidgets[] = self::mapDashboardWidget($widget);
-            }
-        }
-
-        return array(
-            'project' => $projectWidgets,
-            'user' => $usersWidgets
-        );
-    }
-
-    private static function mapDashboardWidget($widget)
-    {
-        return array(
-            'id' => $widget->id,
-            'component' => $widget->component
-        );
-    }
-
+    // getAuthors ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     public static function getAuthors_parameters()
     {
@@ -274,6 +236,128 @@ class mod_write_external extends external_api
     public static function getAuthors_is_allowed_from_ajax()
     {
         return true;
+    }
+
+    // getDashboards ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public static function getDashboards_parameters()
+    {
+        return new external_function_parameters(
+            array(
+                'cmid' => new external_value(PARAM_INT, 'id of write')
+            )
+        );
+    }
+
+    public static function getDashboards_returns()
+    {
+
+        return new external_single_structure(array(
+            'project' => new external_multiple_structure(self::getWidgetStructure()),
+            'user' => new external_multiple_structure(self::getWidgetStructure()),
+        ));
+    }
+
+    public static function getDashboards_is_allowed_from_ajax()
+    {
+        return true;
+    }
+
+    public static function getDashboards($cmid)
+    {
+        global $USER, $DB;
+        $cm = get_coursemodule_from_id('write', $cmid, 0, false, MUST_EXIST); // Coursemodule
+        $projectWidgets = $DB->get_records(self::$TABLE_WIDGETS, array(
+            'write' => $cm->instance,
+            'user_id' => null,
+        ));
+        $usersWidgets = $DB->get_records(self::$TABLE_WIDGETS, array(
+            'write' => $cm->instance,
+            'user_id' => intval($USER->id),
+        ));
+
+        return array(
+            'project' => $projectWidgets,
+            'user' => $usersWidgets
+        );
+    }
+
+    // saveDashboard ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+    public static function saveDashboard_parameters()
+    {
+        return new external_function_parameters(array(
+            'cmid' => new external_value(PARAM_INT, 'id of write'),
+            'widgets' => new external_multiple_structure(
+                self::getWidgetStructure()
+            )
+        ));
+    }
+
+    public static function saveDashboard_returns()
+    {
+        return null;
+    }
+
+    public static function saveDashboard_is_allowed_from_ajax()
+    {
+        return true;
+    }
+
+    public static function saveDashboard($cmid, $sentWidgets)
+    {
+        global $USER, $DB;
+
+        $userId = intval($USER->id);
+
+        $cm = get_coursemodule_from_id('write', $cmid, 0, false, MUST_EXIST); // Coursemodule
+        $existingWidgets = $DB->get_records(self::$TABLE_WIDGETS, array(
+            'write' => $cm->instance,
+            'user_id' => $USER->id
+        ));
+
+        $widgetsToUpdate = [];
+        $widgetsToCreate = [];
+        $widgetsToDelete = [];
+
+        foreach ($sentWidgets as $sentWidget) {
+            $existingWidget = false;
+            if (isset($sentWidget['id'])) {
+                $existingWidget = Util::findByIdInArray($sentWidget->id, $existingWidgets);
+            }
+
+            if ($existingWidget) {
+                $widgetsToUpdate[] = $sentWidget;
+            } else {
+                $widgetsToCreate[] = $sentWidget;
+            }
+        }
+
+        foreach ($existingWidgets as $w) {
+            $stillThere = Util::findByIdInArray($w->id, $widgetsToUpdate);
+            if (!$stillThere) {
+                $widgetsToDelete[] = $w;
+            }
+        }
+
+        foreach ($widgetsToUpdate as $w) {
+            $w['user_id'] = $userId;
+            $w['write'] = $cm->instance;
+            $DB->update_record(self::$TABLE_WIDGETS, $w, true);
+        }
+
+        foreach ($widgetsToCreate as $w) {
+            $w['user_id'] = $userId;
+            $w['write'] = $cm->instance;
+            $DB->insert_record(self::$TABLE_WIDGETS, $w, true);
+        }
+
+        foreach ($widgetsToDelete as $w) {
+            $DB->delete_records(self::$TABLE_WIDGETS, ['id' => $w->id]);
+        }
+
+        return $sentWidgets;
     }
 }
 

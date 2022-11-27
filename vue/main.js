@@ -4,14 +4,14 @@ import App from "./app.vue";
 import router from "./src/router";
 
 export function init(coursemoduleid, contextid) {
-	store.commit("setCourseModuleID", coursemoduleid);
-	store.commit("setContextID", contextid);
+	store.commit("setCourseModuleID", parseInt(coursemoduleid));
+	store.commit("setContextID", parseInt(contextid));
 	store.dispatch("loadComponentStrings");
 
 	createApp(App)
-		.use(router)
-		.use(store)
-		.mount("#mod-write-app");
+			.use(router)
+			.use(store)
+			.mount("#mod-write-app");
 }
 
 // We need to overwrite the variable for lazy loading.
