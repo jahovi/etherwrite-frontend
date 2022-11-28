@@ -5,21 +5,22 @@
 			<h3 class="col-12">Projekt Dashboard</h3>
 			<div class="col-12">
 				<strong>Aktive Benutzer(innen):</strong>
-				<br/>
+				<br />
 				<span class="badge badge-light badge-rounded pa-1" v-for="user in users" :key="user.id">
 					{{ user.fullName }}
 				</span>
 			</div>
 			<div class="col-12 mt-4 board-area">
-				<ChartWrapper v-for="widget in projectCharts" :component="widget.component" :id="widget.id"></ChartWrapper>
+				<ChartWrapper v-for="(widget, key) in projectCharts" :component="widget.component" :id="widget.id"
+					:key="key">
+				</ChartWrapper>
 			</div>
 		</div>
 		<!-- custom dashboard -->
 		<div id="custom-dashboard" class="row dashboard">
 			<h3 class="col-12">Dein Dashboard</h3>
 			<!-- add chart wrapper button -->
-			<button id="add-chart-btn" class="btn btn-primary rounded"
-							@click.prevent="addChartWrapper()">Hinzufügen
+			<button id="add-chart-btn" class="btn btn-primary rounded" @click.prevent="openWidgetCatalog()">Hinzufügen
 			</button>
 			<!-- save dashboard button -->
 			<button id="save-dashboard-btn" class="btn btn-primary rounded" @click.prevent="saveGrid">Speichern</button>
@@ -35,7 +36,7 @@
 			</button>
 			<!-- trash -->
 			<div class="col-12 text-danger text-center">Toggle Float muss false sein, wenn ein Diagramm
-				hinzugefügt wird, sonst alles &#128163 &#129327 &#9760 !!!
+				hinzugefügt wird, sonst alles &#128163; &#129327; &#9760; !!!
 			</div>
 			<div class="col-6 offset-3 delete-wrapper">
 				<i class="fa fa-trash-o"></i>
@@ -46,27 +47,29 @@
 				</div>
 			</div>
 		</div>
+		<WidgetCatalog @add-widget-event="addWidget($event)" />
 	</div>
 </template>
 
 <script lang="js">
-import {GridStack} from "gridstack";
+import { createApp, defineComponent, reactive } from "vue";
+import store from "../store";
+import { GridStack } from "gridstack";
 import ChartWrapper from "../components/chart-wrapper.vue";
+import WidgetCatalog from "../components/widget-catalog.vue";
 import "gridstack/dist/gridstack.css";
 import Communication from "../classes/communication";
-import {createApp, defineComponent, reactive} from "vue";
-import store from "../store";
 
 export default {
 	name: "dashboardView",
 	components: {
 		ChartWrapper,
+		WidgetCatalog,
 	},
 	data: () => ({
 		projectCharts: [],
 		userCharts: [],
 		grid: null,
-		widgetCount: 0,
 		floatOption: false,
 	}),
 	computed: {
@@ -117,28 +120,50 @@ export default {
 			this.grid.removeAll();
 		},
 		/**
-		 * Add an chart wrapper to the custom dashboard.
+		 * Open the widget catalog.
 		 */
-		addChartWrapper(newWidget = {
-			component: "barchart",
-			configuration: {},
-			x: 0,
-			y: 0,
-			w: 0,
-			h: 0,
-		}) {
+		openWidgetCatalog() {
+			this.$store.commit("setWidgetCatalogOpen");
+		},
+		/**
+		 * Add widget to dashboard. 
+		 * @param {
+				component: String,
+				id: Number,
+				category: String,
+				configuration: Object,
+				options: {
+					x: Number,
+					y: Number,
+					minW: Number,
+					minH: Number,
+					w: Number,
+					h: Number,
+				}
+			} widget Widget to be added to dashboard. 
+		 */
+		addWidget(newWidget) {
 			this.userCharts.push(newWidget);
+			// create grid stack widget
 			let chartWrapper = defineComponent(ChartWrapper);
 			let props = reactive({
-				id: this.widgetCount + 1,
+				id: newWidget.id,
 				component: newWidget.component,
 			});
 			let div = document.createElement("div");
-			createApp(chartWrapper, props)
-					.use(store)
-					.mount(div);
+			createApp(chartWrapper, props).use(store).mount(div);
+
 			this.widgetCount += 1;
-			this.grid.addWidget({x: 0, y: 0, minW: 3, minH: 1, w: 3, h: 1, content: div.innerHTML});
+			this.grid.addWidget({
+				x: newWidget.options.x,
+				y: newWidget.options.y,
+				minW: newWidget.options.minW,
+				minH: newWidget.options.minH,
+				w: newWidget.options.w,
+				h: newWidget.options.h,
+				content: div.innerHTML,
+			});
+
 		},
 		transformWidget(widgetData) {
 			// TODO eventually parse the backend's widget configuration.
@@ -170,7 +195,7 @@ export default {
 		this.grid = GridStack.init(options, selector);
 
 		const cmid = this.$store.getters.getCMID;
-		Communication.webservice("getDashboards", {cmid}).then(result => {
+		Communication.webservice("getDashboards", { cmid }).then(result => {
 			this.projectCharts = result.project.map(this.transformWidget);
 			this.userCharts = result.user.map(this.transformWidget);
 

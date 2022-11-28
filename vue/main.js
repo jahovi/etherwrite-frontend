@@ -1,4 +1,4 @@
-import {createApp} from "vue";
+import { createApp } from "vue";
 import store from "./src/store";
 import App from "./app.vue";
 import router from "./src/router";
@@ -9,9 +9,9 @@ export function init(coursemoduleid, contextid) {
 	store.dispatch("loadComponentStrings");
 
 	createApp(App)
-			.use(router)
-			.use(store)
-			.mount("#mod-write-app");
+		.use(router)
+		.use(store)
+		.mount("#mod-write-app");
 }
 
 // We need to overwrite the variable for lazy loading.
