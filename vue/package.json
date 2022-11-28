@@ -15,6 +15,9 @@
     "lint-fix": "npm run lint -- --fix"
   },
   "dependencies": {
+    "@popperjs/core": "^2.11.6",
+    "bootstrap": "^5.2.3",
+    "bootstrap-vue-3": "^0.4.10",
     "d3": "^7.6.1",
     "d3-collection": "^1.0.7",
     "fetch-jsonp": "^1.2.3",
@@ -36,7 +39,7 @@
     "@babel/core": "^7.4.3",
     "@babel/plugin-syntax-dynamic-import": "^7.2.0",
     "@babel/preset-env": "^7.4.3",
-    "@types/d3" : "^7.4.0",
+    "@types/d3": "^7.4.0",
     "babel-loader": "^8.0.5",
     "cross-env": "^5.2.0",
     "css-loader": "^2.1.1",
