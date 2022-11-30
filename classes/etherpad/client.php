@@ -430,4 +430,52 @@ class client
         ]);
     }
 
+    /**
+     * Generates a JSON Web Token with the given content.
+     * @param array $content The content to include in the JWT.
+     * @return string The token as encoded string.
+     */
+    public static function generateJWT(array $content): string
+    {
+        $privateKey = '0c26bee8-f114-4a59-ad65-15092de45df9';
+
+        // Create token header as a JSON string
+        $header = json_encode(['typ' => 'JWT', 'alg' => 'HS256']);
+
+        // Create token payload as a JSON string
+        $payload = json_encode($content);
+
+        // Encode Header to Base64Url String
+        $base64UrlHeader = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($header));
+
+        // Encode Payload to Base64Url String
+        $base64UrlPayload = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($payload));
+
+        // Create Signature Hash
+        $signature = hash_hmac('sha256', $base64UrlHeader . "." . $base64UrlPayload, $privateKey, true);
+
+        // Encode Signature to Base64Url String
+        $base64UrlSignature = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($signature));
+
+        // Create JWT
+        return $base64UrlHeader . "." . $base64UrlPayload . "." . $base64UrlSignature;
+    }
+
+
+    /**
+     * Finds an object in the given array by comparing its 'id' attribute to the given id.
+     * @param int $id The id to find.
+     * @param array $array The array of objects.
+     * @return object|false The found object, or false if none was found.
+     */
+    public static function findByIdInArray(int $id, array $array)
+    {
+        foreach ($array as $entry) {
+            if (isset($entry->id) && $id == $entry->id) {
+                return $entry;
+            }
+        }
+
+        return false;
+    }
 }

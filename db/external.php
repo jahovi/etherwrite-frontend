@@ -7,8 +7,6 @@
  *
  */
 
-use mod_write\util\Util;
-
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir . '/filelib.php');
@@ -92,14 +90,16 @@ class mod_write_external extends external_api
         if ($padsOfTheGroup === false || !isset($padsOfTheGroup->padIDs)) {
             throw new Exception(get_string('couldnotfetchgrouppads', 'mod_write'));
         }
+
+        $newPadName = $epgroup . '$' . $padName;
         if (!in_array($epgroup . '$' . $padName, $padsOfTheGroup->padIDs)) {
             $eppad = $api->create_group_pad($epgroup, $padName);
             if ($eppad === false || !is_string($eppad)) {
                 throw new Exception(get_string('couldnotcreatepad', 'mod_write'));
             }
-        } else {
-            $eppad = $epgroup . '$' . $padName;
+            $padsOfTheGroup->padIDs[] = $newPadName;
         }
+
         $authorName = $USER->firstname . " " . $USER->lastname;
         $epauthor = $api->create_author_if_not_exists_for($USER->id, $authorName);
         if ($epauthor === false || !is_string($epauthor)) {
@@ -122,23 +122,33 @@ class mod_write_external extends external_api
         setcookie('sessionID', $sessionid);
         $link = $uri . '/p/' . $padName . '?groupId=' . $epgroup;
 
+        $module = new mod_write\permission\module($USER->id, $cmid);
+
+        $jwt = mod_write\etherpad\client::generateJWT(array(
+            'userId' => $USER->id,
+            'epGroup' => $epgroup,
+            'padName' => $padName,
+            'isModerator' => $module->isAnyKindOfModerator(),
+            'epAuthorId' => $epauthor,
+        ));
+
         return array(
-            'sessionID' => $sessionid,
             'padName' => $padName,
             'groupId' => $epgroup,
             'link' => $link,
             'eva' => $eva,
+            'jwt' => $jwt,
         );
     }
 
     public static function getEditorLink_returns()
     {
         return new external_single_structure(array(
-            'sessionID' => new external_value(PARAM_RAW, 'sessionID'),
             'padName' => new external_value(PARAM_RAW, 'pad name'),
             'groupId' => new external_value(PARAM_RAW, 'group id'),
             'link' => new external_value(PARAM_RAW, 'the link for etherpad'),
             'eva' => new  external_value(PARAM_RAW, 'the link for eva requests'),
+            'jwt' => new  external_value(PARAM_RAW, 'A JSON Web token containing moodle authentication data'),
         ));
     }
 
@@ -324,7 +334,7 @@ class mod_write_external extends external_api
         foreach ($sentWidgets as $sentWidget) {
             $existingWidget = false;
             if (isset($sentWidget['id'])) {
-                $existingWidget = Util::findByIdInArray($sentWidget->id, $existingWidgets);
+                $existingWidget = mod_write\etherpad\client::findByIdInArray($sentWidget->id, $existingWidgets);
             }
 
             if ($existingWidget) {
@@ -335,7 +345,7 @@ class mod_write_external extends external_api
         }
 
         foreach ($existingWidgets as $w) {
-            $stillThere = Util::findByIdInArray($w->id, $widgetsToUpdate);
+            $stillThere = mod_write\etherpad\client::findByIdInArray($w->id, $widgetsToUpdate);
             if (!$stillThere) {
                 $widgetsToDelete[] = $w;
             }

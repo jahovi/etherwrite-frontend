@@ -31,16 +31,22 @@ export default class Communication {
 
 	static async getFromEVA(endpoint, query = {}) {
 		const ipAddress = store.state.base.evaUri;
-		const queryString = Object.entries(query)
+		const jwt = store.state.base.jwt;
+		const myQuery = {
+			...query,
+			jwt,
+		};
+		let queryString = Object.entries(myQuery)
 				.map(([param, value]) => `${param}=${value}`)
 				.join("&");
-		const response = await fetch(`${ipAddress}/${endpoint}?${queryString}`, {
+		return fetch(`${ipAddress}/${endpoint}?${queryString}`, {
 			method: "GET",
 			headers: {
 				"Content-Type": "application/json",
 				"Accept": "application/json",
 			},
-		});
-		return response.json();
+		})
+				.then(response => response.json())
+				.catch(e => console.log("Error fetching EVA: " + e));
 	}
 }

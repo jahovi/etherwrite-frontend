@@ -6,6 +6,7 @@ export default {
 		groupId: null,
 		editorLink: null,
 		evaUri: null,
+		jwt: null,
 	},
 	mutations: {
 		setEditorInfo(state, payload) {
@@ -13,6 +14,7 @@ export default {
 			state.groupId = payload.groupId;
 			state.editorLink = payload.link;
 			state.evaUri = payload.eva;
+			state.jwt = payload.jwt;
 		},
 	},
 	actions: {
