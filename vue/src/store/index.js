@@ -5,6 +5,7 @@ import moodleStorage from "core/localstorage";
 import { createStore } from "vuex";
 import base from "./base";
 import users from "./users";
+import widgets from "./widgets";
 
 /*
 	@author Marc Burchart
@@ -21,7 +22,7 @@ export default createStore({
 		alertMessage: "",
 		widgetCatalogOpen: false,
 	},
-	//strict: process.env.NODE_ENV !== 'production',
+	// strict: process.env.NODE_ENV !== 'production',
 	getters: {
 		getStrings: function (state) {
 			return state.strings;
@@ -110,5 +111,6 @@ export default createStore({
 	modules: {
 		base,
 		users,
+		widgets,
 	},
 });

@@ -2,32 +2,23 @@
     <div id="widget-catalog">
         <div class="widget-catalog-backdrop" @click.prevent="closeWidgetCatalog" v-if="isWidgetCatalogOpen"></div>
         <div class="widget-catalog-panel border rounded" v-if="isWidgetCatalogOpen">
-            <!-- tabs nav -->
-            <ul class="nav nav-tabs mb-3" id="ex1" role="tablist">
-                <li class="nav-item" :class="key === 0 ? 'active' : ''" role="presentation"
-                    v-for="(category, key) in categories" :key="key">
-                    <a class="nav-link" :id="'ex1-tab-' + key" data-mdb-toggle="tab" :href="'#ex1-tabs-' + key"
-                        role="tab" :aria-controls="'ex1-tabs-' + key" aria-selected="true">{{ category }}</a>
-                </li>
-            </ul>
-            <!-- tabs content -->
-            <div class="tab-content" id="ex1-content">
-                <div class="tab-pane fade show" :class="key === 0 ? 'active' : ''" :id="'ex1-tabs-' + key"
-                    role="tabpanel" :aria-labelledby="'ex1-tab-' + key" v-for="(category, key) in categories"
-                    :key="key">
-                    <ChartWrapper class="wrapper border rounded" v-for="(widget, key) in widgets"
-                        v-show="(widget.category === category.toLowerCase())" :isMock="true"
-                        :component="widget.component" :id="widget.id" :key="key">
-                        <template #btn>
-                            <button :id="'add-widget-btn-' + widget.id" class="btn btn-success btn-add-widget"
-                                @click.prevent="addToDashboard(widget)">
-                                <i class="fa fa-plus"></i>
-                            </button>
-                        </template>
-                    </ChartWrapper>
-                </div>
+            <div class="categories">
+                <b-tabs content-class="mt-3">
+                    <b-tab v-for="(category, key) in categories" :title="category" :key="key">
+                        <div class="widgets">
+                            <ChartWrapper class="wrapper border rounded" v-for="(widget, key) in widgets" :mockOnly=true
+                                :component="widget.component" :id="widget.id" :key="key">
+                                <template #btn>
+                                    <button :id="'add-widget-btn-' + widget.id" class="btn btn-success btn-add-widget"
+                                        @click.prevent="addToDashboard(widget)">
+                                        <i class="fa fa-plus"></i>
+                                    </button>
+                                </template>
+                            </ChartWrapper>
+                        </div>
+                    </b-tab>
+                </b-tabs>
             </div>
-            <!-- close widget-catalog button -->
             <button id="close-widget-catalog-btn" class="btn btn-danger" @click.prevent="closeWidgetCatalog">
                 <i class="fa fa-close"></i>
             </button>
@@ -39,26 +30,24 @@
 import ChartWrapper from "../components/chart-wrapper.vue";
 
 export default {
-
     name: "widgetCatalog",
     components: {
         ChartWrapper,
     },
-    data: () => ({}),
+    data: () => ({
+        // moved to computed properties
+        // categories: [],
+        // widgets: [],
+    }),
     computed: {
         isWidgetCatalogOpen() {
             return this.$store.getters.isWidgetCatalogOpen;
         },
-        /**
-         * get widgets from widget-store.
-         */
+        // get widgets and categories from store
         widgets() {
             return this.$store.getters.getWidgets;
         },
-        /**
-         * Get categories from widget-store.
-         */
-        categories() {
+        categories() { 
             return this.$store.getters.getWidgetCategories;
         },
     },
@@ -72,7 +61,32 @@ export default {
             this.$store.commit("setWidgetCatalogOpen");
         },
     },
-    mounted() { },
+    mounted() {
+        // TODO: mock data, load data from widgets store (Jan #26)
+        // this.widgets = [
+        //     {
+        //         component: "barchart",
+        //         id: 1,
+        //         category: "barchart",
+        //         configuration: {},
+        //         options: {
+        //             x: 0,
+        //             y: 0,
+        //             minW: 3,
+        //             minH: 1,
+        //             w: 3,
+        //             h: 1,
+        //         },
+        //     },
+        // ];
+        // create tabs from categories
+        // this.widgets.forEach(widget => {
+        //     if (!this.categories.includes(widget.category)) {
+        //         let category = widget.category.charAt(0).toUpperCase() + widget.category.slice(1);
+        //         this.categories.push(category);
+        //     }
+        // });
+    },
 };
 </script>
 
@@ -96,25 +110,6 @@ export default {
     width: 66.6%;
     z-index: 999;
     padding: 10px;
-    background-color: rgba(0, 0, 0, 0.5);
-    width: 100%;
-    height: 100%;
-    position: fixed;
-    z-index: 998;
-    top: 0;
-    left: 0;
-}
-
-.widget-catalog-panel {
-    position: fixed;
-    overflow-y: auto;
-    background-color: white;
-    top: 10%;
-    left: 16.65%;
-    height: 75%;
-    width: 66.6%;
-    z-index: 999;
-    padding: 10px;
 }
 
 /* widgets */
@@ -122,10 +117,6 @@ export default {
     filter: grayscale(50%);
     background-color: rgba(128, 128, 128, 0.25);
     margin-bottom: 5px;
-    filter: grayscale(50%);
-    margin-bottom: 5px;
-    border: 1px solid grey;
-    padding: 8px;
 }
 
 /* close button */
