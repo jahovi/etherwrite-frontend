@@ -134,6 +134,7 @@ class mod_write_external extends external_api
 
         return array(
             'padName' => $padName,
+            'isModerator' => $module->isAnyKindOfModerator(),
             'groupId' => $epgroup,
             'link' => $link,
             'eva' => $eva,
@@ -145,6 +146,7 @@ class mod_write_external extends external_api
     {
         return new external_single_structure(array(
             'padName' => new external_value(PARAM_RAW, 'pad name'),
+            'isModerator' => new  external_value(PARAM_BOOL, 'A flag determining if the user is in any way a moderator for this course module.'),
             'groupId' => new external_value(PARAM_RAW, 'group id'),
             'link' => new external_value(PARAM_RAW, 'the link for etherpad'),
             'eva' => new  external_value(PARAM_RAW, 'the link for eva requests'),

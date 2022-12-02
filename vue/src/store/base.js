@@ -3,6 +3,7 @@ import Communication from "../classes/communication";
 export default {
 	state: {
 		padName: null,
+		isModerator: false,
 		groupId: null,
 		editorLink: null,
 		evaUri: null,
@@ -12,6 +13,7 @@ export default {
 	mutations: {
 		setEditorInfo(state, payload) {
 			state.padName = payload.padName;
+			state.isModerator = payload.isModerator;
 			state.groupId = payload.groupId;
 			state.editorLink = payload.link;
 			state.evaUri = payload.eva;
