@@ -7,6 +7,7 @@ export default {
 		editorLink: null,
 		evaUri: null,
 		jwt: null,
+		initialized: false,
 	},
 	mutations: {
 		setEditorInfo(state, payload) {
@@ -15,6 +16,7 @@ export default {
 			state.editorLink = payload.link;
 			state.evaUri = payload.eva;
 			state.jwt = payload.jwt;
+			state.initialized = true;
 		},
 	},
 	actions: {

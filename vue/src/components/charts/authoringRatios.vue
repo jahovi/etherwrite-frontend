@@ -52,7 +52,7 @@ export default {
 
 			// Add a filler if the given numbers don't add up to 100%.
 			// Can happen with weird test data.
-			const sum = data.reduce((result, entry) => result + entry);
+			const sum = data.reduce((result, entry) => result + entry, 0);
 			if (sum < 1) {
 				keys.push("Unbekannt");
 				data.push(1 - sum);

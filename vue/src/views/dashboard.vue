@@ -55,6 +55,7 @@ import ChartWrapper from "../components/chart-wrapper.vue";
 import "gridstack/dist/gridstack.css";
 import Communication from "../classes/communication";
 import {createApp, defineComponent, reactive} from "vue";
+import store from "../store";
 
 export default {
 	name: "dashboardView",
@@ -77,6 +78,9 @@ export default {
 		},
 		padName() {
 			return this.$store.state.base.padName;
+		},
+		isLoading() {
+			return !this.$store.state.base.initialized;
 		},
 	},
 	watch: {},
@@ -130,7 +134,9 @@ export default {
 				component: newWidget.component,
 			});
 			let div = document.createElement("div");
-			createApp(chartWrapper, props).mount(div);
+			createApp(chartWrapper, props)
+					.use(store)
+					.mount(div);
 			this.widgetCount += 1;
 			this.grid.addWidget({x: 0, y: 0, minW: 3, minH: 1, w: 3, h: 1, content: div.innerHTML});
 		},

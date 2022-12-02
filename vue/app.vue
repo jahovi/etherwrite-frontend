@@ -19,8 +19,12 @@
 			</li>
 		</ul>
 		<div class="tab-content main-vue">
-			<div class="mx-3 mt-4 mb->3">
-				<router-view/>
+
+			<div class="mx-3 mt-4 mb-3">
+				<router-view v-if="baseInfoLoaded"/>
+				<div class="spinner-grow text-primary mt-4" role="status" v-else>
+					<span class="sr-only">Loading...</span>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -29,11 +33,14 @@
 
 export default {
 	data: function () {
-		return {};
+		return {
+			baseInfoLoaded: false,
+		};
 	},
 	name: "app",
 	async mounted() {
 		await this.$store.dispatch("loadEditorBaseInfo");
+		this.baseInfoLoaded = true;
 	},
 	computed: {
 		getAlertShow: function () {
