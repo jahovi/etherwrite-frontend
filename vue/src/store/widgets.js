@@ -2,47 +2,33 @@ let id = 1;
 
 /**
  * Widget configurations are stored here. For each widget, specify:
- * 
+ *
  * - component: the vue component that is the actuall widget
  * - id: a unique arbitrary number that will become the id of the html element containing the widget
  * - configuration: not yet in use
- * - moderatorWidget: if this is true, the widget will be accessible to moderators (=teachers) only. If this is false, the widget 
+ * - moderatorWidget: if this is true, the widget will be accessible to moderators (=teachers) only. If this is false, the widget
  *      will be accessible to normal users (=students) as well. Widgets that handle role distinction internally should state false.
  * - options: an object containing default dimensions and minimum sizes for the widget
- *       
+ *
  */
 export default {
     state: {
         widgets: [
             {
                 component: "barchart",
-                id: id++,
                 category: "barchart",
                 configuration: {},
                 moderatorWidget: false,
-                options: {
-                    x: 0,
-                    y: 0,
-                    minW: 3,
-                    minH: 1,
-                    w: 3,
-                    h: 1,
-                },
+                minW: 3,
+                minH: 1,
             },
             {
                 component: "authoringRatios",
-                id: id++,
                 category: "piechart",
                 configuration: {},
                 moderatorWidget: false,
-                options: {
-                    x: 0,
-                    y: 0,
-                    minW: 3,
-                    minH: 1,
-                    w: 3,
-                    h: 1,
-                },
+                minW: 3,
+                minH: 1,
             },
         ],
     },
