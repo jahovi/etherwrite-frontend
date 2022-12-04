@@ -5,14 +5,14 @@
 			<h3 class="col-12">Projekt Dashboard</h3>
 			<div class="col-12">
 				<strong>Aktive Benutzer(innen):</strong>
-				<br/>
-				<span class="badge badge-success badge-rounded pa-1 ml-1" v-for="user in users" :key="user.id">
+				<br />
+				<span class="badge badge-light badge-rounded pa-1" v-for="user in users" :key="user.id">
 					{{ user.fullName }}
 				</span>
 			</div>
 			<div class="col-12 mt-4 board-area">
 				<ChartWrapper v-for="(widget, key) in projectCharts" :component="widget.component" :id="widget.id"
-											:key="key">
+					:key="key">
 				</ChartWrapper>
 			</div>
 		</div>
@@ -47,7 +47,7 @@
 				</div>
 			</div>
 		</div>
-		<WidgetCatalog @add-widget-event="addWidget($event)"/>
+		<WidgetCatalog @add-widget-event="addWidget($event)" />
 	</div>
 </template>
 
@@ -59,6 +59,8 @@ import ChartWrapper from "../components/chart-wrapper.vue";
 import WidgetCatalog from "../components/widget-catalog.vue";
 import "gridstack/dist/gridstack.css";
 import Communication from "../classes/communication";
+import {createApp, defineComponent, reactive} from "vue";
+import store from "../store";
 
 export default {
 	name: "dashboardView",
@@ -93,22 +95,11 @@ export default {
 		 */
 		saveGrid() {
 			let saveData = this.grid.save(true, true);
-			const widgets = saveData.children.map(child => {
-				let id = child.content.match(/id=\"chart-wrapper-(\d+|undefined)\"/)[1];
-				const component = child.content.match(/name=\"(\w+)\"/)[1];
-				id = id === "undefined" ? undefined : parseInt(id);
-				return {
-					id,
-					component,
-					x: child.x || 0,
-					y: child.y || 0,
-					w: child.w || child.minW || 1,
-					h: child.h || child.minH || 1,
-				};
-			});
+			localStorage.removeItem("modWriteCustomDashboardSave");
+			localStorage.setItem("modWriteCustomDashboardSave", JSON.stringify(saveData));
 			Communication.webservice("saveDashboard", {
 				cmid: this.$store.getters.getCMID,
-				widgets: widgets.map(this.detransformWidget),
+				widgets: this.userCharts.map(this.detransformWidget),
 			});
 		},
 		/**
@@ -137,19 +128,21 @@ export default {
 			this.$store.commit("setWidgetCatalogOpen");
 		},
 		/**
-		 * Add widget to dashboard.
+		 * Add widget to dashboard. 
 		 * @param {
 				component: String,
 				id: Number,
 				category: String,
 				configuration: Object,
-				x: Number,
-				y: Number,
-				minW: Number,
-				minH: Number,
-				w: Number,
-				h: Number,
-			} widget Widget to be added to dashboard.
+				options: {
+					x: Number,
+					y: Number,
+					minW: Number,
+					minH: Number,
+					w: Number,
+					h: Number,
+				}
+			} widget Widget to be added to dashboard. 
 		 */
 		addWidget(newWidget) {
 			this.userCharts.push(newWidget);
@@ -162,42 +155,30 @@ export default {
 			let div = document.createElement("div");
 			createApp(chartWrapper, props).use(store).mount(div);
 
-			newWidget.w = newWidget.w || newWidget.minW;
-			newWidget.h = newWidget.h || newWidget.minH;
-			newWidget.x = newWidget.x || 0;
-			newWidget.y = newWidget.y || 0;
-
+			this.widgetCount += 1;
 			this.grid.addWidget({
-				x: newWidget.x,
-				y: newWidget.y,
-				minW: newWidget.minW,
-				minH: newWidget.minH,
-				w: newWidget.w,
-				h: newWidget.h,
+				x: newWidget.options.x,
+				y: newWidget.options.y,
+				minW: newWidget.options.minW,
+				minH: newWidget.options.minH,
+				w: newWidget.options.w,
+				h: newWidget.options.h,
 				content: div.innerHTML,
 			});
 
 		},
 		transformWidget(widgetData) {
+			// TODO eventually parse the backend's widget configuration.
 			return {
 				id: widgetData.id,
 				component: widgetData.component,
 				configuration: {},
-				x: widgetData.x,
-				y: widgetData.y,
-				w: widgetData.w,
-				h: widgetData.h,
 			};
 		},
 		detransformWidget(widgetData) {
 			return {
-				id: widgetData.id,
-				component: widgetData.component,
+				...widgetData,
 				configuration: JSON.stringify({}),
-				x: widgetData.x,
-				y: widgetData.y,
-				w: widgetData.w,
-				h: widgetData.h,
 			};
 		},
 	},
@@ -216,10 +197,11 @@ export default {
 		this.grid = GridStack.init(options, selector);
 
 		const cmid = this.$store.getters.getCMID;
-		Communication.webservice("getDashboards", {cmid}).then(result => {
+		Communication.webservice("getDashboards", { cmid }).then(result => {
 			this.projectCharts = result.project.map(this.transformWidget);
+			this.userCharts = result.user.map(this.transformWidget);
 
-			result.user.map(this.transformWidget).map(this.addWidget);
+			this.userCharts.map(this.addChartWrapper);
 		});
 		this.$store.dispatch("users/load");
 	},

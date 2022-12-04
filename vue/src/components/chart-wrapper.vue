@@ -1,6 +1,7 @@
 <template>
-	<div :id="'chart-wrapper-' + id" :name="component">
-		<component :is="component" :id="'custom-chart-' + id" :mockOnly="mockOnly" @click.capture="stopEvents"/>
+	<div :id="'chart-wrapper-' + id">
+		{{ component }}
+		<component :is="component" :id="'custom-chart-' + id" :mockOnly="mockOnly" />
 		<slot name="btn"></slot>
 	</div>
 </template>
@@ -31,14 +32,6 @@ export default {
 			let comp = document.getElementById("custom-chart-" + this.id);
 			comp.style.pointerEvents = "none";
 		}
-	},
-	methods: {
-		stopEvents(event) {
-			if (this.mockOnly) {
-				event.stopPropagation();
-				event.preventDefault();
-			}
-		},
 	},
 };
 </script>

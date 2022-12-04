@@ -336,7 +336,7 @@ class mod_write_external extends external_api
         foreach ($sentWidgets as $sentWidget) {
             $existingWidget = false;
             if (isset($sentWidget['id'])) {
-                $existingWidget = mod_write\etherpad\client::findByIdInArray($sentWidget['id'], $existingWidgets);
+                $existingWidget = mod_write\etherpad\client::findByIdInArray($sentWidget->id, $existingWidgets);
             }
 
             if ($existingWidget) {
@@ -353,27 +353,23 @@ class mod_write_external extends external_api
             }
         }
 
-        $result = [];
-
         foreach ($widgetsToUpdate as $w) {
             $w['user_id'] = $userId;
             $w['write'] = $cm->instance;
             $DB->update_record(self::$TABLE_WIDGETS, $w, true);
-            $result[] = $w;
         }
 
         foreach ($widgetsToCreate as $w) {
             $w['user_id'] = $userId;
             $w['write'] = $cm->instance;
-            $w['id'] = $DB->insert_record(self::$TABLE_WIDGETS, $w, true);
-            $result[] = $w;
+            $DB->insert_record(self::$TABLE_WIDGETS, $w, true);
         }
 
         foreach ($widgetsToDelete as $w) {
             $DB->delete_records(self::$TABLE_WIDGETS, ['id' => $w->id]);
         }
 
-        return $result;
+        return $sentWidgets;
     }
 }
 
