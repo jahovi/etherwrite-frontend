@@ -212,7 +212,6 @@ export default {
 			alwaysShowResizeHandle: true,
 		};
 		let selector = ".grid-stack";
-
 		this.grid = GridStack.init(options, selector);
 
 		const cmid = this.$store.getters.getCMID;
@@ -222,6 +221,25 @@ export default {
 			result.user.map(this.transformWidget).map(this.addWidget);
 		});
 		this.$store.dispatch("users/load");
+
+		this.grid.load(this.userCharts);
+
+		// save dashboard layout on added widget
+		this.grid.on("added", () => {
+			this.saveGrid();
+		});
+		// save dashboard layout on removed widget
+		this.grid.on("removed", () => {
+			this.saveGrid();
+		});
+		// save dashboard layout on drag stop
+		this.grid.on("dragstop", () => {
+			this.saveGrid();
+		});
+		// save dashboard layout on resize stop
+		this.grid.on("resizestop", () => {
+			this.saveGrid();
+		});
 	},
 };
 </script>
