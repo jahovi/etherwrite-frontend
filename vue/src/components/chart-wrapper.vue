@@ -1,8 +1,7 @@
 <template>
 	<div :id="'chart-wrapper-' + id">
 		{{ component }}
-		<component :is="component" :id="'custom-chart-' + id" :mockOnly="mockOnly" />
-		<slot name="btn"></slot>
+		<component :is="component" :id="'custom-chart-' + id"/>
 	</div>
 </template>
 
@@ -21,17 +20,11 @@ export default {
 	props: {
 		component: String,
 		id: Number,
-		mockOnly: Boolean,
 	},
 	data: function () {
 		return {};
 	},
 	mounted() {
-		// button clickable, component not clickable -> for wrapper in widget catalog
-		if (this.mockOnly) {
-			let comp = document.getElementById("custom-chart-" + this.id);
-			comp.style.pointerEvents = "none";
-		}
 	},
 };
 </script>

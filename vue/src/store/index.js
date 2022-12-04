@@ -2,13 +2,13 @@
 /* These are libraries provided by moodle. */
 import moodleAjax from "core/ajax";
 import moodleStorage from "core/localstorage";
-import { createStore } from "vuex";
+import {createStore} from "vuex";
 import base from "./base";
 import users from "./users";
 
 /*
-	@author Marc Burchart
-	@copyright Marc Burchart, 2022, marc.burchart@fernuni-hagen.de
+    @author Marc Burchart
+    @copyright Marc Burchart, 2022, marc.burchart@fernuni-hagen.de
 */
 
 export default createStore({
@@ -19,7 +19,6 @@ export default createStore({
 		alertShow: false,
 		alertType: "alert-primary",
 		alertMessage: "",
-		widgetCatalogOpen: false,
 	},
 	//strict: process.env.NODE_ENV !== 'production',
 	getters: {
@@ -37,9 +36,6 @@ export default createStore({
 		},
 		getAlertMessage: function (state) {
 			return state.alertMessage;
-		},
-		isWidgetCatalogOpen: function (state) {
-			return state.widgetCatalogOpen;
 		},
 	},
 	mutations: {
@@ -77,9 +73,6 @@ export default createStore({
 			state.alertShow = false;
 			state.alertType = "alert-primary";
 			state.alertMessage = "";
-		},
-		setWidgetCatalogOpen: function (state) {
-			state.widgetCatalogOpen = !state.widgetCatalogOpen;
 		},
 	},
 	actions: {
