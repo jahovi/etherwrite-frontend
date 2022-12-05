@@ -1,21 +1,20 @@
 <template>
-	<div :id="'chart-wrapper-' + id" :name="component">
+	<div class="chart-wrapper" :id="'chart-wrapper-' + id" :name="component">
 		<component :is="component" :id="'custom-chart-' + id" :isMock="isMock" @click.capture="stopEvents"/>
 		<slot name="btn"></slot>
 	</div>
 </template>
 
 <script lang="js">
-import barchart from "./charts/barchart.vue";
-import authoringRatios from "./charts/authoringRatios.vue";
+import authoringRatios_bar from "./charts/authoringRatios_bar.vue";
+import authoringRatios_pie from "./charts/authoringRatios_pie.vue";
 
 export default {
 	name: "chart-wrapper",
 	components: {
+		authoringRatios_pie,
 		// eslint-disable-next-line vue/no-unused-components
-		barchart,
-		// eslint-disable-next-line vue/no-unused-components
-		authoringRatios,
+		authoringRatios_bar,
 	},
 	props: {
 		component: String,
@@ -26,11 +25,6 @@ export default {
 		return {};
 	},
 	mounted() {
-		// button clickable, component not clickable -> for wrapper in widget catalog
-		if (this.isMock) {
-			let comp = document.getElementById("custom-chart-" + this.id);
-			comp.style.pointerEvents = "none";
-		}
 	},
 	methods: {
 		stopEvents(event) {
@@ -44,5 +38,8 @@ export default {
 </script>
 
 <style scoped lang="css">
-
+.chart-wrapper {
+	border: 1px solid rgba(0, 0, 0, 0.125);
+	padding: 12px;
+}
 </style>

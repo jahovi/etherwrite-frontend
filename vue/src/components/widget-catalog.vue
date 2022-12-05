@@ -4,27 +4,21 @@
 		<div class="widget-catalog-panel border rounded" v-if="isWidgetCatalogOpen">
 			<!-- tabs nav -->
 			<ul class="nav nav-tabs mb-3" id="ex1" role="tablist">
-				<li class="nav-item" :class="key === 0 ? 'active' : ''" role="presentation"
-						v-for="(category, key) in categories" :key="key">
-					<a class="nav-link" :id="'ex1-tab-' + key" data-mdb-toggle="tab" :href="'#ex1-tabs-' + key" role="tab" :aria-controls="'ex1-tabs-' + key"
-						 aria-selected="true">{{ category }}</a>
+				<li class="nav-item" :class="{'active': cat === category }" v-for="(cat, key) in categories" :key="key">
+					<a class="nav-link" role="tab" @click="category = cat" aria-selected="true">{{ cat }}</a>
 				</li>
 			</ul>
 			<!-- tabs content -->
-			<div class="tab-content" id="ex1-content">
-				<div class="tab-pane fade show" :class="key === 0 ? 'active' : ''" :id="'ex1-tabs-' + key" role="tabpanel" :aria-labelledby="'ex1-tab-' + key"
-						 v-for="(category, key) in categories" :key="key">
-					<ChartWrapper class="wrapper border rounded" v-for="(widget, key) in widgets"
-												v-show="(widget.category === category.toLowerCase())" :isMock="true"
-												:component="widget.component" :id="widget.id" :key="key">
-						<template #btn>
-							<button :id="'add-widget-btn-' + widget.id" class="btn btn-success btn-add-widget"
-											@click.prevent="addToDashboard(widget)">
-								<i class="fa fa-plus"></i>
-							</button>
-						</template>
-					</ChartWrapper>
-				</div>
+			<div role="tabpanel" v-if="category">
+				<ChartWrapper class="wrapper border rounded" v-for="(widget, key) in widgetsOfCurrentCategory" :isMock="true"
+											:component="widget.component" :id="widget.id" :key="key">
+					<template #btn>
+						<button :id="'add-widget-btn-' + widget.id" class="btn btn-success btn-add-widget"
+										@click.prevent="addToDashboard(widget)">
+							<i class="fa fa-plus"></i>
+						</button>
+					</template>
+				</ChartWrapper>
 			</div>
 			<!-- close widget-catalog button -->
 			<button id="close-widget-catalog-btn" class="btn btn-danger" @click.prevent="closeWidgetCatalog">
@@ -43,7 +37,9 @@ export default {
 	components: {
 		ChartWrapper,
 	},
-	data: () => ({}),
+	data: () => ({
+		category: null,
+	}),
 	computed: {
 		isWidgetCatalogOpen() {
 			return this.$store.getters.isWidgetCatalogOpen;
@@ -60,6 +56,10 @@ export default {
 		categories() {
 			return this.$store.getters.getWidgetCategories;
 		},
+		widgetsOfCurrentCategory() {
+			return this.widgets
+					.filter(widget => widget.category === this.category.toLowerCase());
+		},
 	},
 	watch: {},
 	methods: {
@@ -72,6 +72,7 @@ export default {
 		},
 	},
 	mounted() {
+		this.category = this.$store.getters.getWidgetCategories[0];
 	},
 };
 </script>

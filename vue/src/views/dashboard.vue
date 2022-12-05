@@ -10,9 +10,9 @@
 					{{ user.fullName }}
 				</span>
 			</div>
-			<div class="col-12 mt-4 board-area">
+			<div class="col-12 mt-4 board-area" style="display: flex; gap: 8px">
 				<ChartWrapper v-for="(widget, key) in projectCharts" :component="widget.component" :id="widget.id"
-											:key="key">
+											:key="key" style="width: 32%">
 				</ChartWrapper>
 			</div>
 		</div>
@@ -52,9 +52,9 @@
 </template>
 
 <script lang="js">
-import {createApp, defineAsyncComponent, defineComponent, reactive} from "vue";
+import { createApp, defineComponent, reactive } from "vue";
 import store from "../store";
-import {GridStack} from "gridstack";
+import { GridStack } from "gridstack";
 import ChartWrapper from "../components/chart-wrapper.vue";
 import WidgetCatalog from "../components/widget-catalog.vue";
 import "gridstack/dist/gridstack.css";
@@ -65,13 +65,16 @@ export default {
 	components: {
 		ChartWrapper,
 		WidgetCatalog,
-		// eslint-disable-next-line vue/no-unused-components
-		barchart: defineAsyncComponent(() => import("../components/charts/barchart.vue")),
-		// eslint-disable-next-line vue/no-unused-components
-		authoringRatios: defineAsyncComponent(() => import("../components/charts/authoringRatios.vue")),
 	},
 	data: () => ({
-		projectCharts: [],
+		projectCharts: [{
+			id: 1,
+			component: "authoringRatios_pie",
+		},
+			{
+				id: 2,
+				component: "authoringRatios_bar",
+			}],
 		userCharts: [],
 		grid: null,
 		floatOption: false,
@@ -220,7 +223,7 @@ export default {
 
 		const cmid = this.$store.getters.getCMID;
 		Communication.webservice("getDashboards", {cmid}).then(result => {
-			this.projectCharts = result.project.map(this.transformWidget);
+			// this.projectCharts = result.project.map(this.transformWidget);
 
 			result.user.map(this.transformWidget).map(this.addWidget);
 		});
@@ -283,11 +286,6 @@ h3 {
 	width: 150px;
 	margin: 0 10px 10px 10px;
 	justify-self: center;
-}
-
-/* grid stack */
-.grid-stack:deep(.grid-stack-item-content) {
-	border: 1px solid rgba(0, 0, 0, 0.125);
 }
 
 /* fontawesome */

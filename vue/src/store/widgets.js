@@ -12,54 +12,54 @@ let id = 1;
  *
  */
 export default {
-    state: {
-        widgets: [
-            {
-                component: "barchart",
-                category: "barchart",
-                configuration: {},
-                moderatorWidget: false,
-                minW: 3,
-                minH: 1,
-            },
-            {
-                component: "authoringRatios",
-                category: "piechart",
-                configuration: {},
-                moderatorWidget: false,
-                minW: 3,
-                minH: 1,
-            },
-        ],
-    },
-    getters: {
-        getWidgets: function (state, getters, rootState) {
-            // if user is moderator, return all widgets, else only none moderator widgets
-            if (rootState.base.isModerator) {
-                return state.widgets;
-            } else {
-                return state.widgets.filter(widget => widget.moderatorWidget === false);
-            }
-        },
-        getWidgetCategories: function (state, getters, rootState) {
-            let categories = [];
-            // return widget categories based on user role
-            if (rootState.base.isModerator) {
-                state.widgets.forEach(widget => {
-                    if (!categories.includes(widget.category)) {
-                        let category = widget.category.charAt(0).toUpperCase() + widget.category.slice(1);
-                        categories.push(category);
-                    }
-                });
-            } else {
-                state.widgets.filter(widget => widget.moderatorWidget === false).forEach(widget => {
-                    if (!categories.includes(widget.category)) {
-                        let category = widget.category.charAt(0).toUpperCase() + widget.category.slice(1);
-                        categories.push(category);
-                    }
-                });
-            }
-            return categories;
-        },
-    },
+	state: {
+		widgets: [
+			{
+				component: "authoringRatios_bar",
+				category: "barchart",
+				configuration: {},
+				moderatorWidget: false,
+				minW: 3,
+				minH: 1,
+			},
+			{
+				component: "authoringRatios_pie",
+				category: "piechart",
+				configuration: {},
+				moderatorWidget: false,
+				minW: 3,
+				minH: 1,
+			},
+		],
+	},
+	getters: {
+		getWidgets: function (state, getters, rootState) {
+			// if user is moderator, return all widgets, else only none moderator widgets
+			if (rootState.base.isModerator) {
+				return state.widgets;
+			} else {
+				return state.widgets.filter(widget => widget.moderatorWidget === false);
+			}
+		},
+		getWidgetCategories: function (state, getters, rootState) {
+			let categories = [];
+			// return widget categories based on user role
+			if (rootState.base.isModerator) {
+				state.widgets.forEach(widget => {
+					if (!categories.includes(widget.category)) {
+						let category = widget.category.charAt(0).toUpperCase() + widget.category.slice(1);
+						categories.push(category);
+					}
+				});
+			} else {
+				state.widgets.filter(widget => widget.moderatorWidget === false).forEach(widget => {
+					if (!categories.includes(widget.category)) {
+						let category = widget.category.charAt(0).toUpperCase() + widget.category.slice(1);
+						categories.push(category);
+					}
+				});
+			}
+			return categories;
+		},
+	},
 };

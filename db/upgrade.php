@@ -42,6 +42,8 @@ function xmldb_write_upgrade($oldversion = 0)
 
     issue_8($oldversion, $dbman);
 
+    issue_27($oldversion, $dbman);
+
     return true;
 }
 
@@ -147,5 +149,16 @@ function issue_8(int $oldversion, $dbman)
 
         // Write savepoint reached.
         upgrade_mod_savepoint(true, $newversion, 'write');
+    }
+}
+
+function issue_27(int $oldversion, $dbman)
+{
+    global $DB;
+
+    $newversion = 2022120502;
+
+    if ($oldversion < $newversion) {
+        $DB->execute("UPDATE mdl_write_widget SET component = 'authoringRatios_pie' WHERE component = 'authoringRatios'");
     }
 }
