@@ -12,7 +12,7 @@
 			</div>
 		</div>
 		<div class="holder" v-if="!loading">
-			<Minimap :padName="padName"/>
+			<Minimap />
 			<iframe
 					id="writerview"
 					v-bind:src="link"
