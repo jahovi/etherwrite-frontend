@@ -41,5 +41,7 @@ export default {
 .chart-wrapper {
 	border: 1px solid rgba(0, 0, 0, 0.125);
 	padding: 12px;
+	width: 100%;
+	height: 100%;
 }
 </style>

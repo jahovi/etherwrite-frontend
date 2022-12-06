@@ -15,6 +15,7 @@
 <script>
 import * as d3 from "d3";
 import Communication from "../../classes/communication";
+import store from "../../store";
 
 export default {
 	data() {
@@ -53,14 +54,14 @@ export default {
 	},
 	methods: {
 		async getData() {
-			return Communication.getFromEVA("authoring_ratios", {pad: this.$store.state.base.padName})
+			return Communication.getFromEVA("authoring_ratios", {pad: store.state.base.padName})
 					.then(data => {
 						this.authors = data.authors;
 						this.ratios = data.ratios;
 						this.colors = data.colors;
 					})
 					.catch(() => {
-						this.$store.commit("setAlertWithTimeout", ["alert-danger", this.$store.getters.getStrings.unknown_error, 3000]);
+						store.commit("setAlertWithTimeout", ["alert-danger", store.getters.getStrings.unknown_error, 3000]);
 					});
 
 		},

@@ -25,7 +25,7 @@
 			</button>
 			<!-- compact dashboard button -->
 			<button id="compact-btn" class="btn btn-primary rounded p-2" v-if="!oneColumnMode"
-				@click.prevent="compact()">
+							@click.prevent="compact()">
 				<i class="fa fa-compress"></i>
 			</button>
 			<!-- trash -->
@@ -79,7 +79,7 @@ export default {
 			return this.$store.state.base.padName;
 		},
 		oneColumnMode() {
-				return this.grid && this.grid.opts.oneColumnSize > this.windowWidth;
+			return this.grid && this.grid.opts.oneColumnSize > this.windowWidth;
 		},
 		isLoading() {
 			return !this.$store.state.base.initialized;
@@ -179,12 +179,12 @@ export default {
 			createApp(chartWrapper, props).mount(div);
 			this.widgetCount += 1;
 			this.grid.addWidget({
-				x: newWidget.options.x,
-				y: newWidget.options.y,
-				minW: newWidget.options.minW,
-				minH: newWidget.options.minH,
-				w: newWidget.options.w,
-				h: newWidget.options.h,
+				x: newWidget.x,
+				y: newWidget.y,
+				minW: newWidget.minW,
+				minH: newWidget.minH,
+				w: newWidget.w,
+				h: newWidget.h,
 				content: div.innerHTML,
 			});
 		},
@@ -292,11 +292,6 @@ h3 {
 	height: 50px;
 	margin: 5px;
 	justify-self: center;
-}
-
-/* grid stack */
-.grid-stack:deep(.grid-stack-item-content) {
-	border: 1px solid rgba(0, 0, 0, 0.125);
 }
 
 /* fontawesome */

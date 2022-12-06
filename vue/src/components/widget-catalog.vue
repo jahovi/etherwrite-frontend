@@ -30,6 +30,7 @@
 
 <script lang="js">
 import ChartWrapper from "../components/chart-wrapper.vue";
+import store from "../store";
 
 export default {
 
@@ -64,11 +65,11 @@ export default {
 	watch: {},
 	methods: {
 		closeWidgetCatalog() {
-			this.$store.commit("setWidgetCatalogOpen");
+			store.commit("setWidgetCatalogOpen");
 		},
 		addToDashboard(widget) {
 			this.$emit("add-widget-event", widget);
-			this.$store.commit("setWidgetCatalogOpen");
+			store.commit("setWidgetCatalogOpen");
 		},
 	},
 	mounted() {
