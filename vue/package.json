@@ -16,16 +16,18 @@
   },
   "dependencies": {
     "@popperjs/core": "^2.11.6",
+    "@types/uuid": "^9.0.0",
     "bootstrap": "^5.2.3",
     "d3": "^7.6.1",
     "d3-collection": "^1.0.7",
     "fetch-jsonp": "^1.2.3",
-    "gridstack": "^7.1.1",
     "jsonp": "^0.2.1",
     "nodemon": "^2.0.20",
+    "uuid": "^9.0.0",
     "vue": "^3.2.41",
     "vue-dragscroll": "^4.0.5",
     "vue-router": "^4.1.6",
+    "vue3-grid-layout": "^1.0.0",
     "vuex": "^4.1.0"
   },
   "browserslist": [

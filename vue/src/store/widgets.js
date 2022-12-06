@@ -19,7 +19,7 @@ export default {
 				category: "barchart",
 				configuration: {},
 				moderatorWidget: false,
-				minW: 3,
+				minW: 1,
 				minH: 1,
 			},
 			{
@@ -27,7 +27,7 @@ export default {
 				category: "piechart",
 				configuration: {},
 				moderatorWidget: false,
-				minW: 3,
+				minW: 2,
 				minH: 1,
 			},
 		],

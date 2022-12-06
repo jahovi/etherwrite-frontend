@@ -70,7 +70,7 @@ export default {
 
 			// Add a filler if the given numbers don't add up to 100%.
 			// Can happen with weird test data.
-			const sum = this.ratios.reduce((result, entry) => result + entry);
+			const sum = this.ratios.reduce((result, entry) => result + entry, 0);
 			if (sum < 1) {
 				this.authors = [...this.authors, "Unbekannt"];
 				this.ratios = [...this.ratios, 1 - sum];

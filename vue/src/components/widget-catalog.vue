@@ -3,7 +3,7 @@
 		<div class="widget-catalog-backdrop" @click.prevent="closeWidgetCatalog" v-if="isWidgetCatalogOpen"></div>
 		<div class="widget-catalog-panel border rounded" v-if="isWidgetCatalogOpen">
 			<!-- tabs nav -->
-			<ul class="nav nav-tabs mb-3" id="ex1" role="tablist">
+			<ul class="nav nav-tabs mb-3 col-10" id="ex1" role="tablist">
 				<li class="nav-item" :class="{'active': cat === category }" v-for="(cat, key) in categories" :key="key">
 					<a class="nav-link" role="tab" @click="category = cat" aria-selected="true">{{ cat }}</a>
 				</li>
@@ -69,7 +69,7 @@ export default {
 		},
 		addToDashboard(widget) {
 			this.$emit("add-widget-event", widget);
-			store.commit("setWidgetCatalogOpen");
+			this.closeWidgetCatalog();
 		},
 	},
 	mounted() {

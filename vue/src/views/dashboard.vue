@@ -18,55 +18,68 @@
 		</div>
 		<!-- custom dashboard -->
 		<div id="custom-dashboard" class="row d-flex dashboard">
-			<h3 class="col-12 col-md-6 mr-auto p-2">Dein Dashboard</h3>
-			<!-- add chart wrapper button -->
-			<button id="add-chart-btn" class="btn btn-primary rounded p-2" @click.prevent="openWidgetCatalog()">
-				<i class="fa fa-plus-square-o"></i>
+			<h3 class="col-6 mr-auto p-2">Dein Dashboard</h3>
+			<!-- add widget button -->
+			<button id="open-widget-catalog-btn" class="btn btn-success rounded p-2"
+							@click.prevent="openWidgetCatalog()">
+				<i class="fa fa-plus"></i>
 			</button>
-			<!-- compact dashboard button -->
-			<button id="compact-btn" class="btn btn-primary rounded p-2" v-if="!oneColumnMode"
-							@click.prevent="compact()">
-				<i class="fa fa-compress"></i>
-			</button>
-			<!-- trash -->
-			<div class="delete-wrapper p-2">
-				<i class="fa fa-trash-o"></i>
+			<!-- grid -->
+			<div class="col-12">
+				<GridLayout
+						:layout.sync="userCharts"
+						:col-num="12"
+						:cols="{ lg: 4, md: 4, sm: 2, xs: 1, xxs: 1}"
+						:row-height="300"
+						:is-draggable="draggable"
+						:is-resizable="resizable"
+						:responsive="responsive"
+						:vertical-compact="true"
+						:use-css-transforms="true">
+					<GridItem v-for="(item, key) in userCharts"
+										:x="item.x"
+										:y="item.y"
+										:w="item.w"
+										:h="item.h"
+										:i="item.i" :key="item.i"
+										@moved="saveGrid"
+										@resized="saveGrid">
+
+						<ChartWrapper :component="item.component" :id="item.id" :key="key">
+						</ChartWrapper>
+
+						<span class="remove" @click="removeItemFromGrid(item)">
+							<i class="fa fa-close"></i>
+						</span>
+					</GridItem>
+				</GridLayout>
 			</div>
-			<!-- gridstack -->
-			<div class="col-12 grid-stack"></div>
 		</div>
 		<WidgetCatalog @add-widget-event="addWidget($event)"/>
 	</div>
 </template>
 
 <script lang="js">
-import { createApp, defineComponent, reactive } from "vue";
-import store from "../store";
-import { GridStack } from "gridstack";
+import { GridItem, GridLayout } from "vue3-grid-layout";
 import ChartWrapper from "../components/chart-wrapper.vue";
 import WidgetCatalog from "../components/widget-catalog.vue";
-import "gridstack/dist/gridstack.css";
 import Communication from "../classes/communication";
+import { v4 as uuid } from "uuid";
 
 export default {
 	name: "dashboardView",
 	components: {
+		GridLayout,
+		GridItem,
 		ChartWrapper,
 		WidgetCatalog,
 	},
 	data: () => ({
-		projectCharts: [{
-			id: 1,
-			component: "authoringRatios_pie",
-		},
-			{
-				id: 2,
-				component: "authoringRatios_bar",
-			}],
+		projectCharts: [],
 		userCharts: [],
-		grid: null,
-		widgetCount: 0,
-		windowWidth: window.innerWidth,
+		draggable: true,
+		resizable: true,
+		responsive: true,
 	}),
 	computed: {
 		getStrings() {
@@ -78,9 +91,6 @@ export default {
 		padName() {
 			return this.$store.state.base.padName;
 		},
-		oneColumnMode() {
-			return this.grid && this.grid.opts.oneColumnSize > this.windowWidth;
-		},
 		isLoading() {
 			return !this.$store.state.base.initialized;
 		},
@@ -91,10 +101,9 @@ export default {
 		 * Save custom dashboard.
 		 */
 		saveGrid() {
-			let saveData = this.grid.save(true, true);
-			const widgets = saveData.children.map(child => {
-				let id = child.content.match(/id=\"chart-wrapper-(\d+|undefined)\"/)[1];
-				const component = child.content.match(/name=\"(\w+)\"/)[1];
+			const widgets = this.userCharts.map(child => {
+				let id = child.id;
+				const component = child.component;
 				id = id === "undefined" ? undefined : parseInt(id);
 				return {
 					id,
@@ -110,27 +119,13 @@ export default {
 				widgets: widgets.map(this.detransformWidget),
 			});
 		},
-		/**
-		 * Toggle float option for gridstack.
-		 */
-		toggleFloat() {
-			this.grid.float(!this.grid.getFloat());
-			this.floatOption = this.grid.getFloat();
+		removeItemFromGrid: function (val) {
+			this.userCharts = this.userCharts
+					.filter(u => u !== val);
+			this.saveGrid();
 		},
 		/**
-		 * Compact custom dashboard.
-		 */
-		compact() {
-			this.grid.compact();
-		},
-		/**
-		 * Clear custom dashboard.
-		 */
-		clear() {
-			this.grid.removeAll();
-		},
-		/**
-		 * Open the widget catalog.
+		 * Open widget catalog.
 		 */
 		openWidgetCatalog() {
 			this.$store.commit("setWidgetCatalogOpen");
@@ -151,42 +146,14 @@ export default {
 			} widget Widget to be added to dashboard.
 		 */
 		addWidget(newWidget) {
-			this.userCharts.push(newWidget);
-			// create grid stack widget
-			let chartWrapper = defineComponent(ChartWrapper);
-			let props = reactive({
-				id: newWidget.id,
-				component: newWidget.component,
-			});
-			let div = document.createElement("div");
-			createApp(chartWrapper, props).use(store).mount(div);
-
 			newWidget.w = newWidget.w || newWidget.minW;
 			newWidget.h = newWidget.h || newWidget.minH;
 			newWidget.x = newWidget.x || 0;
 			newWidget.y = newWidget.y || 0;
-
-			this.grid.addWidget({
-				x: newWidget.x,
-				y: newWidget.y,
-				minW: newWidget.minW,
-				minH: newWidget.minH,
-				w: newWidget.w,
-				h: newWidget.h,
-				content: div.innerHTML,
-			});
-
-			createApp(chartWrapper, props).mount(div);
-			this.widgetCount += 1;
-			this.grid.addWidget({
-				x: newWidget.x,
-				y: newWidget.y,
-				minW: newWidget.minW,
-				minH: newWidget.minH,
-				w: newWidget.w,
-				h: newWidget.h,
-				content: div.innerHTML,
-			});
+			// { "x": 0, "y": 0, "w": 2, "h": 2, "i": "0"} neccessary
+			newWidget.i = uuid();
+			this.userCharts.push(newWidget);
+			this.saveGrid();
 		},
 		transformWidget(widgetData) {
 			return {
@@ -212,46 +179,15 @@ export default {
 		},
 	},
 	mounted() {
-		// window resize listener
-		window.onresize = () => {
-			this.windowWidth = window.innerWidth;
-		};
-
 		const cmid = this.$store.getters.getCMID;
 		Communication.webservice("getDashboards", {cmid}).then(result => {
-			// this.projectCharts = result.project.map(this.transformWidget);
+			this.projectCharts = result.project.map(this.transformWidget);
 
 			result.user.map(this.transformWidget).map(this.addWidget);
+			// Make the UI resize according to the rendered grid.
+			window.dispatchEvent(new Event("resize"));
 		});
 		this.$store.dispatch("users/load");
-
-		// init grid
-		this.grid = GridStack.init({
-			// TODO: move widgets by single column, not only by w columns
-			removable: ".delete-wrapper",
-			minRow: 2,
-			cellHeight: "300px",
-			alwaysShowResizeHandle: true,
-		});
-
-		this.grid.load(this.userCharts);
-
-		// save dashboard layout on added widget
-		this.grid.on("added", () => {
-			this.saveGrid();
-		});
-		// save dashboard layout on removed widget
-		this.grid.on("removed", () => {
-			this.saveGrid();
-		});
-		// save dashboard layout on drag stop
-		this.grid.on("dragstop", () => {
-			this.saveGrid();
-		});
-		// save dashboard layout on resize stop
-		this.grid.on("resizestop", () => {
-			this.saveGrid();
-		});
 	},
 };
 </script>
@@ -271,22 +207,6 @@ h3 {
 	justify-content: center;
 }
 
-.delete-wrapper {
-	display: flex;
-	height: 50px;
-	width: 50px;
-	margin: 5px;
-	background-color: rgba(255, 0, 0, 0.2);
-	border: 0 transparent;
-	border-radius: 5px;
-	align-items: center;
-	justify-content: center;
-}
-
-.delete-wrapper:hover {
-	border: 5px solid rgba(139, 0, 0, 0.5)
-}
-
 .btn {
 	width: 50px;
 	height: 50px;
@@ -294,13 +214,56 @@ h3 {
 	justify-self: center;
 }
 
-/* fontawesome */
 .fa {
-	font-size: 2em;
-	color: lightgray;
+	font-size: 2.5em;
 }
 
-.fa-trash-o {
-	color: lightslategray;
+/* grid */
+.remove {
+	position: absolute;
+	right: 2px;
+	top: 0;
+	cursor: pointer;
+}
+
+.vue-grid-layout {
+	background: transparent;
+}
+
+.vue-grid-item:not(.vue-grid-placeholder) {
+	background: transparent;
+	border: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.vue-grid-item .resizing {
+	opacity: 0.9;
+}
+
+.vue-grid-item .no-drag {
+	height: 100%;
+	width: 100%;
+}
+
+.vue-grid-item .minMax {
+	font-size: 12px;
+}
+
+.vue-grid-item .add {
+	cursor: pointer;
+}
+
+.vue-draggable-handle {
+	position: absolute;
+	width: 20px;
+	height: 20px;
+	top: 0;
+	left: 0;
+	background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10'><circle cx='5' cy='5' r='5' fill='#999999'/></svg>") no-repeat;
+	background-position: bottom right;
+	padding: 0 8px 8px 0;
+	background-repeat: no-repeat;
+	background-origin: content-box;
+	box-sizing: border-box;
+	cursor: pointer;
 }
 </style>

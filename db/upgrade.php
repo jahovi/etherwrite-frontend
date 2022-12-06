@@ -156,9 +156,13 @@ function issue_27(int $oldversion, $dbman)
 {
     global $DB;
 
-    $newversion = 2022120502;
+    $newversion = 2022120503;
 
     if ($oldversion < $newversion) {
-        $DB->execute("UPDATE mdl_write_widget SET component = 'authoringRatios_pie' WHERE component = 'authoringRatios'");
+        $authoringRatios = $DB->get_records('write_widget', array('component' => 'authoringRatios'));
+        foreach ($authoringRatios as $widget) {
+            $widget->component = 'authoringRatios_pie';
+            $DB->update_record('write_widget', $widget);
+        }
     }
 }
