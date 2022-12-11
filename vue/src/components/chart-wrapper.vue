@@ -11,6 +11,8 @@ import authoringRatios_pie from "./charts/authoringRatios_pie.vue";
 import participation_diagram from "./charts/participation_diagram.vue";
 import groupParticipants from "./charts/groupParticipants.vue";
 import activityOverTime from "./charts/activityOverTime.vue";
+import etherViz_diagram from "./charts/etherViz_diagram.vue";
+
 
 export default {
 	name: "chart-wrapper",
@@ -20,6 +22,7 @@ export default {
 		participation_diagram,
 		groupParticipants,
 		activityOverTime,
+		etherViz_diagram,
 	},
 	props: {
 		component: String,

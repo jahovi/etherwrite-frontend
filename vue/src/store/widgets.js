@@ -52,6 +52,14 @@ export default {
 				minW: 3,
 				minH: 1,
 			},
+			{
+				component: "etherViz_diagram",
+				category: "sonstige",
+				configuration: {},
+				moderatorWidget: false,
+				minW: 2,
+				minH: 1,
+			},
 		],
 	},
 	getters: {
