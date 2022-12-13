@@ -15,7 +15,7 @@
 				<ChartWrapper class="wrapper border rounded" v-for="(widget, key) in widgetsOfCurrentCategory" :isMock="true"
 											:component="widget.component" :id="widget.id" :key="key">
 					<template #btn>
-						<button :id="'add-widget-btn-' + widget.id" class="btn btn-success btn-add-widget"
+						<button :id="'add-widget-btn-' + widget.id" class="btn btn-success rounded btn-add-widget"
 										@click.prevent="addToDashboard(widget)">
 							<i class="fa fa-plus"></i>
 						</button>
@@ -23,7 +23,7 @@
 				</ChartWrapper>
 			</div>
 			<!-- close widget-catalog button -->
-			<button id="close-widget-catalog-btn" class="btn btn-danger" @click.prevent="closeWidgetCatalog">
+			<button id="close-widget-catalog-btn" class="btn rounded btn-danger" @click.prevent="closeWidgetCatalog">
 				<i class="fa fa-close"></i>
 			</button>
 		</div>
@@ -131,9 +131,14 @@ export default {
 	position: absolute;
 	top: 5px;
 	right: 5px;
+	width: 30px;
+	height: 30px;
 }
 
 .fa {
-	font-size: 1.5em;
+	position: absolute;
+	top: 7px;
+	left: 8px;
+	font-size: 1em;
 }
 </style>

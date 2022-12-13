@@ -201,21 +201,24 @@ h3 {
 }
 
 .btn {
-	width: 50px;
-	height: 50px;
+	width: 30px;
+	height: 30px;
 	margin: 5px;
 	justify-self: center;
 }
 
 .fa {
-	font-size: 2.5em;
+	position: relative;
+	top: -5px;
+	left: 0px;
+	font-size: 1em;
 }
 
 /* grid */
 .remove {
 	position: absolute;
-	right: 2px;
-	top: 0;
+	right: 5px;
+	top: 5px;
 	cursor: pointer;
 }
 
