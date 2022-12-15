@@ -8,6 +8,7 @@
 <script lang="js">
 import authoringRatios_bar from "./charts/authoringRatios_bar.vue";
 import authoringRatios_pie from "./charts/authoringRatios_pie.vue";
+import participation_diagram from "./charts/participation_diagram.vue";
 
 export default {
 	name: "chart-wrapper",
@@ -15,6 +16,7 @@ export default {
 		authoringRatios_pie,
 		// eslint-disable-next-line vue/no-unused-components
 		authoringRatios_bar,
+		participation_diagram,
 	},
 	props: {
 		component: String,

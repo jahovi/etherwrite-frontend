@@ -1,10 +1,7 @@
-let id = 1;
-
 /**
  * Widget configurations are stored here. For each widget, specify:
  *
  * - component: the vue component that is the actuall widget
- * - id: a unique arbitrary number that will become the id of the html element containing the widget
  * - configuration: not yet in use
  * - moderatorWidget: if this is true, the widget will be accessible to moderators (=teachers) only. If this is false, the widget
  *      will be accessible to normal users (=students) as well. Widgets that handle role distinction internally should state false.
@@ -28,6 +25,14 @@ export default {
 				configuration: {},
 				moderatorWidget: false,
 				minW: 2,
+				minH: 1,
+			},
+			{
+				component: "participation_diagram",
+				category: "barchart",
+				configuration: {},
+				moderatorWidget: true,
+				minW: 1,
 				minH: 1,
 			},
 		],
