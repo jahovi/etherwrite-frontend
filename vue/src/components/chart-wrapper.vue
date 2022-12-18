@@ -1,6 +1,6 @@
 <template>
 	<div class="chart-wrapper" :id="'chart-wrapper-' + id" :name="component">
-		<component :is="component" :id="'custom-chart-' + id" :isMock="isMock" @click.capture="stopEvents"/>
+		<component :is="component" :id="'custom-chart-' + id" :isMock="isMock" @click.capture="stopEvents" style="height: 100%"/>
 		<slot name="btn"></slot>
 	</div>
 </template>
@@ -10,6 +10,7 @@ import authoringRatios_bar from "./charts/authoringRatios_bar.vue";
 import authoringRatios_pie from "./charts/authoringRatios_pie.vue";
 import participation_diagram from "./charts/participation_diagram.vue";
 import groupParticipants from "./charts/groupParticipants.vue";
+import activityOverTime from "./charts/activityOverTime.vue";
 
 export default {
 	name: "chart-wrapper",
@@ -18,6 +19,7 @@ export default {
 		authoringRatios_bar,
 		participation_diagram,
 		groupParticipants,
+		activityOverTime,
 	},
 	props: {
 		component: String,
