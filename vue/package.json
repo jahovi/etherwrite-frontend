@@ -15,7 +15,6 @@
     "lint-fix": "npm run lint -- --fix"
   },
   "dependencies": {
-    "chart.js": "^2.9.4",
     "@popperjs/core": "^2.11.6",
     "@types/uuid": "^9.0.0",
     "bootstrap": "^5.2.3",

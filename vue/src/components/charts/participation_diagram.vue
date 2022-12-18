@@ -1,14 +1,20 @@
 <template>
     <div>
-        <h4>test</h4>
+        <h4>Partizipationsdiagramm</h4>
         <div class="chart-container">
-            <canvas width="200" height="200" :id="elementId"></canvas>
+            <div class="chart" :id="elementId"></div>
+            <!-- <ul class="legend mt-3" v-if="authorSet.size">
+				<li v-for="author of authorSet.values()" :key="author">
+					<i class="fa fa-square" :style="{ color: rgba(129,172,220,1) }"></i> {{ author }}
+				</li>
+			</ul> -->
+            <!-- <svg width="300" height="300" :id="elementId"></svg> -->
         </div>
     </div>
 </template>
 
 <script>
-import Chart from "../../../node_modules/chart.js/dist/Chart.bundle.min.js";
+import * as d3 from "d3";
 import Communication from "../../classes/communication";
 import store from "../../store";
 
@@ -21,18 +27,23 @@ export default {
     },
     data() {
         return {
-            datapoints: [],
-            timestamps: [],
-            authorActivityLists: {},
             datasets: [],
+            authorColors: [],
+            authorSet: {},
         };
     },
     computed: {
         elementId() {
             return `participation_diagram_${this.id}`;
         },
+        // authorColor(author) {
+        //     console.log(author);
+        //     const index = [...this.authorSet].indexOf(author);
+        //     console.log(index);
+        //     return this.authorColor[index];
+        // },
     },
-    async mounted() {
+    mounted() {
         this.getData().then(() => this.loadChart());
     },
     methods: {
@@ -40,16 +51,11 @@ export default {
             const data = await Communication.getFromEVA("activity/activities", { padName: store.state.base.padName });
 
             // construct author set
-            const authorSet = new Set();
+            this.authorSet = new Set();
             for (const elem of data) {
                 for (const author in elem.authorToActivities) {
-                    authorSet.add(author);
+                    this.authorSet.add(author);
                 }
-            }
-
-            // prepare an activity list for each author
-            for (const item of authorSet) {
-                this.authorActivityLists[item] = [];
             }
 
             function random_rgba() {
@@ -57,78 +63,137 @@ export default {
                 return "rgba(" + o(r() * s) + "," + o(r() * s) + "," + o(r() * s) + "," + 1 + ")";
             }
 
-            // append all author activity to the appropriate activity list
+            for (const author of this.authorSet.values()) {
+                // this.authorColors[author] = random_rgba();
+                this.authorColors.push(random_rgba());
+            }
+            const timestampParser = d3.timeParse("%d.%m.%Y");
             for (const elem of data) {
-                this.timestamps.push(elem.timestamp);
-                for (const author in this.authorActivityLists) {
+                // TODO watch out for hour minute timestamps
+                const dataset = { timestamp: timestampParser(elem.timestamp) };
+                let activitySum = 0;
+                for (const author in elem.authorToActivities) {
+                    activitySum += elem.authorToActivities[author];
+                }
+                for (const author of this.authorSet.values()) {
                     if (Object.hasOwn(elem.authorToActivities, author.toString())) {
                         // author had activity for this timestamp
-                        this.authorActivityLists[author].push(elem.authorToActivities[author]);
+                        dataset[author] = (elem.authorToActivities[author] / activitySum);
                     } else {
-                        // author had no activity for this timestamp
-                        this.authorActivityLists[author].push(0);
+                        dataset[author] = 0;
                     }
                 }
+                this.datasets.push(dataset);
             }
 
-            // try to condense in to lesser number of loops
-            // for (const elem of data) {
-            //     this.timestamps.push(elem.timestamp);
-            //     for (const author of authorSet) {
-            //         const dataset = {
-            //             label: author,
-            //             backgroundColor: random_rgba(),
-            //             data: [],
-            //         };
-
-            //         if (Object.hasOwn(elem.authorToActivities, author.toString())) {
-            //             // author had activity for this timestamp
-            //             dataset.data.push(elem.authorToActivities[author]);
-            //         } else {
-            //             // author had no activity for this timestamp
-            //             dataset.data.push(0);
-            //         }
-            //         this.datasets.push(dataset);
-            //     }
-            // }
-
-
-
-            // repack authorActivityLists into chart specific dataset format
-            for (const author in this.authorActivityLists) {
-                this.datasets.push({
-                    label: author, // TODO: replace with username
-                    data: this.authorActivityLists[author],
-                    backgroundColor: random_rgba(), // TODO: replace with author color
-                });
-            }
-
-            console.log(this.timestamps);
-            console.log(this.authorActivityLists);
+            console.log(this.authorColors);
+            console.log(this.authorSet);
             console.log(this.datasets);
+
+
         },
 
         loadChart() {
-            const ctx = document.getElementById(`${this.elementId}`);
-            new Chart(ctx, {
-                type: "bar",
-                data: {
-                    labels: this.timestamps,
-                    datasets: this.datasets,
-                },
-                options: {
-                    scales: {
-                        xAxes: [{
-                            stacked: true,
-                        }],
-                        yAxes: [{
-                            stacked: true,
-                        }],
-                    },
-                },
-            });
+            // const width = 400;
+            // const height = 200;
+
+            let margin = { top: 20, right: 30, bottom: 30, left: 30 };
+            let w = 460 - margin.left - margin.right;
+            let h = 400 - margin.top - margin.bottom;
+
+            const stackGenerator = d3.stack().keys(Array.from(this.authorSet));
+            const stackedData = stackGenerator(this.datasets);
+
+
+            // const xScale = d3.scaleTime()
+            //     .domain([this.datasets[0].timestamp, this.datasets[this.datasets.length - 1].timestamp])
+            //     .range([50, 235]);
+            const xScale = d3.scaleTime()
+                .domain([this.datasets[0].timestamp, this.datasets[this.datasets.length - 1].timestamp])
+                .range([margin.left, w]);
+
+            // const yScale = d3.scaleLinear()
+            //     .domain([0, 1])
+            //     .range([275, 25]);
+            const yScale = d3.scaleLinear()
+                .domain([0, 1])
+                .range([h, margin.bottom]);
+
+            const colorScale = d3.scaleOrdinal()
+                .domain(Array.from(this.authorSet))
+                .range(this.authorColors);
+
+
+            // svg object 
+            let svg = d3.select(`#${this.elementId}`)
+                .append("svg")
+                .attr("width", w + margin.left + margin.right)
+                .attr("height", h + margin.top + margin.bottom)
+                // .append("g")
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+            // Add xAxis
+            let xAxis = d3.axisBottom(xScale)
+            .tickValues(this.datasets.map(d => d.timestamp))
+            .tickFormat(d3.timeFormat("%d.%m"));
+            svg.append("g")
+            .attr("transform", "translate(" + margin.left + "," + h + ")")
+            .call(xAxis);
+            
+            // Add blank axis so that xAxis meets yAxis
+            let xAxisBlank = d3.axisBottom(xScale)
+                .tickValues([]);
+            svg.append("g")
+                .attr("transform", "translate(" + 0 + "," + h + ")")
+                .call(xAxisBlank);
+
+            // Add yAxis
+            let yAxis = d3.axisLeft(yScale)
+                .ticks(8);
+            svg.append("g")
+                .attr("transform", "translate(" + margin.left + "," + "0)")
+                .call(yAxis);
+
+            // add group for each author series
+            const series = svg
+                //.select("g")
+                .selectAll("g.series")
+                .data(stackedData)
+                .join("g")
+                .style("fill", (d) => colorScale(d.key));
+
+            // add rect for each activity in the series
+            series.selectAll("rect")
+                .data((d) => d)
+                .join("rect")
+                .attr("width", 40)
+                .attr("y", (d) => yScale(d[1]))
+                .attr("x", (d) => xScale(d.data.timestamp) - 20)
+                .attr("height", (d) => yScale(d[0]) - yScale(d[1]))
+                .attr("transform", "translate(" + margin.left + "," + 0 + ")");
+
+            // stacked area chart
+            // const areaGen = d3.area()
+            //     .x(d => xScale(d.data.timestamp))
+            //     .y0(d => yScale(d[0]))
+            //     .y1(d => yScale(d[1]));
+
+            // const test = d3.select(`#${this.elementId}`)
+            //     .selectAll(".areas")
+            //     .data(stackedData)
+            //     .join("path")
+            //     .attr("d", areaGen)
+            //     .attr("fill", d => colorScale(d.key));
+
+            // console.log(test);
         },
+
+
     },
 };
 
 </script>
+
+<style>
+
+</style>
