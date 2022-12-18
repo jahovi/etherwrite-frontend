@@ -3,22 +3,20 @@
 <!-- @copyright Marie Freise, 2022, marie_freise@web.de -->
 
 <template>
-	<div>
-		<div class="scrollbox scrollbox_delayed" v-dragscroll.y="true">
-			<div class="minimap" ref="minimapRef">
-				<div class="outerContainer">
-					<div class="scrollViewContainer">
-						<div
-								class="scrollView"
-								v-for="userPos in userPositions"
-								:key="userPos.id"
-								:style="{
+	<div class="minimap" ref="minimapRef">
+		<div class="outerContainer">
+			<div class="scrollViewContainer">
+				<div
+						class="scrollView"
+						v-for="userPos in userPositions"
+						:key="userPos.id"
+						:style="{
                 background: userPos.color,
                 top: userPos.top + 'px',
               }"
-						></div>
-					</div>
-					<div class="textBlockContainer" ref="textBlocks">
+				></div>
+			</div>
+			<div class="textBlockContainer" ref="textBlocks">
             <span
 								:class="block.headingType"
 								v-for="block in coloredBlocks"
@@ -30,11 +28,9 @@
                   block.headingType === 'h1' && block.color === 'transparent'
                     ? 'rgb(100,210,155)'
                     : 'black',
-              }"
-						>{{ block.content }}</span
-						>
-					</div>
-				</div>
+              }">
+							{{ block.content }}
+						</span>
 			</div>
 		</div>
 	</div>
@@ -101,10 +97,10 @@ export default {
 				if (textBlocks.length > scrollPosInfo.topIndex - 1) {
 					const authorColor = this.authorData[authorId]["color"];
 
-					const minimapRef = this.$refs.minimapRef;
-
+					// Use the top of the minimap as an anchor reference point to position the viewport of the users.
+					// Subtract the text block container margin.
 					const topPosition = textBlocks[scrollPosInfo.topIndex - 1]
-							.getBoundingClientRect().top - minimapRef.getBoundingClientRect().top; //Use the top of the minimap as an anchor reference point to position the viewport of the users
+							.getBoundingClientRect().top - (textBlocks[0] ? textBlocks[0].getBoundingClientRect().top : 0) - 5;
 
 					this.userPositions.push({id: this.userPositions.length, top: topPosition, color: authorColor});
 				}
@@ -160,54 +156,25 @@ export default {
 </script>
 
 <style scoped>
-.scrollbox {
-	visibility: hidden;
-	position: absolute;
-	float: left;
-	width: 10%;
-	height: 660px;
-	top: 40px;
-	bottom: 40px;
-	font-size: 2px;
-	overflow: auto;
-	overflow-wrap: break-word;
-	scrollbar-width: thin;
-}
-
-.scrollbox:hover {
-	visibility: visible;
-}
-
-.scrollbox_delayed {
-	transition: visibility 0.2s;
-}
-
-.scrollbox_delayed:hover {
-	transition: visibility 0s 0.2s;
-}
-
 .minimap {
+	font-size: 2px;
 	background-color: rgba(0, 0, 0, 0.05);
-	visibility: visible;
-	min-height: 660px;
+	height: 100%;
+	width: 100%;
 	user-select: none;
 	overflow: auto;
 	overflow-wrap: break-word;
-}
-
-.outerContainer {
-	display: flex;
 }
 
 .scrollViewContainer {
 	height: 100%;
 	width: 100%;
 	z-index: 10;
+	position: relative;
 }
 
 .scrollView {
 	margin: 0;
-	float: left;
 	padding: 0;
 	width: 100%;
 	height: 90px;
@@ -218,7 +185,7 @@ export default {
 
 .textBlockContainer {
 	width: 100%;
-	margin: 10% 10% 10% -75%;
+	padding: 5px;
 }
 
 .textBlock {
@@ -227,21 +194,21 @@ export default {
 
 .h1 {
 	font-weight: 900;
-	font-size: 6px;
+	font-size: 5px;
 }
 
 .h2 {
 	font-weight: 700;
-	font-size: 4px;
+	font-size: 3px;
 }
 
 .h3 {
 	font-weight: 500;
-	font-size: 3px;
+	font-size: 2px;
 }
 
 .h4 {
 	font-weight: 300;
-	font-size: 2.5px;
+	font-size: 2px;
 }
 </style>
