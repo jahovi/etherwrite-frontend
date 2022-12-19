@@ -3,13 +3,6 @@
 		<!-- project dashboard -->
 		<div id="project-dashboard" class="row border-bottom dashboard">
 			<h3 class="col-12">Projekt Dashboard</h3>
-			<div class="col-12">
-				<strong>Aktive Benutzer(innen):</strong>
-				<br/>
-				<span class="badge badge-success badge-rounded pa-1 ml-1" v-for="user in users" :key="user.id">
-					{{ user.fullName }}
-				</span>
-			</div>
 			<div class="col-12 mt-4 board-area" style="display: flex; gap: 8px">
 				<ChartWrapper v-for="(widget, key) in projectCharts" :component="widget.component" :id="widget.id"
 											:key="key" style="width: 32%">

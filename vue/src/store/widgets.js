@@ -30,6 +30,14 @@ export default {
 				minW: 2,
 				minH: 1,
 			},
+			{
+				component: "groupParticipants",
+				category: "other",
+				configuration: {},
+				moderatorWidget: false,
+				minW: 1,
+				minH: 1,
+			},
 		],
 	},
 	getters: {

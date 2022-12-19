@@ -8,13 +8,14 @@
 <script lang="js">
 import authoringRatios_bar from "./charts/authoringRatios_bar.vue";
 import authoringRatios_pie from "./charts/authoringRatios_pie.vue";
+import groupParticipants from "./charts/groupParticipants.vue";
 
 export default {
 	name: "chart-wrapper",
 	components: {
 		authoringRatios_pie,
-		// eslint-disable-next-line vue/no-unused-components
 		authoringRatios_bar,
+		groupParticipants,
 	},
 	props: {
 		component: String,
