@@ -29,6 +29,8 @@ export default {
             datasets: [],
             authorColors: [],
             authorSet: {},
+            authorInfo: {},
+            hourlyTimestamp: false,
         };
     },
     computed: {
@@ -37,7 +39,34 @@ export default {
         },
     },
     mounted() {
-        this.getData().then(() => this.loadChart());
+        if (this.isMock) {
+            this.authorSet = ["Mueller", "Fuchs", "Gamma"],
+            this.authorColors = ["#00B2EE", "#FF7F24", "#008B45"];
+            this.datasets = [
+                {
+                    timestamp: new Date("2023-01-01"),
+                    Mueller: 0.2,
+                    Fuchs: 0.3,
+                    Gamma: 0.5,
+                },
+                {
+                    timestamp: new Date("2023-02-01"),
+                    Mueller: 0,
+                    Fuchs: 0,
+                    Gamma: 0,
+
+                },
+                {
+                    timestamp: new Date("2023-03-01"),
+                    Mueller: 0,
+                    Fuchs: 0.7,
+                    Gamma: 0.3,
+                },
+            ];
+            this.loadChart();
+        } else {
+            this.getData().then(() => this.loadChart());
+        }
     },
     methods: {
         getRandomColor() {
@@ -51,7 +80,13 @@ export default {
             return this.authorColors[index];
         },
         async getData() {
-            const data = await Communication.getFromEVA("activity/activities", { padName: store.state.base.padName });
+            this.authorInfo = await Communication.getFromEVA("minimap/authorInfo");
+            let data;
+            try {
+                data = await Communication.getFromEVA("activity/activities", { padName: store.state.base.padName });
+            } catch {
+                store.commit("setAlertWithTimeout", ["alert-danger", store.getters.getStrings.unknown_error, 3000]);
+            }
 
             // construct author set
             this.authorSet = new Set();
@@ -61,19 +96,25 @@ export default {
                 }
             }
 
+            // Populate author colors TODO replace
             function random_rgba() {
                 var o = Math.round, r = Math.random, s = 255;
                 return "rgba(" + o(r() * s) + "," + o(r() * s) + "," + o(r() * s) + "," + 1 + ")";
             }
+            Array.from(this.authorSet).forEach(() => this.authorColors.push(random_rgba()));
 
-            for (const author of this.authorSet.values()) {
-                // this.authorColors[author] = random_rgba();
-                this.authorColors.push(random_rgba());
-            }
-            const timestampParser = d3.timeParse("%d.%m.%Y");
+            const dalyTimestampParser = d3.timeParse("%d.%m.%Y");
+            const hourlyTimestampParser = d3.timeParse("%d.%m.%Y, %H:%M:%S");
             for (const elem of data) {
                 // TODO watch out for hour minute timestamps
-                const dataset = { timestamp: timestampParser(elem.timestamp) };
+                let dataset;
+                if (elem.timestamp.indexOf(",") > -1) {
+                    // timestamp contains comma therefore it contains a time of day
+                    this.hourlyTimestamp = true;
+                    dataset = { timestamp: hourlyTimestampParser(elem.timestamp) };
+                } else {
+                    dataset = { timestamp: dalyTimestampParser(elem.timestamp) };
+                }
                 let activitySum = 0;
                 for (const author in elem.authorToActivities) {
                     activitySum += elem.authorToActivities[author];
@@ -105,7 +146,8 @@ export default {
             // let h = 400 - margin.top - margin.bottom;
             const w = 600;
             const h = 200;
-            const barWidth = 400 / this.datasets.length;
+            // const barWidth = 200 / this.datasets.length;
+            const barWidth = this.datasets.length < 4 ? 50 : 400 / this.datasets.length;
 
 
             const stackGenerator = d3.stack().keys(Array.from(this.authorSet));
@@ -136,20 +178,26 @@ export default {
                 .append("svg")
                 .attr("width", w + margin.left + margin.right)
                 .attr("height", h + margin.top + margin.bottom)
-                // .append("g")
-                // .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+            // .append("g")
+            // .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-            // xAxis
+            // define xAxis
             let xAxis = d3.axisBottom(xScale)
-                .tickValues(this.datasets.map(d => d.timestamp))
-                .tickFormat(d3.timeFormat("%d.%m"));
+                .tickValues(this.datasets.map(d => d.timestamp));
+            if (this.hourlyTimestamp) {
+                xAxis.tickFormat(d3.timeFormat("%H"));
+            } else {
+                xAxis.tickFormat(d3.timeFormat("%d.%m"));
+            }
+
+            // append xAxis
             svg.append("g")
                 .attr("transform", "translate(" + margin.left + "," + h + ")")
                 .call(xAxis)
                 .selectAll("text")
                 .attr("transform", "rotate(-45)")
                 .style("text-anchor", "end");
-                
+
             // Add blank axis to bridge gap between x and y axis
             let xAxisBlank = d3.axisBottom(xScale)
                 .tickValues([])
@@ -223,5 +271,4 @@ export default {
     position: absolute;
     right: 5px;
 }
-
 </style>

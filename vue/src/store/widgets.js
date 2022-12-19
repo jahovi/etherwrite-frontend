@@ -3,8 +3,9 @@
  *
  * - component: the vue component that is the actuall widget
  * - configuration: not yet in use
- * - moderatorWidget: if this is true, the widget will be accessible to moderators (=teachers) only. If this is false, the widget
- *      will be accessible to normal users (=students) as well. Widgets that handle role distinction internally should state false.
+ * - moderatorWidget: if this is true, the widget will be shown in the catalog to moderators (=teachers) only. If this is false, the widget 
+ *      will be shown to normal users (=students) as well. This is not a security measure, but a way of preventing users from seeing 
+ *      widgets that wont show them anything because the backend doesn't provide data for users of their role.
  * - minW, minH: minimum widths and heigts in grid boxes
  *
  */
