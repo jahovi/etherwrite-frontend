@@ -127,11 +127,8 @@ export default {
         },
 
         loadChart() {
+            // vars
             const margin = { top: 20, right: 300, bottom: 40, left: 30 };
-            // let w = 460 - margin.left - margin.right;
-            // let h = 400 - margin.top - margin.bottom;
-            // const w = 700;
-            // const h = 200;
             let w = this.$refs.chart.getBoundingClientRect().width - margin.right;
 			let h = this.$refs.chart.getBoundingClientRect().height - margin.bottom;
             if (w < 0) {
@@ -140,14 +137,13 @@ export default {
 			if (h < 0) {
 				h = 110;
 			}
-
-            // const barWidth = 200 / this.datasets.length;
             const barWidth = this.datasets.length < 10 ? 50 : 400 / this.datasets.length;
 
-
+            // stack data
             const stackGenerator = d3.stack().keys(Array.from(this.authorSet));
             const stackedData = stackGenerator(this.datasets);
 
+            // init scales
             const xScale = d3.scaleTime()
                 .domain([this.datasets[0].timestamp, this.datasets[this.datasets.length - 1].timestamp])
                 .range([margin.left, w]);
@@ -159,7 +155,6 @@ export default {
             const colorScale = d3.scaleOrdinal()
                 .domain(Array.from(this.authorSet))
                 .range(this.authorColors);
-
 
             // svg object 
             let svg = d3.select(`#${this.elementId}`)
