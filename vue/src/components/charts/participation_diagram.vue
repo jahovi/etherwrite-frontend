@@ -142,7 +142,7 @@ export default {
 			}
 
             // const barWidth = 200 / this.datasets.length;
-            const barWidth = this.datasets.length < 4 ? 50 : 400 / this.datasets.length;
+            const barWidth = this.datasets.length < 10 ? 50 : 400 / this.datasets.length;
 
 
             const stackGenerator = d3.stack().keys(Array.from(this.authorSet));
