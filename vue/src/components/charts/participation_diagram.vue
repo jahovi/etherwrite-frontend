@@ -3,12 +3,11 @@
         <h4>Partizipationsdiagramm</h4>
         <div class="chart-container">
             <div class="chart" :id="elementId"></div>
-            <!-- <ul class="legend mt-3" v-if="authorSet.size">
-				<li v-for="author of authorSet.values()" :key="author">
-					<i class="fa fa-square" :style="{ color: rgba(129,172,220,1) }"></i> {{ author }}
-				</li>
-			</ul> -->
-            <!-- <svg width="300" height="300" :id="elementId"></svg> -->
+            <ul class="legend mt-3" v-if="authorSet.size">
+                <li v-for="author of Array.from(authorSet).reverse()" :key="author">
+                    <i class="fa fa-square" :style="{ color: getAuthorColor(author) }"></i> {{ author }}
+                </li>
+            </ul>
         </div>
     </div>
 </template>
@@ -36,17 +35,21 @@ export default {
         elementId() {
             return `participation_diagram_${this.id}`;
         },
-        // authorColor(author) {
-        //     console.log(author);
-        //     const index = [...this.authorSet].indexOf(author);
-        //     console.log(index);
-        //     return this.authorColor[index];
-        // },
     },
     mounted() {
         this.getData().then(() => this.loadChart());
     },
     methods: {
+        getRandomColor() {
+            var o = Math.round, r = Math.random, s = 255;
+            return "rgba(" + o(r() * s) + "," + o(r() * s) + "," + o(r() * s) + "," + 1 + ")";
+        },
+        getAuthorColor(author) {
+            console.log(author);
+            const index = [...this.authorSet].indexOf(author);
+            console.log(index);
+            return this.authorColors[index];
+        },
         async getData() {
             const data = await Communication.getFromEVA("activity/activities", { padName: store.state.base.padName });
 
@@ -97,9 +100,13 @@ export default {
             // const width = 400;
             // const height = 200;
 
-            let margin = { top: 20, right: 30, bottom: 30, left: 30 };
-            let w = 460 - margin.left - margin.right;
-            let h = 400 - margin.top - margin.bottom;
+            const margin = { top: 20, right: 30, bottom: 30, left: 30 };
+            // let w = 460 - margin.left - margin.right;
+            // let h = 400 - margin.top - margin.bottom;
+            const w = 600;
+            const h = 200;
+            const barWidth = 400 / this.datasets.length;
+
 
             const stackGenerator = d3.stack().keys(Array.from(this.authorSet));
             const stackedData = stackGenerator(this.datasets);
@@ -130,24 +137,28 @@ export default {
                 .attr("width", w + margin.left + margin.right)
                 .attr("height", h + margin.top + margin.bottom)
                 // .append("g")
-                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+                // .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-            // Add xAxis
+            // xAxis
             let xAxis = d3.axisBottom(xScale)
-            .tickValues(this.datasets.map(d => d.timestamp))
-            .tickFormat(d3.timeFormat("%d.%m"));
+                .tickValues(this.datasets.map(d => d.timestamp))
+                .tickFormat(d3.timeFormat("%d.%m"));
             svg.append("g")
-            .attr("transform", "translate(" + margin.left + "," + h + ")")
-            .call(xAxis);
-            
-            // Add blank axis so that xAxis meets yAxis
+                .attr("transform", "translate(" + margin.left + "," + h + ")")
+                .call(xAxis)
+                .selectAll("text")
+                .attr("transform", "rotate(-45)")
+                .style("text-anchor", "end");
+                
+            // Add blank axis to bridge gap between x and y axis
             let xAxisBlank = d3.axisBottom(xScale)
-                .tickValues([]);
+                .tickValues([])
+                .tickSize(0);
             svg.append("g")
                 .attr("transform", "translate(" + 0 + "," + h + ")")
                 .call(xAxisBlank);
 
-            // Add yAxis
+            // yAxis
             let yAxis = d3.axisLeft(yScale)
                 .ticks(8);
             svg.append("g")
@@ -166,9 +177,9 @@ export default {
             series.selectAll("rect")
                 .data((d) => d)
                 .join("rect")
-                .attr("width", 40)
+                .attr("width", barWidth)
                 .attr("y", (d) => yScale(d[1]))
-                .attr("x", (d) => xScale(d.data.timestamp) - 20)
+                .attr("x", (d) => xScale(d.data.timestamp) - 0.5 * barWidth)
                 .attr("height", (d) => yScale(d[0]) - yScale(d[1]))
                 .attr("transform", "translate(" + margin.left + "," + 0 + ")");
 
@@ -194,6 +205,23 @@ export default {
 
 </script>
 
-<style>
+<style scoped lang="css">
+.chart-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 20px;
+}
+
+.chart {
+    width: 100%;
+    height: 100%;
+}
+
+.legend {
+    position: absolute;
+    right: 5px;
+}
 
 </style>

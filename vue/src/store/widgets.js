@@ -5,7 +5,7 @@
  * - configuration: not yet in use
  * - moderatorWidget: if this is true, the widget will be accessible to moderators (=teachers) only. If this is false, the widget
  *      will be accessible to normal users (=students) as well. Widgets that handle role distinction internally should state false.
- * - options: an object containing default dimensions and minimum sizes for the widget
+ * - minW, minH: minimum widths and heigts in grid boxes
  *
  */
 export default {
@@ -32,7 +32,7 @@ export default {
 				category: "barchart",
 				configuration: {},
 				moderatorWidget: true,
-				minW: 1,
+				minW: 2,
 				minH: 1,
 			},
 		],
