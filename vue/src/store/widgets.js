@@ -33,7 +33,7 @@ export default {
 				category: "barchart",
 				configuration: {},
 				moderatorWidget: true,
-				minW: 2,
+				minW: 3,
 				minH: 1,
 			},
 		],
