@@ -37,11 +37,21 @@ export default {
         elementId() {
             return `participation_diagram_${this.id}`;
         },
+        // colorFn() {
+		// 	if (!this.authorColors || !this.authorColors.length) {
+		// 		return null;
+		// 	}
+            
+		// 	return d3.scaleOrdinal(this.authorColors);
+		// },
+        // authorColor(author) {
+        //     return this.getAuthorColor(author);
+        // }
     },
     mounted() {
         if (this.isMock) {
             this.authorSet = ["Mueller", "Fuchs", "Gamma"],
-            this.authorColors = ["#00B2EE", "#FF7F24", "#008B45"];
+                this.authorColors = ["#00B2EE", "#FF7F24", "#008B45"];
             this.datasets = [
                 {
                     timestamp: new Date("2023-01-01"),
@@ -177,15 +187,16 @@ export default {
             let svg = d3.select(`#${this.elementId}`)
                 .append("svg")
                 .attr("width", w + margin.left + margin.right)
-                .attr("height", h + margin.top + margin.bottom)
+                .attr("height", h + margin.top + margin.bottom);
             // .append("g")
             // .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
             // define xAxis
             let xAxis = d3.axisBottom(xScale)
+                .tickSizeOuter(0)
                 .tickValues(this.datasets.map(d => d.timestamp));
             if (this.hourlyTimestamp) {
-                xAxis.tickFormat(d3.timeFormat("%H"));
+                xAxis.tickFormat(d3.timeFormat("%H:%M"));
             } else {
                 xAxis.tickFormat(d3.timeFormat("%d.%m"));
             }
@@ -195,7 +206,7 @@ export default {
                 .attr("transform", "translate(" + margin.left + "," + h + ")")
                 .call(xAxis)
                 .selectAll("text")
-                .attr("transform", "rotate(-45)")
+                .attr("transform", "translate(-10, 2)rotate(-65)")
                 .style("text-anchor", "end");
 
             // Add blank axis to bridge gap between x and y axis
