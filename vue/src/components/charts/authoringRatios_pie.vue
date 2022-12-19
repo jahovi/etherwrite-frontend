@@ -99,7 +99,7 @@ export default {
 					.attr("fill", (d, i) => this.colorFn(i))
 					.attr("d", arc)
 					.append("title")
-					.text(d => d.value);
+					.text(d => `${d.value} %`);
 		},
 	},
 };

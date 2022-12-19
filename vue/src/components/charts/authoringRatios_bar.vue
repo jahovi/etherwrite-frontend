@@ -80,14 +80,18 @@ export default {
 					.data(this.ratios)
 					.enter()
 					.append("div")
+					.attr("class", "bar")
 					.style("width", d => d + "%")
 					.style("background-color", (d, i) => this.colorFn(i))
-					.text(d => d);
+					.style("overflow", "visible")
+					.append("span")
+					.attr("class", "chart-label")
+					.text(d => `${d} %`);
 		},
 	},
 };
 </script>
-<style scoped lang="css">
+<style lang="css">
 .chart-container {
 	display: flex;
 	flex-direction: row;
@@ -96,11 +100,16 @@ export default {
 	gap: 20px;
 }
 
-.chart >>> div {
-	font: 10px sans-serif;
+.chart-container .bar {
 	text-align: right;
-	padding: 3px;
-	margin: 1px;
-	color: white;
+}
+
+.chart-label {
+	background-color: rgba(255, 255, 255, 0.6);
+	color: black;
+	padding: 2px;
+	font: 10px sans-serif;
+	white-space: nowrap;
+	vertical-align: middle;
 }
 </style>
