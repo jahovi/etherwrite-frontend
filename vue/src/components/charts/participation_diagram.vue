@@ -40,7 +40,7 @@ export default {
     },
     mounted() {
         if (this.isMock) {
-            this.authorSet = ["Mueller", "Fuchs", "Gamma"];
+            this.authorSet = new Set(["Mueller", "Fuchs", "Gamma"]);
             this.authorColors = ["#00B2EE", "#FF7F24", "#008B45"];
             this.datasets = [
                 {
@@ -69,6 +69,9 @@ export default {
     },
     methods: {
         getUsername(author) {
+            if (this.isMock) {
+                return author;
+            }
             return this.authorInfo[author].epalias;
         },
         getAuthorColor(author) {
@@ -80,7 +83,7 @@ export default {
             this.authorInfo = await Communication.getFromEVA("minimap/authorInfo");
             let data;
             try {
-                data = await Communication.getFromEVA("activity/activities", { padName: store.state.base.padName });
+                data = await Communication.getFromEVA(`activity/activities/${store.state.base.padName}`, { padName: store.state.base.padName });
             } catch {
                 store.commit("setAlertWithTimeout", ["alert-danger", store.getters.getStrings.unknown_error, 3000]);
             }
@@ -98,7 +101,7 @@ export default {
 
             // init timestamp parsers
             const dalyTimestampParser = d3.timeParse("%d.%m.%Y");
-            const hourlyTimestampParser = d3.timeParse("%d.%m.%Y, %H:%M:%S");
+            const hourlyTimestampParser = d3.timeParse("%d.%m.%Y, %H:%M");
 
             // reformat data, convert activity counts to percentages
             for (const elem of data) {
@@ -130,13 +133,13 @@ export default {
             // vars
             const margin = { top: 20, right: 300, bottom: 40, left: 30 };
             let w = this.$refs.chart.getBoundingClientRect().width - margin.right;
-			let h = this.$refs.chart.getBoundingClientRect().height - margin.bottom;
+            let h = this.$refs.chart.getBoundingClientRect().height - margin.bottom;
             if (w < 0) {
-				w = 100;
-			}
-			if (h < 0) {
-				h = 110;
-			}
+                w = 100;
+            }
+            if (h < 0) {
+                h = 110;
+            }
             const barPadding = 1;
             const barWidth = (w / this.datasets.length - barPadding) > 50 ? 50 : (w / this.datasets.length - barPadding);
 
@@ -162,8 +165,8 @@ export default {
                 .append("svg")
                 .attr("width", w + margin.left + margin.right)
                 .attr("height", h + margin.top + margin.bottom);
-                // .attr("width", "100%")
-                // .attr("height", "100%");
+            // .attr("width", "100%")
+            // .attr("height", "100%");
 
             // define xAxis
             let xAxis = d3.axisBottom(xScale)
@@ -223,9 +226,9 @@ export default {
 
 <style scoped lang="css">
 .chart-outer-container {
-	height: 100%;
-	display: flex;
-	flex-direction: column;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 .chart-container {
