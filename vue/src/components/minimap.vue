@@ -3,37 +3,38 @@
 <!-- @copyright Marie Freise, 2022, marie_freise@web.de -->
 
 <template>
-	<div class="minimap" ref="minimapRef">
-		<div class="outerContainer">
-			<div class="scrollViewContainer">
-				<div
-						class="scrollView"
-						v-for="userPos in userPositions"
-						:key="userPos.id"
-						:style="{
-                background: userPos.color,
-                top: userPos.top + 'px',
-              }"
-				></div>
-			</div>
-			<div class="textBlockContainer" ref="textBlocks">
-            <span
-								:class="block.headingType"
-								v-for="block in coloredBlocks"
-								:key="block.id"
-								class="textBlock"
-								:style="{
-                background: block.color,
-                color:
-                  block.headingType === 'h1' && block.color === 'transparent'
-                    ? 'rgb(100,210,155)'
-                    : 'black',
-              }">
-							{{ block.content }}
-						</span>
-			</div>
-		</div>
-	</div>
+  <div class="minimap" ref="minimapRef">
+    <div class="outerContainer">
+      <div class="scrollViewContainer">
+        <div
+          class="scrollView"
+          v-for="userPos in userPositions"
+          :key="userPos.id"
+          :style="{
+            background: userPos.color,
+            top: userPos.top + 'px',
+          }"
+        ></div>
+      </div>
+      <div class="textBlockContainer" ref="textBlocks">
+        <span
+          :class="block.headingType"
+          v-for="block in coloredBlocks"
+          :key="block.id"
+          class="textBlock"
+          :style="{
+            background: block.color,
+            color:
+              block.headingType === 'h1' && block.color === 'transparent'
+                ? 'rgb(100,210,155)'
+                : 'black',
+          }"
+        >
+          {{ block.content }}
+        </span>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -157,58 +158,59 @@ export default {
 
 <style scoped>
 .minimap {
-	font-size: 2px;
-	background-color: rgba(0, 0, 0, 0.05);
-	height: 100%;
-	width: 100%;
-	user-select: none;
-	overflow: auto;
-	overflow-wrap: break-word;
+  font-size: 2px;
+  background-color: rgba(0, 0, 0, 0.05);
+  height: 100%;
+  width: 100%;
+  user-select: none;
+  overflow: auto;
+  overflow-wrap: break-word;
+  scrollbar-width: thin;
 }
 
 .scrollViewContainer {
-	height: 100%;
-	width: 100%;
-	z-index: 10;
-	position: relative;
+  height: 100%;
+  width: 100%;
+  z-index: 10;
+  position: relative;
 }
 
 .scrollView {
-	margin: 0;
-	padding: 0;
-	width: 100%;
-	height: 90px;
-	opacity: 0.5;
-	position: absolute;
-	transition: top 300ms ease-out;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 90px;
+  opacity: 0.5;
+  position: absolute;
+  transition: top 300ms ease-out;
 }
 
 .textBlockContainer {
-	width: 100%;
-	padding: 5px;
+  width: 100%;
+  padding: 5px;
 }
 
 .textBlock {
-	white-space: pre-line;
+  white-space: pre-line;
 }
 
 .h1 {
-	font-weight: 900;
-	font-size: 5px;
+  font-weight: 900;
+  font-size: 5px;
 }
 
 .h2 {
-	font-weight: 700;
-	font-size: 3px;
+  font-weight: 700;
+  font-size: 3px;
 }
 
 .h3 {
-	font-weight: 500;
-	font-size: 2px;
+  font-weight: 500;
+  font-size: 2px;
 }
 
 .h4 {
-	font-weight: 300;
-	font-size: 2px;
+  font-weight: 300;
+  font-size: 2px;
 }
 </style>
