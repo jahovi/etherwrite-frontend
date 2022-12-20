@@ -137,7 +137,6 @@ export default {
 			if (h < 0) {
 				h = 110;
 			}
-            // const barWidth = this.datasets.length < 10 ? 50 : 400 / this.datasets.length;
             const barPadding = 1;
             const barWidth = (w / this.datasets.length - barPadding) > 50 ? 50 : (w / this.datasets.length - barPadding);
 
