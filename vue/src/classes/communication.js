@@ -46,9 +46,7 @@ export default class Communication {
 				"Accept": "application/json",
 			},
 		})
-				.then(response => {
-					return response.json();
-				})
+				.then(response => response.json())
 				.catch(e => console.log("Error fetching EVA: " + e));
 	}
 }

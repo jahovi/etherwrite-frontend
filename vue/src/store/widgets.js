@@ -9,6 +9,7 @@
  * - minW, minH: minimum widths and heigts in grid boxes
  *
  */
+
 export default {
 	state: {
 		widgets: [
@@ -53,12 +54,12 @@ export default {
 				minH: 1,
 			},
 			{
-				component: "etherViz_diagram",
-				category: "sonstige",
+				component: "etherViz",
+				category: "other",
 				configuration: {},
 				moderatorWidget: false,
-				minW: 2,
-				minH: 1,
+				minW: 1,
+				minH: 2,
 			},
 		],
 	},
@@ -77,15 +78,13 @@ export default {
 			if (rootState.base.isModerator) {
 				state.widgets.forEach(widget => {
 					if (!categories.includes(widget.category)) {
-						let category = widget.category.charAt(0).toUpperCase() + widget.category.slice(1);
-						categories.push(category);
+						categories.push(widget.category);
 					}
 				});
 			} else {
 				state.widgets.filter(widget => widget.moderatorWidget === false).forEach(widget => {
 					if (!categories.includes(widget.category)) {
-						let category = widget.category.charAt(0).toUpperCase() + widget.category.slice(1);
-						categories.push(category);
+						categories.push(widget.category);
 					}
 				});
 			}

@@ -5,7 +5,9 @@
 			<!-- tabs nav -->
 			<ul class="nav nav-tabs mb-3 col-10" id="ex1" role="tablist">
 				<li class="nav-item" :class="{'active': cat === category }" v-for="(cat, key) in categories" :key="key">
-					<a class="nav-link" role="tab" @click="category = cat" aria-selected="true">{{ cat }}</a>
+					<a class="nav-link" role="tab" href="#" @click="category = cat" aria-selected="true">
+						{{ i18n[`widgets.${cat}`] }}
+					</a>
 				</li>
 			</ul>
 			<!-- tabs content -->
@@ -60,6 +62,9 @@ export default {
 		widgetsOfCurrentCategory() {
 			return this.widgets
 					.filter(widget => widget.category === this.category.toLowerCase());
+		},
+		i18n() {
+			return this.$store.getters.getStrings;
 		},
 	},
 	watch: {},
