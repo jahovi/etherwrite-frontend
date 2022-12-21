@@ -4,8 +4,10 @@
 		<div class="widget-catalog-panel border rounded" v-if="isWidgetCatalogOpen">
 			<!-- tabs nav -->
 			<ul class="nav nav-tabs mb-3 col-10" id="ex1" role="tablist">
-				<li class="nav-item" :class="{ 'active': cat === category }" v-for="(cat, key) in categories" :key="key">
-					<a class="nav-link" role="tab" @click="category = cat" aria-selected="true">{{ cat }}</a>
+				<li class="nav-item" :class="{'active': cat === category }" v-for="(cat, key) in categories" :key="key">
+					<a class="nav-link" role="tab" href="#" @click="category = cat" aria-selected="true">
+						{{ i18n[`widgets.${cat}`] }}
+					</a>
 				</li>
 			</ul>
 			<!-- tabs content -->
@@ -13,15 +15,15 @@
 				<ChartWrapper class="wrapper border rounded" v-for="(widget, key) in widgetsOfCurrentCategory"
 					:isMock="true" :component="widget.component" :id="widget.id" :key="key">
 					<template #btn>
-						<button :id="'add-widget-btn-' + widget.id" class="btn btn-success btn-add-widget"
-							@click.prevent="addToDashboard(widget)">
+						<button :id="'add-widget-btn-' + widget.id" class="btn btn-success rounded btn-add-widget"
+										@click.prevent="addToDashboard(widget)">
 							<i class="fa fa-plus"></i>
 						</button>
 					</template>
 				</ChartWrapper>
 			</div>
 			<!-- close widget-catalog button -->
-			<button id="close-widget-catalog-btn" class="btn btn-danger" @click.prevent="closeWidgetCatalog">
+			<button id="close-widget-catalog-btn" class="btn rounded btn-danger" @click.prevent="closeWidgetCatalog">
 				<i class="fa fa-close"></i>
 			</button>
 		</div>
@@ -64,6 +66,9 @@ export default {
 		widgetsOfCurrentCategory() {
 			return this.widgets
 				.filter(widget => widget.category === this.category.toLowerCase());
+		},
+		i18n() {
+			return this.$store.getters.getStrings;
 		},
 	},
 	watch: {},
@@ -130,9 +135,14 @@ export default {
 	position: absolute;
 	top: 5px;
 	right: 5px;
+	width: 30px;
+	height: 30px;
 }
 
 .fa {
-	font-size: 1.5em;
+	position: absolute;
+	top: 7px;
+	left: 8px;
+	font-size: 1em;
 }
 </style>

@@ -36,3 +36,8 @@ $string['couldnotfetchgrouppads'] = 'Could not fetch pads of Etherpad group.';
 $string['couldnotcreatepad'] = 'Could not create Etherpad pad.';
 $string['couldnotcreateauthor'] = 'Could not create Etherpad author.';
 $string['couldnotcreatesession'] = 'Could not create Etherpad session.';
+
+// Widget categories
+$string['widgets.barchart'] = 'Bar chart';
+$string['widgets.piechart'] = 'Pie chart';
+$string['widgets.other'] = 'Other';

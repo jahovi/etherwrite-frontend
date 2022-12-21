@@ -11,8 +11,15 @@
 				>
 			</div>
 		</div>
+		<a href="#" @click="showMinimap = !showMinimap">
+			<i class="fa fa-angle-double-left mr-1" v-if="showMinimap"></i>
+			<i class="fa fa-angle-double-right mr-1" v-else></i>
+			Minimap
+		</a>
 		<div class="holder" v-if="!loading">
-			<Minimap />
+			<div class="minimap-wrapper" :class="{'hidden-minimap': !showMinimap}">
+				<Minimap/>
+			</div>
 			<iframe
 					id="writerview"
 					v-bind:src="link"
@@ -28,6 +35,7 @@ import Communication from "../classes/communication";
 export default {
 	data: () => ({
 		loading: true,
+		showMinimap: true,
 	}),
 	components: {
 		Minimap,
@@ -51,11 +59,19 @@ export default {
 			document.cookie = `token=${response.token}; expires=${expiry}; path=/`;
 			this.loading = false;
 		});
+		this.checkScreenSize();
+		window.addEventListener("resize", () => this.checkScreenSize());
 	},
 	methods: {
 		reloadFrame: function () {
 			const element = document.getElementById("writerview");
 			element.src += "";
+		},
+		checkScreenSize() {
+			console.log(window.innerWidth);
+			if (window.innerWidth < 768) {
+				this.showMinimap = false;
+			}
 		},
 	},
 };
@@ -63,16 +79,26 @@ export default {
 
 <style scoped>
 iframe {
-	width: 85%;
-	height: 700px;
 	border-style: none;
-	float: right;
+	flex-grow: 1;
+}
+
+.minimap-wrapper {
+	width: 10%;
+	max-width: 70px;
+	padding-top: 41px;
+	transition: width 0.3s ease-out;
+}
+
+.minimap-wrapper.hidden-minimap {
+	width: 0;
 }
 
 .holder {
 	width: 100%;
-	height: 100%;
-	position: relative;
+	height: 700px;
+	display: flex;
+	gap: 12px;
 }
 </style>
 

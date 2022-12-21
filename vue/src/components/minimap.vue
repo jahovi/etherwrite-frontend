@@ -3,41 +3,38 @@
 <!-- @copyright Marie Freise, 2022, marie_freise@web.de -->
 
 <template>
-	<div>
-		<div class="scrollbox scrollbox_delayed" v-dragscroll.y="true">
-			<div class="minimap" ref="minimapRef">
-				<div class="outerContainer">
-					<div class="scrollViewContainer">
-						<div
-								class="scrollView"
-								v-for="userPos in userPositions"
-								:key="userPos.id"
-								:style="{
-                background: userPos.color,
-                top: userPos.top + 'px',
-              }"
-						></div>
-					</div>
-					<div class="textBlockContainer" ref="textBlocks">
-            <span
-								:class="block.headingType"
-								v-for="block in coloredBlocks"
-								:key="block.id"
-								class="textBlock"
-								:style="{
-                background: block.color,
-                color:
-                  block.headingType === 'h1' && block.color === 'transparent'
-                    ? 'rgb(100,210,155)'
-                    : 'black',
-              }"
-						>{{ block.content }}</span
-						>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+  <div class="minimap" ref="minimapRef">
+    <div class="outerContainer">
+      <div class="scrollViewContainer">
+        <div
+          class="scrollView"
+          v-for="userPos in userPositions"
+          :key="userPos.id"
+          :style="{
+            background: userPos.color,
+            top: userPos.top + 'px',
+          }"
+        ></div>
+      </div>
+      <div class="textBlockContainer" ref="textBlocks">
+        <span
+          :class="block.headingType"
+          v-for="block in coloredBlocks"
+          :key="block.id"
+          class="textBlock"
+          :style="{
+            background: block.color,
+            color:
+              block.headingType === 'h1' && block.color === 'transparent'
+                ? 'rgb(100,210,155)'
+                : 'black',
+          }"
+        >
+          {{ block.content }}
+        </span>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -88,7 +85,7 @@ export default {
 				this.processTextBlocks();
 				this.processScrollPos();
 
-				await this.sleep(100);
+				await this.sleep(2000);
 			}
 		},
 		processScrollPos: function () {
@@ -101,10 +98,10 @@ export default {
 				if (textBlocks.length > scrollPosInfo.topIndex - 1) {
 					const authorColor = this.authorData[authorId]["color"];
 
-					const minimapRef = this.$refs.minimapRef;
-
+					// Use the top of the minimap as an anchor reference point to position the viewport of the users.
+					// Subtract the text block container margin.
 					const topPosition = textBlocks[scrollPosInfo.topIndex - 1]
-							.getBoundingClientRect().top - minimapRef.getBoundingClientRect().top; //Use the top of the minimap as an anchor reference point to position the viewport of the users
+							.getBoundingClientRect().top - (textBlocks[0] ? textBlocks[0].getBoundingClientRect().top : 0) - 5;
 
 					this.userPositions.push({id: this.userPositions.length, top: topPosition, color: authorColor});
 				}
@@ -133,7 +130,7 @@ export default {
 							id: this.coloredBlocks.length,
 							color: blockColor,
 							content: rndContent,
-							headingType: currentHeadingType
+							headingType: currentHeadingType,
 						});
 						sampleIndex = 0;
 						isHeading = false;
@@ -160,88 +157,60 @@ export default {
 </script>
 
 <style scoped>
-.scrollbox {
-	visibility: hidden;
-	position: absolute;
-	float: left;
-	width: 10%;
-	height: 660px;
-	top: 40px;
-	bottom: 40px;
-	font-size: 2px;
-	overflow: auto;
-	overflow-wrap: break-word;
-	scrollbar-width: thin;
-}
-
-.scrollbox:hover {
-	visibility: visible;
-}
-
-.scrollbox_delayed {
-	transition: visibility 0.2s;
-}
-
-.scrollbox_delayed:hover {
-	transition: visibility 0s 0.2s;
-}
-
 .minimap {
-	background-color: rgba(0, 0, 0, 0.05);
-	visibility: visible;
-	min-height: 660px;
-	user-select: none;
-	overflow: auto;
-	overflow-wrap: break-word;
-}
-
-.outerContainer {
-	display: flex;
+  font-size: 2px;
+  background-color: rgba(0, 0, 0, 0.05);
+  height: 100%;
+  width: 100%;
+  user-select: none;
+  overflow: auto;
+  overflow-wrap: break-word;
+  scrollbar-width: thin;
 }
 
 .scrollViewContainer {
-	height: 100%;
-	width: 100%;
-	z-index: 10;
+  height: 100%;
+  width: 100%;
+  z-index: 10;
+  position: relative;
 }
 
 .scrollView {
-	margin: 0;
-	float: left;
-	padding: 0;
-	width: 100%;
-	height: 90px;
-	opacity: 0.5;
-	position: absolute;
-	transition: top 300ms ease-out;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 90px;
+  opacity: 0.5;
+  position: absolute;
+  transition: top 300ms ease-out;
 }
 
 .textBlockContainer {
-	width: 100%;
-	margin: 10% 10% 10% -75%;
+  width: 100%;
+  padding: 5px;
 }
 
 .textBlock {
-	white-space: pre-line;
+  white-space: pre-line;
 }
 
 .h1 {
-	font-weight: 900;
-	font-size: 6px;
+  font-weight: 900;
+  font-size: 5px;
 }
 
 .h2 {
-	font-weight: 700;
-	font-size: 4px;
+  font-weight: 700;
+  font-size: 3px;
 }
 
 .h3 {
-	font-weight: 500;
-	font-size: 3px;
+  font-weight: 500;
+  font-size: 2px;
 }
 
 .h4 {
-	font-weight: 300;
-	font-size: 2.5px;
+  font-weight: 300;
+  font-size: 2px;
 }
 </style>

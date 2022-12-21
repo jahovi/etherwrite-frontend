@@ -36,3 +36,8 @@ $string['couldnotfetchgrouppads'] = 'Liste der Pads der Etherpad-Gruppe konnten 
 $string['couldnotcreatepad'] = 'Etherpad-Pad konnte nicht erstellt werden.';
 $string['couldnotcreateauthor'] = 'Konnte den Etherpad-Autor nicht erstellen.';
 $string['couldnotcreatesession'] = 'Die Etherpad-Sitzung konnte nicht erstellt werden.';
+
+// Widget categories
+$string['widgets.barchart'] = 'Balkendiagramm';
+$string['widgets.piechart'] = 'Kuchendiagramm';
+$string['widgets.other'] = 'Sonstige';

@@ -1,16 +1,15 @@
-let id = 1;
-
 /**
  * Widget configurations are stored here. For each widget, specify:
  *
  * - component: the vue component that is the actuall widget
- * - id: a unique arbitrary number that will become the id of the html element containing the widget
  * - configuration: not yet in use
- * - moderatorWidget: if this is true, the widget will be accessible to moderators (=teachers) only. If this is false, the widget
- *      will be accessible to normal users (=students) as well. Widgets that handle role distinction internally should state false.
- * - options: an object containing default dimensions and minimum sizes for the widget
+ * - moderatorWidget: if this is true, the widget will be shown in the catalog to moderators (=teachers) only. If this is false, the widget
+ *      will be shown to normal users (=students) as well. This is not a security measure, but a way of preventing users from seeing
+ *      widgets that wont show them anything because the backend doesn't provide data for users of their role.
+ * - minW, minH: minimum widths and heigts in grid boxes
  *
  */
+
 export default {
 	state: {
 		widgets: [
@@ -31,6 +30,14 @@ export default {
 				minH: 1,
 			},
 			{
+				component: "participation_diagram",
+				category: "barchart",
+				configuration: {},
+				moderatorWidget: true,
+				minW: 3,
+				minH: 1,
+			},
+			{
 				component: "groupParticipants",
 				category: "other",
 				configuration: {},
@@ -42,6 +49,22 @@ export default {
 				moderatorWidget: false,
 				minW: 2,
 				minH: 1,
+			},
+			{
+				component: "activityOverTime",
+				category: "linechart",
+				configuration: {},
+				moderatorWidget: false,
+				minW: 3,
+				minH: 1,
+			},
+			{
+				component: "etherViz",
+				category: "other",
+				configuration: {},
+				moderatorWidget: false,
+				minW: 1,
+				minH: 2,
 			},
 		],
 	},
@@ -62,6 +85,7 @@ export default {
 					if (!categories.includes(widget.category)) {
 						let category = widget.category;
 						categories.push(category);
+						categories.push(widget.category);
 					}
 				});
 			} else {
@@ -70,6 +94,7 @@ export default {
 					if (!categories.includes(widget.category)) {
 						let category = widget.category;
 						categories.push(category);
+						categories.push(widget.category);
 					}
 				});
 			}
