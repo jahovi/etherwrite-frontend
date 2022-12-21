@@ -88,7 +88,7 @@ export default {
 				this.processTextBlocks();
 				this.processScrollPos();
 
-				await this.sleep(100);
+				await this.sleep(2000);
 			}
 		},
 		processScrollPos: function () {
