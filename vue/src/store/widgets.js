@@ -36,6 +36,11 @@ export default {
 				configuration: {},
 				moderatorWidget: false,
 				minW: 1,
+				component: "operations_bar",
+				category: "barchart",
+				configuration: {},
+				moderatorWidget: false,
+				minW: 2,
 				minH: 1,
 			},
 		],
@@ -55,14 +60,15 @@ export default {
 			if (rootState.base.isModerator) {
 				state.widgets.forEach(widget => {
 					if (!categories.includes(widget.category)) {
-						let category = widget.category.charAt(0).toUpperCase() + widget.category.slice(1);
+						let category = widget.category;
 						categories.push(category);
 					}
 				});
 			} else {
 				state.widgets.filter(widget => widget.moderatorWidget === false).forEach(widget => {
+					
 					if (!categories.includes(widget.category)) {
-						let category = widget.category.charAt(0).toUpperCase() + widget.category.slice(1);
+						let category = widget.category;
 						categories.push(category);
 					}
 				});

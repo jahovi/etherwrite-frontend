@@ -9,6 +9,7 @@
 import authoringRatios_bar from "./charts/authoringRatios_bar.vue";
 import authoringRatios_pie from "./charts/authoringRatios_pie.vue";
 import groupParticipants from "./charts/groupParticipants.vue";
+import operations_bar from "./charts/operations/operations_bar.vue";
 
 export default {
 	name: "chart-wrapper",
@@ -16,6 +17,7 @@ export default {
 		authoringRatios_pie,
 		authoringRatios_bar,
 		groupParticipants,
+		operations_bar,
 	},
 	props: {
 		component: String,

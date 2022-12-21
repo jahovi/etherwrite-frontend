@@ -4,17 +4,17 @@
 		<div class="widget-catalog-panel border rounded" v-if="isWidgetCatalogOpen">
 			<!-- tabs nav -->
 			<ul class="nav nav-tabs mb-3 col-10" id="ex1" role="tablist">
-				<li class="nav-item" :class="{'active': cat === category }" v-for="(cat, key) in categories" :key="key">
+				<li class="nav-item" :class="{ 'active': cat === category }" v-for="(cat, key) in categories" :key="key">
 					<a class="nav-link" role="tab" @click="category = cat" aria-selected="true">{{ cat }}</a>
 				</li>
 			</ul>
 			<!-- tabs content -->
 			<div role="tabpanel" v-if="category">
-				<ChartWrapper class="wrapper border rounded" v-for="(widget, key) in widgetsOfCurrentCategory" :isMock="true"
-											:component="widget.component" :id="widget.id" :key="key">
+				<ChartWrapper class="wrapper border rounded" v-for="(widget, key) in widgetsOfCurrentCategory"
+					:isMock="true" :component="widget.component" :id="widget.id" :key="key">
 					<template #btn>
 						<button :id="'add-widget-btn-' + widget.id" class="btn btn-success btn-add-widget"
-										@click.prevent="addToDashboard(widget)">
+							@click.prevent="addToDashboard(widget)">
 							<i class="fa fa-plus"></i>
 						</button>
 					</template>
@@ -55,11 +55,15 @@ export default {
 		 * Get categories from widget-store.
 		 */
 		categories() {
-			return this.$store.getters.getWidgetCategories;
+			let categories = [];
+			for(let cat of this.$store.getters.getWidgetCategories) {
+				categories.push(cat.charAt(0).toUpperCase() + cat.slice(1));
+			}
+			return categories;
 		},
 		widgetsOfCurrentCategory() {
 			return this.widgets
-					.filter(widget => widget.category === this.category.toLowerCase());
+				.filter(widget => widget.category === this.category.toLowerCase());
 		},
 	},
 	watch: {},
