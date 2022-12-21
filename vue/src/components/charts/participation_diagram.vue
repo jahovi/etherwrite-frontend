@@ -101,7 +101,7 @@ export default {
 
             // init timestamp parsers
             const dalyTimestampParser = d3.timeParse("%d.%m.%Y");
-            const hourlyTimestampParser = d3.timeParse("%d.%m.%Y, %H:%M:%S");
+            const hourlyTimestampParser = d3.timeParse("%d.%m.%Y, %H:%M");
 
             // reformat data, convert activity counts to percentages
             for (const elem of data) {
