@@ -83,7 +83,7 @@ export default {
             this.authorInfo = await Communication.getFromEVA("minimap/authorInfo");
             let data;
             try {
-                data = await Communication.getFromEVA("activity/activities", { padName: store.state.base.padName });
+                data = await Communication.getFromEVA(`activity/activities/${store.state.base.padName}`);
             } catch {
                 store.commit("setAlertWithTimeout", ["alert-danger", store.getters.getStrings.unknown_error, 3000]);
             }
