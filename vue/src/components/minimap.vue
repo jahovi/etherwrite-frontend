@@ -133,7 +133,7 @@ export default {
 							id: this.coloredBlocks.length,
 							color: blockColor,
 							content: rndContent,
-							headingType: currentHeadingType
+							headingType: currentHeadingType,
 						});
 						sampleIndex = 0;
 						isHeading = false;
