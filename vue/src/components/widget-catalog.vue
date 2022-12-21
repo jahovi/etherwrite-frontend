@@ -13,7 +13,7 @@
 			<!-- tabs content -->
 			<div role="tabpanel" v-if="category">
 				<ChartWrapper class="wrapper border rounded" v-for="(widget, key) in widgetsOfCurrentCategory"
-					:isMock="true" :component="widget.component" :id="widget.id" :key="key">
+											:isMock="true" :component="widget.component" :id="widget.id" :key="key">
 					<template #btn>
 						<button :id="'add-widget-btn-' + widget.id" class="btn btn-success rounded btn-add-widget"
 										@click.prevent="addToDashboard(widget)">
@@ -57,15 +57,11 @@ export default {
 		 * Get categories from widget-store.
 		 */
 		categories() {
-			let categories = [];
-			for(let cat of this.$store.getters.getWidgetCategories) {
-				categories.push(cat.charAt(0).toUpperCase() + cat.slice(1));
-			}
-			return categories;
+			return this.$store.getters.getWidgetCategories;
 		},
 		widgetsOfCurrentCategory() {
 			return this.widgets
-				.filter(widget => widget.category === this.category.toLowerCase());
+					.filter(widget => widget.category === this.category.toLowerCase());
 		},
 		i18n() {
 			return this.$store.getters.getStrings;
