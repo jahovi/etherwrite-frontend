@@ -40,4 +40,5 @@ $string['couldnotcreatesession'] = 'Could not create Etherpad session.';
 // Widget categories
 $string['widgets.barchart'] = 'Bar chart';
 $string['widgets.piechart'] = 'Pie chart';
+$string['widgets.linechart'] = 'Line chart';
 $string['widgets.other'] = 'Other';

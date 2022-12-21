@@ -40,4 +40,5 @@ $string['couldnotcreatesession'] = 'Die Etherpad-Sitzung konnte nicht erstellt w
 // Widget categories
 $string['widgets.barchart'] = 'Balkendiagramm';
 $string['widgets.piechart'] = 'Kuchendiagramm';
+$string['widgets.linechart'] = 'Liniendiagramm';
 $string['widgets.other'] = 'Sonstige';
