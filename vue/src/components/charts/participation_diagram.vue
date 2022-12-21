@@ -83,7 +83,7 @@ export default {
             this.authorInfo = await Communication.getFromEVA("minimap/authorInfo");
             let data;
             try {
-                data = await Communication.getFromEVA(`activity/activities/${store.state.base.padName}`, { padName: store.state.base.padName });
+                data = await Communication.getFromEVA("activity/activities", { padName: store.state.base.padName });
             } catch {
                 store.commit("setAlertWithTimeout", ["alert-danger", store.getters.getStrings.unknown_error, 3000]);
             }
@@ -101,7 +101,7 @@ export default {
 
             // init timestamp parsers
             const dalyTimestampParser = d3.timeParse("%d.%m.%Y");
-            const hourlyTimestampParser = d3.timeParse("%d.%m.%Y, %H:%M");
+            const hourlyTimestampParser = d3.timeParse("%d.%m.%Y, %H:%M:%S");
 
             // reformat data, convert activity counts to percentages
             for (const elem of data) {
@@ -165,8 +165,6 @@ export default {
                 .append("svg")
                 .attr("width", w + margin.left + margin.right)
                 .attr("height", h + margin.top + margin.bottom);
-            // .attr("width", "100%")
-            // .attr("height", "100%");
 
             // define xAxis
             let xAxis = d3.axisBottom(xScale)
