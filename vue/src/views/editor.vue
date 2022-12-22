@@ -6,11 +6,11 @@
 		>
 			<div class="row">
 				<div class="spinner-grow text-primary mt-4" role="status">
-					<span class="sr-only">Loading...</span>
+					<span class="sr-only">{{ getStrings["loading"] }}</span>
 				</div>
 			</div>
 			<div class="row">
-				<p class="mt-2">{{ getStrings.loadeditor }}</p>
+				<p class="mt-2">{{ getStrings["loadeditor"] }}</p>
 			</div>
 		</div>
 		<Editor v-else/>

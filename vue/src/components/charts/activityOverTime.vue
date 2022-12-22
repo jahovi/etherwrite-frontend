@@ -1,6 +1,6 @@
 <template>
 	<div class="chart-outer-container">
-		<h4>Operationen (zeitlicher Verlauf)</h4>
+		<h4>Aktivitäten (zeitlicher Verlauf)</h4>
 		<div class="chart-container">
 			<div class="chart" style="width: 100%; height: 100%" :id="elementId" ref="chart"></div>
 			<ul class="legend mt-3" style="flex-shrink: 0">
