@@ -24,6 +24,7 @@ export default {
 	props: {
 		id: String,
 		isMock: Boolean,
+		padName: String,
 	},
 	computed: {
 		users() {

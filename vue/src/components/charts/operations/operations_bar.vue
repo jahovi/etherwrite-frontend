@@ -27,6 +27,7 @@ export default {
     props: {
         id: String,
         isMock: Boolean,
+        padName: String,
     },
     data() {
         return {
@@ -60,12 +61,21 @@ export default {
             return this.$store.state.users.users;
         },
     },
+	watch: {
+		padName() {
+			if (!this.isMock) {
+				this.getData().then(() =>
+					this.loadBar());
+			}
+		}
+	},
     methods: {
         /**
          * Get data from EVA and sum up edits, writes, pastes and deletes for each author.
          */
         async getData() {
-            return Communication.getFromEVA(`activity/operations/${store.state.base.padName}`,
+            this.authorsToOperations = [];
+            return Communication.getFromEVA(`activity/operations/${this.padName}`,
                 { padName: store.state.base.padName })
                 .then(res => {
                     for (let entry of res) {
@@ -120,6 +130,7 @@ export default {
          * Load the chart.
          */
         async loadBar() {
+			document.getElementById(this.elementId).childNodes.forEach(c => c.remove());
             let data = [];
             let dataValues = [];
             // get authors info

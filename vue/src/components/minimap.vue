@@ -55,12 +55,10 @@ export default {
 	directives: {
 		dragscroll,
 	},
-	props: {},
-	computed: {
-		padName() {
-			return this.$store.state.base.padName;
-		},
+	props: {
+		padName: String
 	},
+	computed: {},
 	mounted() {
 		Communication.getFromEVA("minimap/authorInfo")
 				.then(authors => this.authorData = authors);

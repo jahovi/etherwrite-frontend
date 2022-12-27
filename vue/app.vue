@@ -11,12 +11,14 @@
 			<li class="nav-item">
 				<router-link to="/" class="nav-link">Aufgabenstellung</router-link>
 			</li>
-			<li class="nav-item">
-				<router-link to="/editor" class="nav-link">Texteditor</router-link>
-			</li>
-			<li class="nav-item">
-				<router-link to="/dashboard" class="nav-link">Dashboard</router-link>
-			</li>
+			<template v-for="editor in getEditorInstances" :key="editor.padName">
+				<li class="nav-item">
+					<router-link :to="`/editor/${editor.padName}`" class="nav-link" :text="`Texteditor (${editor.groupName})`"/>
+				</li>
+				<li class="nav-item">
+					<router-link :to="`/dashboard/${editor.padName}`"  class="nav-link" :text="`Dashboard (${editor.groupName})`"/>
+				</li>
+			</template>
 		</ul>
 		<div class="tab-content main-vue">
 
@@ -30,6 +32,8 @@
 	</div>
 </template>
 <script>
+import store from './src/store';
+
 
 export default {
 	data: function () {
@@ -52,6 +56,9 @@ export default {
 		getAlertMessage: function () {
 			return this.$store.getters.getAlertMessage;
 		},
+		getEditorInstances: function () {
+			return this.$store.state.base.editorInstances;
+		}	
 	},
 };
 </script>

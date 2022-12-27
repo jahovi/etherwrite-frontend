@@ -28,6 +28,7 @@ export default {
 	props: {
 		id: String,
 		isMock: Boolean,
+		padName: String,
 	},
 	computed: {
 		elementId() {
@@ -49,24 +50,33 @@ export default {
 			this.loadBar();
 		} else {
 			this.getData().then(() =>
+				this.loadBar());
+		}
+	},
+	watch: {
+		padName() {
+			if (!this.isMock) {
+				this.getData().then(() =>
 					this.loadBar());
+			}
 		}
 	},
 	methods: {
 		async getData() {
-			return Communication.getFromEVA("authoring_ratios", {pad: store.state.base.padName})
-					.then(data => {
-						this.authors = data.authors;
-						this.ratios = data.ratios;
-						this.colors = data.colors;
-					})
-					.catch(() => {
-						store.commit("setAlertWithTimeout", ["alert-danger", store.getters.getStrings.unknown_error, 3000]);
-					});
+			return Communication.getFromEVA("authoring_ratios", { pad: this.padName })
+				.then(data => {
+					this.authors = data.authors;
+					this.ratios = data.ratios;
+					this.colors = data.colors;
+				})
+				.catch(() => {
+					store.commit("setAlertWithTimeout", ["alert-danger", store.getters.getStrings.unknown_error, 3000]);
+				});
 		},
-		loadBar() {
+		async loadBar() {
 			// Add a filler if the given numbers don't add up to 100%.
 			// Can happen with weird test data.
+			document.getElementById(this.elementId).childNodes.forEach(c => c.remove());
 			const sum = this.ratios.reduce((result, entry) => result + entry, 0);
 			if (sum < 1) {
 				this.authors = [...this.authors, "Unbekannt"];
@@ -74,19 +84,18 @@ export default {
 				this.colors = [...this.colors, "#ccc"];
 			}
 
-
 			d3.select(`#${this.elementId}`)
-					.selectAll("div")
-					.data(this.ratios)
-					.enter()
-					.append("div")
-					.attr("class", "bar")
-					.style("width", d => d + "%")
-					.style("background-color", (d, i) => this.colorFn(i))
-					.style("overflow", "visible")
-					.append("span")
-					.attr("class", "chart-label")
-					.text(d => `${d} %`);
+				.selectAll("div")
+				.data(this.ratios)
+				.enter()
+				.append("div")
+				.attr("class", "bar")
+				.style("width", d => d + "%")
+				.style("background-color", (d, i) => this.colorFn(i))
+				.style("overflow", "visible")
+				.append("span")
+				.attr("class", "chart-label")
+				.text(d => `${d} %`);
 		},
 	},
 };

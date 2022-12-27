@@ -23,6 +23,7 @@ export default {
     props: {
         id: String,
         isMock: Boolean,
+		padName: String,
     },
     data() {
         return {
@@ -67,6 +68,14 @@ export default {
             this.getData().then(() => this.loadChart());
         }
     },
+	watch: {
+		padName() {
+			if (!this.isMock) {
+				this.getData().then(() =>
+					this.loadChart());
+			}
+		}
+	},
     methods: {
         getUsername(author) {
             if (this.isMock) {
@@ -83,7 +92,7 @@ export default {
             this.authorInfo = await Communication.getFromEVA("minimap/authorInfo");
             let data;
             try {
-                data = await Communication.getFromEVA(`activity/activities/${store.state.base.padName}`);
+                data = await Communication.getFromEVA(`activity/activities/${this.padName}`);
             } catch {
                 store.commit("setAlertWithTimeout", ["alert-danger", store.getters.getStrings.unknown_error, 3000]);
             }
@@ -131,6 +140,8 @@ export default {
 
         loadChart() {
             // vars
+            
+			document.getElementById(this.elementId).childNodes.forEach(c => c.remove());
             const margin = { top: 20, right: 300, bottom: 40, left: 30 };
             let w = this.$refs.chart.getBoundingClientRect().width - margin.right;
             let h = this.$refs.chart.getBoundingClientRect().height - margin.bottom;

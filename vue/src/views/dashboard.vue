@@ -5,7 +5,7 @@
 			<h3 class="col-12">Projekt Dashboard</h3>
 			<div class="col-12 mt-4 board-area" style="display: flex; gap: 8px">
 				<ChartWrapper v-for="(widget, key) in projectCharts" :component="widget.component" :id="widget.id"
-											:key="key" style="width: 32%">
+											:key="key" :padName="padName" style="width: 32%">
 				</ChartWrapper>
 			</div>
 		</div>
@@ -38,7 +38,7 @@
 										@moved="saveGrid"
 										@resized="saveGrid">
 
-						<ChartWrapper :component="item.component" :id="item.id" :key="key">
+						<ChartWrapper :component="item.component" :padName="padName" :id="item.id" :key="key">
 						</ChartWrapper>
 
 						<span class="remove" @click="removeItemFromGrid(item)">
@@ -75,6 +75,10 @@ export default {
 		responsive: true,
 	}),
 	computed: {
+		editorInstance() {
+			const padName = this.$route.params.padName;
+			return this.$store.state.base.editorInstances.find(e => e.padName===padName);
+		},
 		getStrings() {
 			return this.$store.getters.getStrings;
 		},
@@ -82,7 +86,7 @@ export default {
 			return this.$store.state.users.users;
 		},
 		padName() {
-			return this.$store.state.base.padName;
+			return this.editorInstance.padName;
 		},
 		isLoading() {
 			return !this.$store.state.base.initialized;

@@ -1,6 +1,6 @@
 <template>
 	<div class="chart-wrapper" :id="'chart-wrapper-' + id" :name="component">
-		<component :is="component" :id="'custom-chart-' + id" :isMock="isMock" @click.capture="stopEvents" style="height: 100%"/>
+		<component :padName="padName" :is="component" :id="'custom-chart-' + id" :isMock="isMock" @click.capture="stopEvents" style="height: 100%"/>
 		<slot name="btn"></slot>
 	</div>
 </template>
@@ -30,6 +30,7 @@ export default {
 		component: String,
 		id: Number,
 		isMock: Boolean,
+		padName: String,
 	},
 	data: function () {
 		return {};

@@ -25,13 +25,11 @@ export default {
 	props: {
 		id: String,
 		isMock: Boolean,
+		padName: String,
 	},
 	computed: {
 		elementId() {
 			return `etherViz_${this.id}`;
-		},
-		padName() {
-			return this.$store.state.base.padName;
 		},
 	},
 	name: "etherViz",
@@ -42,6 +40,14 @@ export default {
 		} else {
 			this.getData().then(() =>
 					this.loadEtherViz());
+		}
+	},	
+	watch: {
+		padName() {
+			if (!this.isMock) {
+				this.getData().then(() =>
+					this.loadEtherViz());
+			}
 		}
 	},
 	methods: {
@@ -79,6 +85,7 @@ export default {
 		},
 		async loadEtherViz() {
 
+			document.getElementById(this.elementId).childNodes.forEach(c => c.remove());
 			const numberOfChars = d3.max(this.etherVizData.map(timeStampData => {
 				return timeStampData.rectangles ? timeStampData.rectangles.map(e => e.lowerLeft) : [0];
 			}).flat());

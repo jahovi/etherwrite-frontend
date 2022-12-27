@@ -18,8 +18,9 @@
 		</a>
 		<div class="holder" v-if="!loading">
 			<div class="minimap-wrapper" :class="{'hidden-minimap': !showMinimap}">
-				<Minimap/>
+				<Minimap :padName="padName"/>
 			</div>
+
 			<iframe
 					id="writerview"
 					v-bind:src="link"
@@ -42,14 +43,18 @@ export default {
 	},
 	name: "EditorComponent",
 	computed: {
+		editorInstance() {
+			const padName = this.$route.params.padName;
+			return this.$store.state.base.editorInstances.find(e => e.padName===padName);
+		},
 		getStrings() {
 			return this.$store.getters.getStrings;
 		},
 		link() {
-			return this.$store.state.base.editorLink;
+			return this.editorInstance.link;
 		},
 		padName() {
-			return this.$store.state.base.padName;
+			return this.editorInstance.padName;
 		},
 	},
 	mounted() {
@@ -68,7 +73,6 @@ export default {
 			element.src += "";
 		},
 		checkScreenSize() {
-			console.log(window.innerWidth);
 			if (window.innerWidth < 768) {
 				this.showMinimap = false;
 			}
