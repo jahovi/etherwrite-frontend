@@ -1,16 +1,16 @@
 <template>
     <div>
-        <h4>Durchgeführte Operationen</h4>
+        <h4>{{ getStrings["operationswidgettitle"] }}</h4>
         <div class="chart-container">
             <div class="chart" :id="elementId"></div>
             <ul class="legend mt-3">
-                <li v-if="isModerator" v-for="operation, key of operations" :key="key">
+                <li v-for="str, key of operationsStrings" :key="key">
                     <i class="fa fa-square" :style="{ color: operationsColors(key) }"></i>
-                    {{ operation }}
+                    {{ str }}
                 </li>
                 <li v-if="!isModerator">
                     <i class="fa fa-square" style="color: #d3d3d3"></i>
-                    Durchschnitt
+                    {{ getStrings["operationswidgetaverage"] }}
                 </li>
             </ul>
         </div>
@@ -41,8 +41,9 @@ export default {
                 "edit",
                 "write",
                 "paste",
-                "delete"
+                "delete",
             ],
+            operationsStrings: [],
             isModerator: false,
         };
     },
@@ -58,6 +59,9 @@ export default {
         },
         users() {
             return this.$store.state.users.users;
+        },
+        getStrings() {
+            return this.$store.getters.getStrings;
         },
     },
     methods: {
@@ -144,34 +148,23 @@ export default {
                         group = "Average";
                     }
                 }
-                // operations of student(s)
-                if (Object.keys(author)[0] !== "others") {
-                    data.push({
-                        group: group,
-                        edit: Object.values(author)[0].edit,
-                        write: Object.values(author)[0].write,
-                        paste: Object.values(author)[0].paste,
-                        delete: Object.values(author)[0].delete,
-                    });
-                }
-                // average of other students
-                if (Object.keys(author)[0] === "others") {
-                    data.push({
-                        group: group,
-                        edit: Object.values(author)[0].edit / this.users.length,
-                        write: Object.values(author)[0].write / this.users.length,
-                        paste: Object.values(author)[0].paste / this.users.length,
-                        delete: Object.values(author)[0].delete / this.users.length,
-                    });
-                }
+                // operations of student(s) or average of others 
+                let multiplier = Object.keys(author)[0] !== "others" ? 1 : 1 / this.users.length;
+                data.push({
+                    group: group,
+                    [this.operationsStrings[0]]: Object.values(author)[0].edit * multiplier,
+                    [this.operationsStrings[1]]: Object.values(author)[0].write * multiplier,
+                    [this.operationsStrings[2]]: Object.values(author)[0].paste * multiplier,
+                    [this.operationsStrings[3]]: Object.values(author)[0].delete * multiplier,
+                });
                 // data values for calculation of y-axis range
-                dataValues.push(Object.values(author)[0].edit);
-                dataValues.push(Object.values(author)[0].write);
-                dataValues.push(Object.values(author)[0].paste);
-                dataValues.push(Object.values(author)[0].delete);
+                dataValues.push(Object.values(author)[0].edit * multiplier);
+                dataValues.push(Object.values(author)[0].write * multiplier);
+                dataValues.push(Object.values(author)[0].paste * multiplier);
+                dataValues.push(Object.values(author)[0].delete * multiplier);
             }
             // set y-axis range boundary
-            let yAxisRangeTop = Math.ceil(Math.max(...dataValues) / 100) * 100;
+            let yAxisRangeTop = Math.ceil(Math.max(...dataValues) / 10) * 10;
             // margin
             let margin = { top: 20, right: 30, bottom: 30, left: 30 };
             let width = 460 - margin.left - margin.right;
@@ -184,12 +177,27 @@ export default {
                 .append("g")
                 .attr("transform",
                     "translate(" + margin.left + "," + margin.top + ")");
+            // labels x- and y-axis
+            let suffix = this.isModerator ? "teacher" : "student";
+            svg.append("text")
+                .attr("class", "x label")
+                .attr("text-anchor", "end")
+                .attr("x", width + margin.right)
+                .attr("y", height + margin.bottom)
+                .text(this.getStrings[`operationswidgetxaxis${suffix}`]);
+            svg.append("text")
+                .attr("class", "y label")
+                .attr("text-anchor", "end")
+                .attr("y", 5)
+                .attr("dy", ".75em")
+                .attr("transform", "rotate(-90)")
+                .text(this.getStrings["operationswidgetyaxis"]);
             /*
              * teacher chart
              */
             if (this.isModerator) {
                 // subgroups
-                let subgroups = this.operations;
+                let subgroups = this.operationsStrings;
                 // groups
                 let groups = [];
                 for (let entry of data) {
@@ -237,7 +245,7 @@ export default {
                 // x-axis
                 let xAxis = d3.scaleBand()
                     .range([0, width])
-                    .domain(this.operations.map(function (o) { return o; }))
+                    .domain(this.operationsStrings.map(function (o) { return o; }))
                     .padding(0.2);
                 svg.append("g")
                     .attr("transform", "translate(0," + height + ")")
@@ -247,7 +255,7 @@ export default {
                 // y-axis
                 let yAxis = d3.scaleLinear()
                     .domain([0, yAxisRangeTop])
-                    .range([height, 0]);
+                    .range([height, 0])
                 svg.append("g")
                     .call(d3.axisLeft(yAxis));
                 // seperate data for multiple bars
@@ -288,6 +296,10 @@ export default {
     },
     mounted() {
         this.isModerator = store._state.data.base.isModerator;
+
+        for (let operation of this.operations) {
+            this.operationsStrings.push(this.getStrings[`operationswidget${operation}`]);
+        }
         /*
          * use mock data
          */
@@ -368,6 +380,7 @@ export default {
 
 .legend {
     position: absolute;
+    top: 25px;
     right: 5px;
 }
 </style>

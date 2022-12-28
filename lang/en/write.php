@@ -42,3 +42,14 @@ $string['widgets.barchart'] = 'Bar chart';
 $string['widgets.piechart'] = 'Pie chart';
 $string['widgets.linechart'] = 'Line chart';
 $string['widgets.other'] = 'Other';
+
+// Operations widget
+$string['operationswidgettitle'] = 'Operations performed';
+$string['operationswidgetedit'] = 'Edit';
+$string['operationswidgetwrite'] = 'Write';
+$string['operationswidgetpaste'] = 'Paste';
+$string['operationswidgetdelete'] = 'Delete';
+$string['operationswidgetaverage'] = 'Average';
+$string['operationswidgetxaxisteacher'] = 'Operations per participant';
+$string['operationswidgetxaxisstudent'] = 'Operations';
+$string['operationswidgetyaxis'] = 'Count';
