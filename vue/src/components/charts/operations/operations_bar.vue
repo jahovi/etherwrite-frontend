@@ -165,15 +165,19 @@ export default {
             }
             // set y-axis range boundary
             let yAxisRangeTop = Math.ceil(Math.max(...dataValues) / 10) * 10;
-            // margin
+            // margin, width, height
             let margin = { top: 20, right: 30, bottom: 30, left: 30 };
-            let width = 460 - margin.left - margin.right;
-            let height = 230 - margin.top - margin.bottom;
+            // let width = (this.$el.parentElement.clientWidth - margin.left - margin.right) / 2;
+            // let height = (this.$el.parentElement.clientHeight - margin.top - margin.bottom) / 2;
+            let width = this.$el.parentElement.clientWidth / 2;
+            let height = this.$el.parentElement.clientHeight / 2;
             // svg object 
             let svg = d3.select(`#${this.elementId}`)
                 .append("svg")
-                .attr("width", width + margin.left + margin.right)
-                .attr("height", height + margin.top + margin.bottom)
+                .classed("svg-container", true)
+                .attr("preserveAspectRatio", "xMinYMin meet")
+                .attr("viewBox", "0 0 600 400")
+                .classed("svg-content-responsive", true)
                 .append("g")
                 .attr("transform",
                     "translate(" + margin.left + "," + margin.top + ")");
@@ -371,6 +375,22 @@ export default {
     justify-content: flex-start;
     align-items: center;
     gap: 20px;
+}
+
+.svg-container {
+    display: inline-block;
+    position: relative;
+    width: 100%;
+    padding-bottom: 100%;
+    vertical-align: top;
+    overflow: hidden;
+}
+
+.svg-content-responsive {
+    display: inline-block;
+    position: absolute;
+    top: 10px;
+    left: 0;
 }
 
 .chart {
