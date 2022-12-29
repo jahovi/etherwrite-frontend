@@ -30,6 +30,7 @@
 						:vertical-compact="true"
 						:use-css-transforms="true">
 					<GridItem v-for="(item, key) in userCharts"
+										:preserveAspectRatio="true"
 										:x="item.x"
 										:y="item.y"
 										:w="item.w"
