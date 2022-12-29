@@ -464,18 +464,32 @@ class client
 
     /**
      * Finds an object in the given array by comparing its 'id' attribute to the given id.
+     * @param string $attribute The name of the attribute to use.
+     * @param string | int $value value to be search for.
+     * @param array $array The array of objects.
+     * @return object|false The found object, or false if none was found.
+     */
+    public static function findByAttributeInArray(string $attribute, $value, array $array)
+    {
+        foreach ($array as $entry) {
+            if (is_object($entry) && isset($entry->$attribute) && $value == $entry->$attribute) {
+                return $entry;
+            } else if (is_array($entry) && isset($entry[$attribute]) && $value == $entry[$attribute]) {
+                return $entry;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Finds an object in the given array by comparing its 'id' attribute to the given id.
      * @param int $id The id to find.
      * @param array $array The array of objects.
      * @return object|false The found object, or false if none was found.
      */
     public static function findByIdInArray(int $id, array $array)
     {
-        foreach ($array as $entry) {
-            if (isset($entry->id) && $id == $entry->id) {
-                return $entry;
-            }
-        }
-
-        return false;
+        return self::findByAttributeInArray('id', $id, $array);
     }
 }

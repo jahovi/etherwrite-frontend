@@ -85,18 +85,20 @@ export default {
 
 			this.userPositions = [];
 
-			for (const [authorId, scrollPosInfo] of Object.entries(this.scrollPos)) {
+			if (this.$refs.textBlocks) {
 				const textBlocks = this.$refs.textBlocks.children;
+				for (const [authorId, scrollPosInfo] of Object.entries(this.scrollPos)) {
 
 				if (textBlocks.length > scrollPosInfo.topIndex - 1) {
 					const authorColor = store.getters["users/usersByEpId"][authorId].color;
 
-					// Use the top of the minimap as an anchor reference point to position the viewport of the users.
-					// Subtract the text block container margin.
-					const topPosition = textBlocks[scrollPosInfo.topIndex - 1]
-							.getBoundingClientRect().top - (textBlocks[0] ? textBlocks[0].getBoundingClientRect().top : 0) - 5;
+						// Use the top of the minimap as an anchor reference point to position the viewport of the users.
+						// Subtract the text block container margin.
+						const topPosition = textBlocks[scrollPosInfo.topIndex - 1]
+								.getBoundingClientRect().top - (textBlocks[0] ? textBlocks[0].getBoundingClientRect().top : 0) - 5;
 
-					this.userPositions.push({id: this.userPositions.length, top: topPosition, color: authorColor});
+						this.userPositions.push({id: this.userPositions.length, top: topPosition, color: authorColor});
+					}
 				}
 			}
 		},
