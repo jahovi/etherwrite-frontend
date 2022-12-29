@@ -1,10 +1,14 @@
 <template>
 	<div>
-		<h4>Projektteilnehmer(innen)</h4>
-		<ul class="legend">
-			<li v-for="user in users" :key="user.id">
-				<i v-if="user.color && user.color.startsWith('#')" class="fa fa-square" :style="{ color: user.color }"></i>
-				<i v-else class="fa fa-square-o" style="color: gray"></i>
+		<h4>{{ i18n["widgets.groupParticipants"] }}</h4>
+		<h5 v-if="group">{{ i18n["widgets.groupParticipants.group"] }} <strong>{{ group.name }}</strong></h5>
+		<ul class="legend" v-if="group">
+			<li v-for="user in members" :key="user.id">
+				<template v-if="user.color && `${user.color}`.startsWith('#')">
+					<i v-if="user.color === '#FFF' || user.color === '#FFFFFF'" class="fa fa-square-o" style="color: black"></i>
+					<i v-else class="fa fa-square" :style="{ color: user.color }"></i>
+				</template>
+				<i v-else class="fa fa-square-o" style="color: lightgrey"></i>
 				{{ user.fullName }}
 			</li>
 		</ul>
@@ -13,7 +17,6 @@
 
 <script>
 import store from "../../store";
-import Communication from "../../classes/communication";
 
 export default {
 	data() {
@@ -27,29 +30,38 @@ export default {
 		padName: String,
 	},
 	computed: {
-		users() {
+		activeGroup() {
+			return parseInt(this.padName.split("_g_").pop());
+		},
+		group() {
 			if (this.isMock) {
-				return [{
+				return {
 					id: 0,
-					fullName: "User 1",
-					color: "#d4d",
-				}, {
-					id: 1,
-					fullName: "User 2",
-					color: "#4d4",
-				}];
+					name: "Group 1",
+					members: [{
+						id: 0,
+						fullName: "User 1",
+						color: "#d4d",
+					}, {
+						id: 1,
+						fullName: "User 2",
+						color: "#4d4",
+					}],
+				};
 			} else {
-				return store.state.users.users.map(user => ({
-					...user,
-					...Object.values(this.authors).find(u => u.mapper2author === String(user.id)),
-				}));
+				return store.getters["users/groups"].find(g => g.id === this.activeGroup);
 			}
+		},
+		members() {
+			const members = this.group.members;
+			members.sort((m1, m2) => m1.fullName.split(" ").pop().localeCompare(m2.fullName.split(" ").pop()));
+			return members;
+		},
+		i18n() {
+			return store.getters.getStrings;
 		},
 	},
 	name: "groupParticipants",
-	async mounted() {
-		this.authors = await Communication.getFromEVA("minimap/authorInfo");
-	},
 	methods: {},
 };
 </script>

@@ -213,8 +213,8 @@ export default {
 			// Make the UI resize according to the rendered grid.
 			window.dispatchEvent(new Event("resize"));
 		});
-		this.$store.dispatch("users/load");
-		
+		this.$store.dispatch("users/initialize");
+
 		document.addEventListener("keydown", this.onKeyDown);
 		document.addEventListener("keyup", this.onKeyUp);
 	},

@@ -38,7 +38,10 @@ $string['couldnotcreateauthor'] = 'Konnte den Etherpad-Autor nicht erstellen.';
 $string['couldnotcreatesession'] = 'Die Etherpad-Sitzung konnte nicht erstellt werden.';
 
 // Widget categories
-$string['widgets.barchart'] = 'Balkendiagramm';
-$string['widgets.piechart'] = 'Kuchendiagramm';
-$string['widgets.linechart'] = 'Liniendiagramm';
-$string['widgets.other'] = 'Sonstige';
+$string['widgets.category.barchart'] = 'Balkendiagramm';
+$string['widgets.category.piechart'] = 'Kuchendiagramm';
+$string['widgets.category.linechart'] = 'Liniendiagramm';
+$string['widgets.category.other'] = 'Sonstige';
+
+$string['widgets.groupParticipants'] = "Projektteilnehmer(innen)";
+$string['widgets.groupParticipants.group'] = "Gruppe";
