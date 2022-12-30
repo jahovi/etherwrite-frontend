@@ -20,6 +20,9 @@ import operations_bar from "./charts/operations/operations_bar.vue";
 import activityOverTime from "./charts/activityOverTime.vue";
 import etherViz from "./charts/etherViz.vue";
 import cohesionDiagram from "./charts/cohesionDiagram.vue";
+import documentMetrics from "./charts/wsTestWidget.vue";
+import wsTestWidget from "./charts/wsTestWidget.vue";
+
 
 export default {
 	name: "chart-wrapper",
@@ -32,6 +35,8 @@ export default {
 		activityOverTime,
 		etherViz,
 		cohesionDiagram,
+		wsTestWidget,
+		documentMetrics,
 	},
 	props: {
 		component: String,

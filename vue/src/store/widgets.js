@@ -76,7 +76,24 @@ export default {
 				moderatorWidget: false,
 				minW: 2,
 				minH: 2,
-			}
+			},
+			{
+				component: "wsTestWidget",
+				category: "other",
+				configuration: {},
+				moderatorWidget: false,
+				minW: 1,
+				minH: 1,
+			},
+			{
+				component: "documentMetrics",
+				category: "other",
+				configuration: {},
+				moderatorWidget: false,
+				minW: 1,
+				minH: 1,
+			},
+
 		],
 	},
 	getters: {

@@ -13,6 +13,7 @@ export default {
 			state.editorInstances = payload.editorInstances;
 			state.isModerator = payload.isModerator;
 			state.evaUri = payload.eva;
+			state.evaWebsocketUri = payload.evaWebsocket;
 			state.jwt = payload.jwt;
 			state.initialized = true;
 		},

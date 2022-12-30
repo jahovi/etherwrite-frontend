@@ -1,6 +1,6 @@
 <template>
 	<div class="chart-outer-container">
-		<h4>Partizipationsdiagramm</h4>
+		<h4>Partizipationsdiagramm {{ time }}</h4>
 		<div class="chart-container">
 			<div class="chart" :id="elementId" ref="chart"></div>
 			<ul class="legend mt-3" v-if="authorSet.size">
@@ -30,44 +30,45 @@ export default {
 			datasets: [],
 			authorColors: [],
 			authorSet: {},
-			hourlyTimestamp: false,
-		};
-	},
-	computed: {
-		elementId() {
-			return `participation_diagram_${this.id}`;
-		},
-	},
-	mounted() {
-		if (this.isMock) {
-			this.authorSet = new Set(["Mueller", "Fuchs", "Gamma"]);
-			this.authorColors = ["#00B2EE", "#FF7F24", "#008B45"];
-			this.datasets = [
-				{
-					timestamp: new Date("2023-01-01"),
-					Mueller: 0.2,
-					Fuchs: 0.3,
-					Gamma: 0.5,
-				},
-				{
-					timestamp: new Date("2023-02-01"),
-					Mueller: 0,
-					Fuchs: 0,
-					Gamma: 0,
-				},
-				{
-					timestamp: new Date("2023-03-01"),
-					Mueller: 0,
-					Fuchs: 0.7,
-					Gamma: 0.3,
-				},
-			];
-			this.loadChart();
-		} else {
-			this.getData().then(() => this.loadChart());
-		}
-	},
-	watch: {
+
+            hourlyTimestamp: false,
+        };
+    },
+    computed: {
+        elementId() {
+            return `participation_diagram_${this.id}`;
+        },
+    },
+    mounted() {
+        if (this.isMock) {
+            this.authorSet = new Set(["Mueller", "Fuchs", "Gamma"]);
+            this.authorColors = ["#00B2EE", "#FF7F24", "#008B45"];
+            this.datasets = [
+                {
+                    timestamp: new Date("2023-01-01"),
+                    Mueller: 0.2,
+                    Fuchs: 0.3,
+                    Gamma: 0.5,
+                },
+                {
+                    timestamp: new Date("2023-02-01"),
+                    Mueller: 0,
+                    Fuchs: 0,
+                    Gamma: 0,
+                },
+                {
+                    timestamp: new Date("2023-03-01"),
+                    Mueller: 0,
+                    Fuchs: 0.7,
+                    Gamma: 0.3,
+                },
+            ];
+            this.loadChart();
+        } else {
+            this.getData().then(() => this.loadChart());
+        }
+    },
+    watch: {
 		padName() {
 			if (!this.isMock) {
 				this.getData().then(() =>
@@ -81,16 +82,17 @@ export default {
 				return author;
 			}
 			return store.getters["users/usersByEpId"][author].epalias;
-		},
-		getAuthorColor(author) {
-			const index = [...this.authorSet].indexOf(author);
-			return this.authorColors[index];
-		},
-		async getData() {
-			// get data
+        },
+        getAuthorColor(author) {
+            const index = [...this.authorSet].indexOf(author);
+            return this.authorColors[index];
+        },
+        async getData() {
+            // get data
+
 			let data;
 			try {
-				data = await Communication.getFromEVA(`activity/activities/${this.padName}`);
+				data = await Communication.getFromEVA(`activity/activities/${store.state.base.padName}`);
 			} catch {
 				store.commit("setAlertWithTimeout", ["alert-danger", store.getters.getStrings.unknown_error, 3000]);
 			}
