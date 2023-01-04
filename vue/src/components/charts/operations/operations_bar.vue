@@ -69,6 +69,7 @@ export default {
          * Get data from EVA and sum up edits, writes, pastes and deletes for each author.
          */
         async getData() {
+            this.authorsToOperations = [];
             return Communication.getFromEVA(`activity/operations/${store.state.base.padName}`,
                 { padName: store.state.base.padName })
                 .then(res => {
@@ -166,28 +167,27 @@ export default {
             // set y-axis range boundary
             let yAxisRangeTop = Math.ceil(Math.max(...dataValues) / 10) * 10;
             // margin, width, height
-            let margin = { top: 20, right: 30, bottom: 30, left: 30 };
-            // let width = (this.$el.parentElement.clientWidth - margin.left - margin.right) / 2;
-            // let height = (this.$el.parentElement.clientHeight - margin.top - margin.bottom) / 2;
-            let width = this.$el.parentElement.clientWidth / 2;
-            let height = this.$el.parentElement.clientHeight / 2;
+            let margin = { top: 10, right: 30, bottom: 30, left: 30 };
+            let width = this.$el.parentElement.clientWidth;
+            let height = this.$el.parentElement.clientHeight;
             // svg object 
             let svg = d3.select(`#${this.elementId}`)
                 .append("svg")
                 .classed("svg-container", true)
                 .attr("preserveAspectRatio", "xMinYMin meet")
-                .attr("viewBox", "0 0 600 400")
+                .attr("viewBox", `-20 -10 ${width} ${height}`)
                 .classed("svg-content-responsive", true)
-                .append("g")
+                .append("g") 
                 .attr("transform",
-                    "translate(" + margin.left + "," + margin.top + ")");
+                    `translate(${margin.left}, ${margin.top})`)
+                .attr("transform", "scale(0.8 0.8)");
             // labels x- and y-axis
             let suffix = this.isModerator ? "teacher" : "student";
             svg.append("text")
                 .attr("class", "x label")
                 .attr("text-anchor", "end")
-                .attr("x", width + margin.right)
-                .attr("y", height + margin.bottom)
+                .attr("x", width + 180)
+                .attr("y", height + 5)
                 .text(this.getStrings[`operationswidgetxaxis${suffix}`]);
             svg.append("text")
                 .attr("class", "y label")
@@ -213,7 +213,7 @@ export default {
                     .range([0, width])
                     .padding([0.2]);
                 svg.append("g")
-                    .attr("transform", "translate(0," + height + ")")
+                    .attr("transform", `translate(0, ${height})`)
                     .call(d3.axisBottom(xAxis).tickSize(0));
                 // y-axis
                 let yAxis = d3.scaleLinear()
@@ -232,7 +232,7 @@ export default {
                     .data(data)
                     .enter()
                     .append("g")
-                    .attr("transform", function (d) { return "translate(" + xAxis(d.group) + ",0)"; })
+                    .attr("transform", function (d) { return `translate(${xAxis(d.group)}, 0)`; })
                     .selectAll("rect")
                     .data(function (d) { return subgroups.map(function (key) { return { key: key, value: d[key] }; }); })
                     .enter().append("rect")
@@ -252,7 +252,7 @@ export default {
                     .domain(this.operationsStrings.map(function (o) { return o; }))
                     .padding(0.2);
                 svg.append("g")
-                    .attr("transform", "translate(0," + height + ")")
+                    .attr("transform", `translate(0, ${height})`)
                     .call(d3.axisBottom(xAxis))
                     .selectAll("text")
                     .style("text-anchor", "center");
@@ -311,26 +311,26 @@ export default {
             this.authorsToOperations = [
                 {
                     Mueller: {
-                        edit: 40,
-                        write: 90,
-                        paste: 10,
+                        edit: 400,
+                        write: 900,
+                        paste: 100,
                         delete: 20,
                     }
                 },
                 {
                     Fuchs: {
-                        edit: 20,
-                        write: 110,
-                        paste: 30,
-                        delete: 40,
+                        edit: 200,
+                        write: 1100,
+                        paste: 300,
+                        delete: 400,
                     }
                 },
                 {
                     Gamma: {
-                        edit: 10,
-                        write: 80,
-                        paste: 20,
-                        delete: 50,
+                        edit: 100,
+                        write: 800,
+                        paste: 200,
+                        delete: 200,
                     }
                 }
             ];
