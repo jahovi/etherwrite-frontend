@@ -190,8 +190,12 @@ class mod_write_external extends external_api
         try {
             $cm = get_coursemodule_from_id('write', $cmid, 0, false, MUST_EXIST); // Coursemodule
             $write = $DB->get_record('write', array('id' => $cm->instance), '*', MUST_EXIST);
+            $courseModule = $DB->get_record('course_modules', array('id' => $cmid), 'completionexpected', MUST_EXIST);
             $intro = format_module_intro('write', $write, $cm->id, false);
-            return $intro;
+            return array(
+                'description' => $intro,
+                'deadline' => $courseModule->completionexpected,
+            );
         } catch (Exception $ex) {
             return array(
                 'message' => $ex->getMessage()
@@ -201,7 +205,10 @@ class mod_write_external extends external_api
 
     public static function getTaskDescription_returns()
     {
-        return new external_value(PARAM_RAW, 'data');
+        return new external_single_structure(array(
+            'description' => new external_value(PARAM_RAW, 'The task description.'),
+            'deadline' => new external_value(PARAM_INT, 'Deadline of the project set in the task settings.', PARAM_INT)
+        ));
     }
 
     public static function getTaskDescription_is_allowed_from_ajax()
