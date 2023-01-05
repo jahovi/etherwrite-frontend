@@ -42,3 +42,12 @@ $string['widgets.barchart'] = 'Balkendiagramm';
 $string['widgets.piechart'] = 'Kuchendiagramm';
 $string['widgets.linechart'] = 'Liniendiagramm';
 $string['widgets.other'] = 'Sonstige';
+
+// Widgets Info-Texts
+$string['widget-info-authoringRatios_pie'] = 'Beschreibung des Authorenanteil-Kuchendiagramms.';
+$string['widget-info-authoringRatios_bar'] = 'Beschreibung des Authorenanteil-Balkendiagramms.';
+$string['widget-info-participation_diagram'] = 'Beschreibunf des Partizipation-Diagramms';
+$string['widget-info-groupParticipants'] = 'Beschreibung des Gruppen-Partizipations-Diagramms.';
+$string['widget-info-operations_bar'] = 'Beschreibung des Operations-Diagramms.';
+$string['widget-info-activityOverTime'] = 'Beschreibung des Aktivitäts-Diagramms über die Zeit.';
+$string['widget-info-etherViz'] = 'Beschreibung des etherViz-Diagramms.';

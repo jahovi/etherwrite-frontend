@@ -103,19 +103,6 @@ export default {
 	width: 66.6%;
 	z-index: 999;
 	padding: 10px;
-	background-color: rgba(0, 0, 0, 0.5);
-}
-
-.widget-catalog-panel {
-	position: fixed;
-	overflow-y: auto;
-	background-color: white;
-	top: 10%;
-	left: 16.65%;
-	height: 75%;
-	width: 66.6%;
-	z-index: 999;
-	padding: 10px;
 }
 
 /* widgets */
