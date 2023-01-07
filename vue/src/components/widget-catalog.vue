@@ -141,4 +141,14 @@ export default {
 	left: 8px;
 	font-size: 1em;
 }
+
+.nav-item.active {
+	background-color: #0F6CBF;
+	color: white;
+}
+
+.nav-item.active * {
+	color: white !important;
+}
+
 </style>

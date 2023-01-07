@@ -77,7 +77,7 @@ export default {
 	computed: {
 		editorInstance() {
 			const padName = this.$route.params.padName;
-			return this.$store.state.base.editorInstances.find(e => e.padName===padName);
+			return this.$store.state.base.editorInstances.find(e => e.padName === padName);
 		},
 		getStrings() {
 			return this.$store.getters.getStrings;

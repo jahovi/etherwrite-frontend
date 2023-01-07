@@ -130,7 +130,7 @@ export default {
          * Load the chart.
          */
         async loadBar() {
-			document.getElementById(this.elementId).childNodes.forEach(c => c.remove());
+						document.getElementById(this.elementId).childNodes.forEach(c => c.remove());
             let data = [];
             let dataValues = [];
             // get authors info
@@ -187,7 +187,7 @@ export default {
             let margin = { top: 20, right: 30, bottom: 30, left: 30 };
             let width = 460 - margin.left - margin.right;
             let height = 230 - margin.top - margin.bottom;
-            // svg object 
+            // svg object
             let svg = d3.select(`#${this.elementId}`)
                 .append("svg")
                 .attr("width", width + margin.left + margin.right)

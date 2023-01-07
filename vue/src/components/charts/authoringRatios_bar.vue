@@ -50,30 +50,30 @@ export default {
 			this.loadBar();
 		} else {
 			this.getData().then(() =>
-				this.loadBar());
+					this.loadBar());
 		}
 	},
 	watch: {
 		padName() {
 			if (!this.isMock) {
 				this.getData().then(() =>
-					this.loadBar());
+						this.loadBar());
 			}
 		}
 	},
 	methods: {
 		async getData() {
-			return Communication.getFromEVA("authoring_ratios", { pad: this.padName })
-				.then(data => {
-					this.authors = data.authors;
-					this.ratios = data.ratios;
-					this.colors = data.colors;
-				})
-				.catch(() => {
-					store.commit("setAlertWithTimeout", ["alert-danger", store.getters.getStrings.unknown_error, 3000]);
-				});
+			return Communication.getFromEVA("authoring_ratios", {pad: this.padName})
+					.then(data => {
+						this.authors = data.authors;
+						this.ratios = data.ratios;
+						this.colors = data.colors;
+					})
+					.catch(() => {
+						store.commit("setAlertWithTimeout", ["alert-danger", store.getters.getStrings.unknown_error, 3000]);
+					});
 		},
-		async loadBar() {
+		loadBar() {
 			// Add a filler if the given numbers don't add up to 100%.
 			// Can happen with weird test data.
 			document.getElementById(this.elementId).childNodes.forEach(c => c.remove());
@@ -85,17 +85,17 @@ export default {
 			}
 
 			d3.select(`#${this.elementId}`)
-				.selectAll("div")
-				.data(this.ratios)
-				.enter()
-				.append("div")
-				.attr("class", "bar")
-				.style("width", d => d + "%")
-				.style("background-color", (d, i) => this.colorFn(i))
-				.style("overflow", "visible")
-				.append("span")
-				.attr("class", "chart-label")
-				.text(d => `${d} %`);
+					.selectAll("div")
+					.data(this.ratios)
+					.enter()
+					.append("div")
+					.attr("class", "bar")
+					.style("width", d => d + "%")
+					.style("background-color", (d, i) => this.colorFn(i))
+					.style("overflow", "visible")
+					.append("span")
+					.attr("class", "chart-label")
+					.text(d => `${d} %`);
 		},
 	},
 };

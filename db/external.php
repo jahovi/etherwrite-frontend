@@ -55,6 +55,15 @@ class mod_write_external extends external_api
         if (strlen($url) <= 0) {
             throw new Exception(get_string('novalidepurl', 'mod_write'));
         }
+
+        if ($config->localinstallation == 1) {
+            $uri = "http://localhost:9001";
+            $eva = "http://localhost:8083";
+        } else {
+            $uri = rtrim($url, '/');
+            $eva = rtrim('http://' . $_SERVER['SERVER_NAME'] . ':9002', '/');
+        }
+
         // Get the apikey.
         if (!isset($config->apikey) || is_null($config->serverurl) || !is_string($config->apikey)) {
             throw new Exception(get_string('novalidapikey', 'mod_write'));
@@ -76,19 +85,12 @@ class mod_write_external extends external_api
             throw new Exception(get_string('nogroup', 'mod_write'));
         }
         $editorInstances = [];
-        
-        if ($config->localinstallation == 1) {
-            $uri = "http://localhost:9001";
-            $eva = "http://localhost:8083";
-        } else {
-            $uri = rtrim($url, '/');
-            $eva = rtrim('http://' . $_SERVER['SERVER_NAME'] . ':9002', '/');
-        }
 
-        foreach($groups AS $group){
+        $api = new mod_write\etherpad\client($apikey, $url . '/api');
+
+        foreach ($groups as $group) {
             $groupid = intval($group->id);
             $groupName = $group->name;
-            $api = new mod_write\etherpad\client($apikey, $url . '/api');
             // Now we create a etherpad group via api.
             $epgroup = $api->create_group_if_not_exists_for($groupid);
             if ($epgroup === false) {
@@ -122,15 +124,14 @@ class mod_write_external extends external_api
                 throw new Exception(get_string('couldnotcreatesession', 'mod_cwr'));
             }
 
-            //setcookie('sessionID', $sessionid);
             $link = $uri . '/p/' . $padName . '?groupId=' . $epgroup;
 
-           $editorInstances[] = array(
+            $editorInstances[] = array(
                 'padName' => $padName,
                 'epGroup' => $epgroup,
                 'groupName' => $groupName,
                 'link' => $link,
-           );
+            );
         }
         $module = new mod_write\permission\module($USER->id, $cmid);
 
@@ -154,11 +155,11 @@ class mod_write_external extends external_api
         return new external_single_structure(array(
             'editorInstances' => new external_multiple_structure(
                 new external_single_structure(array(
-                    'padName' => new external_value(PARAM_RAW, 'Name of the pad'),
-                    'epGroup' => new external_value(PARAM_RAW, 'Etherpad ID for this Group'),
-                    'groupName' => new external_value(PARAM_RAW, 'Name of the group'),
-                    'link' => new external_value(PARAM_RAW, 'Link to this etherpad'),
-                )
+                        'padName' => new external_value(PARAM_RAW, 'Name of the pad'),
+                        'epGroup' => new external_value(PARAM_RAW, 'Etherpad ID for this Group'),
+                        'groupName' => new external_value(PARAM_RAW, 'Name of the group'),
+                        'link' => new external_value(PARAM_RAW, 'Link to this etherpad'),
+                    )
                 )
             ),
             'isModerator' => new  external_value(PARAM_BOOL, 'A flag determining if the user is in any way a moderator for this course module.'),
