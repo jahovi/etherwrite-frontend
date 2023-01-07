@@ -69,9 +69,10 @@ export default {
 	},
 	name: "etherViz",
 	mounted() {
-		if (this.isMock) {
-			this.getData().then(() =>
-					this.loadEtherViz());
+		if (this.isMock) { 
+			// loadEtherViz with MockData
+			this.prepareData(this.getMockData());
+			this.loadEtherViz();
 		} else {
 			this.getData().then(() =>
 					this.loadEtherViz());
@@ -105,22 +106,22 @@ export default {
 			}
 
 		},
+		prepareData(data) {
+			data.forEach(d => {
+				d.dateTime = this.parseDate(d.dateTime);
+			});
+
+			this.responseData = data;
+			this.revisionDateTimes = data.map(e => e.dateTime);
+			this.numberOfRevisions = this.revisionDateTimes.length-1;
+			if(this.sliderHasBeenModified == false) {
+				this.sliderMaxValue = this.numberOfRevisions;
+				this.sliderHasBeenModified = true;
+			}
+		},
 		async getData() {
 			return Communication.getFromEVA("getEtherVizData", {pad: this.padName})
-				.then(data => {
-
-					data.forEach(d => {
-						d.dateTime = this.parseDate(d.dateTime);
-					});
-
-					this.responseData = data;
-					this.revisionDateTimes = data.map(e => e.dateTime);
-					this.numberOfRevisions = this.revisionDateTimes.length-1;
-					if(this.sliderHasBeenModified == false) {
-						this.sliderMaxValue = this.numberOfRevisions;
-						this.sliderHasBeenModified = true;
-					}
-				})
+				.then(this.prepareData)
 				.catch(() => {
 					store.commit("setAlertWithTimeout", ["alert-danger", store.getters.getStrings.unknown_error, 3000]);
 				});
@@ -235,8 +236,222 @@ export default {
 				}
 			});
 		},
+		getMockData() { 
+			return [{
+			"dateTime": "15.12.22, 19:00",
+			"rectangles": [
+			{
+				"authorId": "a.dVVPaVqk7Og1f6Df",
+				"authorColor": "#f67fa4",
+				"upperLeft": 0,
+				"lowerLeft": 3500
+			}
+			],
+			"parallelograms": [
+			{
+				"authorId": "a.dVVPaVqk7Og1f6Df",
+				"authorColor": "#f67fa4",
+				"upperLeft": 0,
+				"lowerLeft": 3500,
+				"upperRight": 0,
+				"lowerRight": 3500
+			},
+			]
+		},
+		{
+			"dateTime": "17.12.22, 21:00",
+			"rectangles": [
+			{
+				"authorId": "a.dVVPaVqk7Og1f6Df",
+				"authorColor": "#f67fa4",
+				"upperLeft": 0,
+				"lowerLeft": 5711
+			}
+			],
+			"parallelograms": [
+			{
+				"authorId": "a.dVVPaVqk7Og1f6Df",
+				"authorColor": "#f67fa4",
+				"upperLeft": 0,
+				"lowerLeft": 15,
+				"upperRight": 0,
+				"lowerRight": 15
+			},
+			{
+				"authorId": "a.dVVPaVqk7Og1f6Df",
+				"authorColor": "#f67fa4",
+				"upperLeft": 16,
+				"lowerLeft": 17,
+				"upperRight": 604,
+				"lowerRight": 605
+			},
+			{
+				"authorId": "a.dVVPaVqk7Og1f6Df",
+				"authorColor": "#f67fa4",
+				"upperLeft": 18,
+				"lowerLeft": 5711,
+				"upperRight": 1646,
+				"lowerRight": 7339
+			}
+			]
+		},
+		{
+			"dateTime": "18.12.22, 01:00",
+			"rectangles": [
+			{
+				"authorId": "a.dVVPaVqk7Og1f6Df",
+				"authorColor": "#f67fa4",
+				"upperLeft": 0,
+				"lowerLeft": 15
+			},
+			{
+				"authorId": "a.CZ1RqNv374PMJ7EA",
+				"authorColor": "#c10c2d",
+				"upperLeft": 16,
+				"lowerLeft": 603
+			},
+			{
+				"authorId": "a.dVVPaVqk7Og1f6Df",
+				"authorColor": "#f67fa4",
+				"upperLeft": 604,
+				"lowerLeft": 605
+			},
+			{
+				"authorId": "a.zUVGPfkcWaUo7RQl",
+				"authorColor": "#282ddd",
+				"upperLeft": 606,
+				"lowerLeft": 1645
+			},
+			{
+				"authorId": "a.dVVPaVqk7Og1f6Df",
+				"authorColor": "#f67fa4",
+				"upperLeft": 1646,
+				"lowerLeft": 7339
+			}
+			],
+			"parallelograms": [
+			{
+				"authorId": "a.dVVPaVqk7Og1f6Df",
+				"authorColor": "#f67fa4",
+				"upperLeft": 0,
+				"lowerLeft": 15,
+				"upperRight": 0,
+				"lowerRight": 15
+			},
+			{
+				"authorId": "a.CZ1RqNv374PMJ7EA",
+				"authorColor": "#c10c2d",
+				"upperLeft": 16,
+				"lowerLeft": 603,
+				"upperRight": 16,
+				"lowerRight": 603
+			},
+			{
+				"authorId": "a.dVVPaVqk7Og1f6Df",
+				"authorColor": "#f67fa4",
+				"upperLeft": 604,
+				"lowerLeft": 605,
+				"upperRight": 604,
+				"lowerRight": 605
+			},
+			{
+				"authorId": "a.zUVGPfkcWaUo7RQl",
+				"authorColor": "#282ddd",
+				"upperLeft": 606,
+				"lowerLeft": 1645,
+				"upperRight": 606,
+				"lowerRight": 1645
+			},
+			{
+				"authorId": "a.dVVPaVqk7Og1f6Df",
+				"authorColor": "#f67fa4",
+				"upperLeft": 1646,
+				"lowerLeft": 1646,
+				"upperRight": 1647,
+				"lowerRight": 1647
+			},
+			{
+				"authorId": "a.dVVPaVqk7Og1f6Df",
+				"authorColor": "#f67fa4",
+				"upperLeft": 1647,
+				"lowerLeft": 6050,
+				"upperRight": 2536,
+				"lowerRight": 6939
+			},
+			{
+				"authorId": "a.dVVPaVqk7Og1f6Df",
+				"authorColor": "#f67fa4",
+				"upperLeft": 6892,
+				"lowerLeft": 7339,
+				"upperRight": 6940,
+				"lowerRight": 7387
+			}
+			]
+		},
+		{
+			"dateTime": "20.12.22, 21:00",
+			"rectangles": [
+			{
+				"authorId": "a.dVVPaVqk7Og1f6Df",
+				"authorColor": "#f67fa4",
+				"upperLeft": 0,
+				"lowerLeft": 15
+			},
+			{
+				"authorId": "a.CZ1RqNv374PMJ7EA",
+				"authorColor": "#c10c2d",
+				"upperLeft": 16,
+				"lowerLeft": 603
+			},
+			{
+				"authorId": "a.dVVPaVqk7Og1f6Df",
+				"authorColor": "#f67fa4",
+				"upperLeft": 604,
+				"lowerLeft": 605
+			},
+			{
+				"authorId": "a.zUVGPfkcWaUo7RQl",
+				"authorColor": "#282ddd",
+				"upperLeft": 606,
+				"lowerLeft": 1645
+			},
+			{
+				"authorId": "a.CZ1RqNv374PMJ7EA",
+				"authorColor": "#c10c2d",
+				"upperLeft": 1646,
+				"lowerLeft": 1646
+			},
+			{
+				"authorId": "a.dVVPaVqk7Og1f6Df",
+				"authorColor": "#f67fa4",
+				"upperLeft": 1647,
+				"lowerLeft": 1647
+			},
+			{
+				"authorId": "a.CZ1RqNv374PMJ7EA",
+				"authorColor": "#c10c2d",
+				"upperLeft": 1648,
+				"lowerLeft": 2535
+			},
+			{
+				"authorId": "a.dVVPaVqk7Og1f6Df",
+				"authorColor": "#f67fa4",
+				"upperLeft": 2536,
+				"lowerLeft": 7387
+			},
+			{
+				"authorId": "a.CZ1RqNv374PMJ7EA",
+				"authorColor": "#c10c2d",
+				"upperLeft": 7388,
+				"lowerLeft": 10792
+			}
+			]
+		}
+		];
 	},
+	}
 };
+
 </script>
 <style scoped>
 .chart-container {
