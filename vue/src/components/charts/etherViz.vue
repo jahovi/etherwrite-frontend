@@ -157,7 +157,7 @@ export default {
 
 			const numberOfChars = d3.max(this.etherVizData.map(timeStampData => {
 				return timeStampData.rectangles ? timeStampData.rectangles.map(e => e.lowerLeft) : [0];
-			}).flat());
+			}).flat()) + 1;
 
 			// set the dimensions and margins of the graph
 			var margin = {top: 110, right: 30, bottom: 30, left: 60},
@@ -203,12 +203,12 @@ export default {
 								.attr("x", x(d.dateTime))
 								.attr("y", y(rectangle.upperLeft))
 								.attr("width", x.bandwidth())
-								.attr("height", y(rectangle.lowerLeft - rectangle.upperLeft))
+								.attr("height", y(rectangle.lowerLeft - rectangle.upperLeft + 1))
 								.attr("fill", rectangle.authorColor);
 					});
 				} else if ("parallelograms" in d) {
 					d.parallelograms.forEach((pgram) => {
-						const heightOfPgram = pgram.lowerLeft - pgram.upperLeft;
+						const heightOfPgram = pgram.lowerLeft - pgram.upperLeft + 1;
 						var areaFunc = d3.area()
 								.x0(x(d.dateTime))
 								.x1(x(d.dateTime) + x.bandwidth())
