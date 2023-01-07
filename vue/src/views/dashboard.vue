@@ -48,6 +48,7 @@
             :key="item.i"
             @moved="saveGrid"
             @resized="saveGrid"
+            title="Press CTRL + Left Mouse to drag the element"
           >
             <ChartWrapper :component="item.component" :id="item.id" :key="key">
             </ChartWrapper>
@@ -70,6 +71,7 @@ import WidgetCatalog from "../components/widget-catalog.vue";
 import Communication from "../classes/communication";
 import { v4 as uuid } from "uuid";
 
+
 export default {
 	name: "dashboardView",
 	components: {
@@ -81,7 +83,7 @@ export default {
 	data: () => ({
 		projectCharts: [],
 		userCharts: [],
-		draggable: true,
+		draggable: false,
 		resizable: true,
 		responsive: true,
 	}),
@@ -122,6 +124,16 @@ export default {
 				cmid: this.$store.getters.getCMID,
 				widgets: widgets.map(this.detransformWidget),
 			});
+		},
+		onKeyDown(e) {
+			if(e.key == "Control") {
+				this.draggable = true;
+			}
+		},
+		onKeyUp(e) {
+			if(e.key == "Control") {
+				this.draggable = false;
+			}
 		},
 		removeItemFromGrid: function (val) {
 			this.userCharts = this.userCharts
@@ -192,6 +204,9 @@ export default {
 			window.dispatchEvent(new Event("resize"));
 		});
 		this.$store.dispatch("users/load");
+		
+		document.addEventListener("keydown", this.onKeyDown);
+		document.addEventListener("keyup", this.onKeyUp);
 	},
 };
 </script>
