@@ -1,3 +1,6 @@
+<!-- @author Marie Freise -->
+<!-- @copyright Marie Freise, 2023, marie_freise@web.de -->
+
 <template>
   <div>
     <h4>Revisionshistorie</h4>
