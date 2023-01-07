@@ -129,7 +129,7 @@ export default {
 	font-size: 1em;
 }
 
-.nav-item.active {
+.nav-item.active, .nav-link.active {
 	background-color: #0F6CBF;
 	color: white;
 }
