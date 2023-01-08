@@ -134,11 +134,7 @@ export default {
             let data = [];
             let dataValues = [];
             // get authors info
-            let authorsInfo = await Communication.getFromEVA("minimap/authorInfo")
-                .then(res => {
-                    return res;
-                })
-                .catch(error => { throw new Error(error) });
+            let authorsInfo = store.getters["users/usersByEpId"];
             // aggregate x- and y-axes data
             for (let author of this.authorsToOperations) {
                 let group = "";

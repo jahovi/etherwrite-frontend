@@ -6,7 +6,7 @@
 			<ul class="nav nav-tabs mb-3 col-10" id="ex1" role="tablist">
 				<li class="nav-item" :class="{'active': cat === category }" v-for="(cat, key) in categories" :key="key">
 					<a class="nav-link" role="tab" href="#" @click="category = cat" aria-selected="true">
-						{{ i18n[`widgets.${cat}`] }}
+						{{ i18n[`widgets.category.${cat}`] }}
 					</a>
 				</li>
 			</ul>

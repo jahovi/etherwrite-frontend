@@ -30,7 +30,6 @@ export default {
 			datasets: [],
 			authorColors: [],
 			authorSet: {},
-			authorInfo: {},
 			hourlyTimestamp: false,
 		};
 	},
@@ -81,7 +80,7 @@ export default {
 			if (this.isMock) {
 				return author;
 			}
-			return this.authorInfo[author].epalias;
+			return store.getters["users/usersByEpId"][author].epalias;
 		},
 		getAuthorColor(author) {
 			const index = [...this.authorSet].indexOf(author);
@@ -89,7 +88,6 @@ export default {
 		},
 		async getData() {
 			// get data
-			this.authorInfo = await Communication.getFromEVA("minimap/authorInfo");
 			let data;
 			try {
 				data = await Communication.getFromEVA(`activity/activities/${this.padName}`);
@@ -106,7 +104,7 @@ export default {
 			}
 
 			// populate author colors array
-			Array.from(this.authorSet).forEach((author) => this.authorColors.push(this.authorInfo[author].color));
+			Array.from(this.authorSet).forEach((author) => this.authorColors.push(store.getters["users/usersByEpId"][author].color));
 
 			// init timestamp parsers
 			const dalyTimestampParser = d3.timeParse("%d.%m.%Y");
@@ -140,7 +138,6 @@ export default {
 
 		loadChart() {
 			document.getElementById(this.elementId).childNodes.forEach(c => c.remove());
-
 			// vars
 			const margin = {top: 20, right: 300, bottom: 40, left: 30};
 			let w = this.$refs.chart.getBoundingClientRect().width - margin.right;
