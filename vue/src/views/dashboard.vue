@@ -37,31 +37,32 @@
 						:is-resizable="resizable"
 						:responsive="responsive"
 						:vertical-compact="true"
+						:prevent-collision="true"
 						:use-css-transforms="true"
 				>
 					<GridItem
-							v-for="(item, key) in userCharts"
-							:x="item.x"
-							:y="item.y"
-							:w="item.w"
-							:h="item.h"
-							:i="item.i"
-							:key="item.i"
-							@moved="saveGrid"
-							@resized="saveGrid"
-							title="Press CTRL + Left Mouse to drag the element"
+							v-for="item in userCharts"
+										:x="item.x"
+										:y="item.y"
+										:w="item.w"
+										:h="item.h"
+										:i="item.i"
+										:key="item.i"
+										@moved="saveGrid"
+										@resized="saveGrid"
+title="Press CTRL + Left Mouse to drag the element"
 					>
 						<ChartWrapper
 								:component="item.component"
 								:padName="padName"
 								:id="item.id"
-								:key="key"
+								:key="item.i"
 						>
 						</ChartWrapper>
 
 						<span class="remove" @click="removeItemFromGrid(item)">
-              <i class="fa fa-close"></i>
-            </span>
+							<i class="fa fa-close"></i>
+						</span>
 					</GridItem>
 				</GridLayout>
 			</div>
@@ -117,22 +118,9 @@ export default {
 		 * Save custom dashboard.
 		 */
 		saveGrid() {
-			const widgets = this.userCharts.map(child => {
-				let id = child.id;
-				const component = child.component;
-				id = id === "undefined" ? undefined : parseInt(id);
-				return {
-					id,
-					component,
-					x: child.x || 0,
-					y: child.y || 0,
-					w: child.w || child.minW || 1,
-					h: child.h || child.minH || 1,
-				};
-			});
 			Communication.webservice("saveDashboard", {
 				cmid: this.$store.getters.getCMID,
-				widgets: widgets.map(this.detransformWidget),
+				widgets: this.userCharts.map(this.detransformWidget),
 			});
 		},
 		onKeyDown(e) {
@@ -160,7 +148,6 @@ export default {
 		 * Add widget to dashboard.
 		 * @param {
 				component: String,
-				id: Number,
 				category: String,
 				configuration: Object,
 				x: Number,
@@ -183,18 +170,18 @@ export default {
 		},
 		transformWidget(widgetData) {
 			return {
-				id: widgetData.id,
+				i: widgetData.uuid,
 				component: widgetData.component,
 				configuration: {},
-				x: widgetData.x,
-				y: widgetData.y,
-				w: widgetData.w,
-				h: widgetData.h,
+				x: parseInt(widgetData.x),
+				y: parseInt(widgetData.y),
+				w: parseInt(widgetData.w),
+				h: parseInt(widgetData.h),
 			};
 		},
 		detransformWidget(widgetData) {
 			return {
-				id: widgetData.id,
+				uuid: widgetData.i,
 				component: widgetData.component,
 				configuration: JSON.stringify({}),
 				x: widgetData.x,
@@ -209,7 +196,7 @@ export default {
 		Communication.webservice("getDashboards", {cmid}).then(result => {
 			this.projectCharts = result.project.map(this.transformWidget);
 
-			result.user.map(this.transformWidget).map(this.addWidget);
+			this.userCharts = result.user.map(this.transformWidget);
 			// Make the UI resize according to the rendered grid.
 			window.dispatchEvent(new Event("resize"));
 		});

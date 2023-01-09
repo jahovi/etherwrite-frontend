@@ -44,6 +44,8 @@ function xmldb_write_upgrade($oldversion = 0)
 
     issue_27($oldversion, $dbman);
 
+    issue_59($oldversion, $dbman);
+
     return true;
 }
 
@@ -164,5 +166,55 @@ function issue_27(int $oldversion, $dbman)
             $widget->component = 'authoringRatios_pie';
             $DB->update_record('write_widget', $widget);
         }
+    }
+}
+
+function issue_59(int $oldversion, $dbman)
+{
+    global $DB;
+
+    $newversion = 2022122701;
+
+    if ($oldversion < $newversion) {
+
+        // Define field uuid to be added to write_widget.
+        $table = new xmldb_table('write_widget');
+        $field = new xmldb_field('uuid', XMLDB_TYPE_CHAR, '36', null, null, null, null, 'user_id');
+
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        /**
+         * Respectfully stolen from https://www.uuidgenerator.net/dev-corner/php
+         */
+        function guidv4()
+        {
+            // Generate 16 bytes (128 bits) of random data or use the data passed into the function.
+            $data = openssl_random_pseudo_bytes(16);
+            assert(strlen($data) == 16);
+
+            // Set version to 0100
+            $data[6] = chr(ord($data[6]) & 0x0f | 0x40);
+            // Set bits 6-7 to 10
+            $data[8] = chr(ord($data[8]) & 0x3f | 0x80);
+
+            // Output the 36 character UUID.
+            return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
+        }
+
+        // Create UUID for every existing widget
+        $widgets = $DB->get_records('write_widget');
+        foreach ($widgets as $widget) {
+            $widget->uuid = guidv4();
+            $DB->update_record('write_widget', $widget);
+        }
+
+        // Changing nullability of field uuid on table write_widget to not null.
+        $field = new xmldb_field('uuid', XMLDB_TYPE_CHAR, '36', null, XMLDB_NOTNULL, null, null, 'user_id');
+        $dbman->change_field_notnull($table, $field);
+
+        // Write savepoint reached.
+        upgrade_mod_savepoint(true, $newversion, 'write');
     }
 }
