@@ -69,6 +69,14 @@ export default {
 				minW: 1,
 				minH: 2,
 			},
+			{
+				component: "cohesionDiagram",
+				category: "other",
+				configuration: {},
+				moderatorWidget: false,
+				minW: 2,
+				minH: 2,
+			}
 		],
 	},
 	getters: {
