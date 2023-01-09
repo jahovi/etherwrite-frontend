@@ -158,17 +158,15 @@ export default {
 				h: Number,
 			} widget Widget to be added to dashboard.
 		 */
-		addWidget(newWidget, initial = false) {
+		addWidget(newWidget) {
 			newWidget.w = newWidget.w || newWidget.minW;
 			newWidget.h = newWidget.h || newWidget.minH;
 			newWidget.x = newWidget.x || 0;
 			newWidget.y = newWidget.y || 0;
 			// { "x": 0, "y": 0, "w": 2, "h": 2, "i": "0"} neccessary
-			newWidget.i = initial ? newWidget.uuid : uuid();
+			newWidget.i = uuid();
 			this.userCharts.push(newWidget);
-			if (!initial) {
-				this.saveGrid();
-			}
+			this.saveGrid();
 		},
 		transformWidget(widgetData) {
 			return {
