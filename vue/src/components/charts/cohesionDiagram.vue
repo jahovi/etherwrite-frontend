@@ -9,20 +9,22 @@
 <script>
 import * as d3 from "d3";
 import Communication from "../../classes/communication";
+import store from "../../store";
 
 export default {
     name: "cohesionDiagram",
     props: {
         id: String,
         isMock: Boolean,
+        padName: String,
     },
     computed: {
         elementId() {
             return "cohesionDiagram_" + this.id;
         },
-        padName() {
-			return this.$store.state.base.padName;
-		},
+        // padName() {
+		// 	return this.$store.state.base.padName;
+		// },
     },
     async mounted() {
         if(this.isMock){
