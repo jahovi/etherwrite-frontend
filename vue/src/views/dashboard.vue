@@ -4,8 +4,14 @@
 		<div id="project-dashboard" class="row border-bottom dashboard">
 			<h3 class="col-12">Projekt Dashboard</h3>
 			<div class="col-12 mt-4 board-area" style="display: flex; gap: 8px">
-				<ChartWrapper v-for="(widget, key) in projectCharts" :component="widget.component" :id="widget.id"
-											:key="key" style="width: 32%">
+				<ChartWrapper
+						v-for="(widget, key) in projectCharts"
+						:component="widget.component"
+						:id="widget.id"
+						:key="key"
+						:padName="padName"
+						style="width: 32%"
+				>
 				</ChartWrapper>
 			</div>
 		</div>
@@ -13,8 +19,11 @@
 		<div id="custom-dashboard" class="row d-flex dashboard">
 			<h3 class="col-6 mr-auto p-2">Dein Dashboard</h3>
 			<!-- add widget button -->
-			<button id="open-widget-catalog-btn" class="btn btn-success rounded p-2"
-							@click.prevent="openWidgetCatalog()">
+			<button
+					id="open-widget-catalog-btn"
+					class="btn btn-success rounded p-2"
+					@click.prevent="openWidgetCatalog()"
+			>
 				<i class="fa fa-plus"></i>
 			</button>
 			<!-- grid -->
@@ -22,23 +31,33 @@
 				<GridLayout
 						:layout.sync="userCharts"
 						:col-num="12"
-						:cols="{ lg: 4, md: 4, sm: 2, xs: 1, xxs: 1}"
+						:cols="{ lg: 4, md: 4, sm: 2, xs: 1, xxs: 1 }"
 						:row-height="300"
 						:is-draggable="draggable"
 						:is-resizable="resizable"
 						:responsive="responsive"
 						:vertical-compact="true"
-						:use-css-transforms="true">
-					<GridItem v-for="(item, key) in userCharts"
+						:prevent-collision="true"
+						:use-css-transforms="true"
+				>
+					<GridItem
+							v-for="item in userCharts"
 										:x="item.x"
 										:y="item.y"
 										:w="item.w"
 										:h="item.h"
-										:i="item.i" :key="item.i"
+										:i="item.i"
+										:key="item.i"
 										@moved="saveGrid"
-										@resized="saveGrid">
-
-						<ChartWrapper :component="item.component" :id="item.id" :key="key">
+										@resized="saveGrid"
+title="Press CTRL + Left Mouse to drag the element"
+					>
+						<ChartWrapper
+								:component="item.component"
+								:padName="padName"
+								:id="item.id"
+								:key="item.i"
+						>
 						</ChartWrapper>
 
 						<span class="remove" @click="removeItemFromGrid(item)">
@@ -59,6 +78,7 @@ import WidgetCatalog from "../components/widget-catalog.vue";
 import Communication from "../classes/communication";
 import { v4 as uuid } from "uuid";
 
+
 export default {
 	name: "dashboardView",
 	components: {
@@ -70,11 +90,15 @@ export default {
 	data: () => ({
 		projectCharts: [],
 		userCharts: [],
-		draggable: true,
+		draggable: false,
 		resizable: true,
 		responsive: true,
 	}),
 	computed: {
+		editorInstance() {
+			const padName = this.$route.params.padName;
+			return this.$store.state.base.editorInstances.find(e => e.padName === padName);
+		},
 		getStrings() {
 			return this.$store.getters.getStrings;
 		},
@@ -82,7 +106,7 @@ export default {
 			return this.$store.state.users.users;
 		},
 		padName() {
-			return this.$store.state.base.padName;
+			return this.editorInstance.padName;
 		},
 		isLoading() {
 			return !this.$store.state.base.initialized;
@@ -94,23 +118,20 @@ export default {
 		 * Save custom dashboard.
 		 */
 		saveGrid() {
-			const widgets = this.userCharts.map(child => {
-				let id = child.id;
-				const component = child.component;
-				id = id === "undefined" ? undefined : parseInt(id);
-				return {
-					id,
-					component,
-					x: child.x || 0,
-					y: child.y || 0,
-					w: child.w || child.minW || 1,
-					h: child.h || child.minH || 1,
-				};
-			});
 			Communication.webservice("saveDashboard", {
 				cmid: this.$store.getters.getCMID,
-				widgets: widgets.map(this.detransformWidget),
+				widgets: this.userCharts.map(this.detransformWidget),
 			});
+		},
+		onKeyDown(e) {
+			if (e.key === "Control" || e.key === "Meta") {
+				this.draggable = true;
+			}
+		},
+		onKeyUp(e) {
+			if (e.key === "Control" || e.key === "Meta") {
+				this.draggable = false;
+			}
 		},
 		removeItemFromGrid: function (val) {
 			this.userCharts = this.userCharts
@@ -127,7 +148,6 @@ export default {
 		 * Add widget to dashboard.
 		 * @param {
 				component: String,
-				id: Number,
 				category: String,
 				configuration: Object,
 				x: Number,
@@ -150,18 +170,18 @@ export default {
 		},
 		transformWidget(widgetData) {
 			return {
-				id: widgetData.id,
+				i: widgetData.uuid,
 				component: widgetData.component,
 				configuration: {},
-				x: widgetData.x,
-				y: widgetData.y,
-				w: widgetData.w,
-				h: widgetData.h,
+				x: parseInt(widgetData.x),
+				y: parseInt(widgetData.y),
+				w: parseInt(widgetData.w),
+				h: parseInt(widgetData.h),
 			};
 		},
 		detransformWidget(widgetData) {
 			return {
-				id: widgetData.id,
+				uuid: widgetData.i,
 				component: widgetData.component,
 				configuration: JSON.stringify({}),
 				x: widgetData.x,
@@ -176,11 +196,14 @@ export default {
 		Communication.webservice("getDashboards", {cmid}).then(result => {
 			this.projectCharts = result.project.map(this.transformWidget);
 
-			result.user.map(this.transformWidget).map(this.addWidget);
+			this.userCharts = result.user.map(this.transformWidget);
 			// Make the UI resize according to the rendered grid.
 			window.dispatchEvent(new Event("resize"));
 		});
-		this.$store.dispatch("users/load");
+		this.$store.dispatch("users/initialize");
+
+		document.addEventListener("keydown", this.onKeyDown);
+		document.addEventListener("keyup", this.onKeyUp);
 	},
 };
 </script>

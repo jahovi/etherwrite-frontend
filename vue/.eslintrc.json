@@ -34,6 +34,7 @@
         "exports": "always-multiline",
         "functions": "always-multiline"
       }
-    ]
+    ],
+    "vue/no-v-for-template-key": "off"
   }
 }

@@ -27,6 +27,7 @@ export default {
     props: {
         id: String,
         isMock: Boolean,
+        padName: String,
     },
     data() {
         return {
@@ -60,12 +61,21 @@ export default {
             return this.$store.state.users.users;
         },
     },
+	watch: {
+		padName() {
+			if (!this.isMock) {
+				this.getData().then(() =>
+					this.loadBar());
+			}
+		}
+	},
     methods: {
         /**
          * Get data from EVA and sum up edits, writes, pastes and deletes for each author.
          */
         async getData() {
-            return Communication.getFromEVA(`activity/operations/${store.state.base.padName}`,
+            this.authorsToOperations = [];
+            return Communication.getFromEVA(`activity/operations/${this.padName}`,
                 { padName: store.state.base.padName })
                 .then(res => {
                     for (let entry of res) {
@@ -120,14 +130,11 @@ export default {
          * Load the chart.
          */
         async loadBar() {
+						document.getElementById(this.elementId).childNodes.forEach(c => c.remove());
             let data = [];
             let dataValues = [];
             // get authors info
-            let authorsInfo = await Communication.getFromEVA("minimap/authorInfo")
-                .then(res => {
-                    return res;
-                })
-                .catch(error => { throw new Error(error) });
+            let authorsInfo = store.getters["users/usersByEpId"];
             // aggregate x- and y-axes data
             for (let author of this.authorsToOperations) {
                 let group = "";
@@ -176,7 +183,7 @@ export default {
             let margin = { top: 20, right: 30, bottom: 30, left: 30 };
             let width = 460 - margin.left - margin.right;
             let height = 230 - margin.top - margin.bottom;
-            // svg object 
+            // svg object
             let svg = d3.select(`#${this.elementId}`)
                 .append("svg")
                 .attr("width", width + margin.left + margin.right)

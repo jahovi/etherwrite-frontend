@@ -11,11 +11,12 @@
 			<li class="nav-item">
 				<router-link to="/" class="nav-link">Aufgabenstellung</router-link>
 			</li>
-			<li class="nav-item">
-				<router-link to="/editor" class="nav-link">Texteditor</router-link>
-			</li>
-			<li class="nav-item">
-				<router-link to="/dashboard" class="nav-link">Dashboard</router-link>
+			<li class="nav-item" v-for="editor in getEditorInstances" :key="`${editor.padName}_editor`">
+				<strong v-if="getEditorInstances.length > 1">{{ editor.groupName }}</strong>
+				<div>
+					<router-link :to="`/editor/${editor.padName}`" class="nav-link" :text="`Texteditor`"/>
+					<router-link :to="`/dashboard/${editor.padName}`" class="nav-link" :text="`Dashboard`"/>
+				</div>
 			</li>
 		</ul>
 		<div class="tab-content main-vue">
@@ -30,6 +31,7 @@
 	</div>
 </template>
 <script>
+
 
 export default {
 	data: function () {
@@ -52,8 +54,33 @@ export default {
 		getAlertMessage: function () {
 			return this.$store.getters.getAlertMessage;
 		},
+		getEditorInstances: function () {
+			return this.$store.state.base.editorInstances;
+		},
 	},
 };
 </script>
 <style scoped>
+.nav-item {
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-end;
+}
+
+.nav-item div {
+	display: flex;
+	flex-wrap: nowrap;
+}
+
+.nav-item strong {
+	text-align: center;
+	padding: 4px 0;
+	margin: 0 8px -1px;
+	border-bottom: 1px solid #eee;
+}
+
+.router-link-active {
+	background-color: #0F6CBF;
+	color: white;
+}
 </style>

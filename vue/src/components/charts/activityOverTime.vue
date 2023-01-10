@@ -21,12 +21,12 @@ export default {
 	data() {
 		return {
 			data: [],
-			authors: {},
 		};
 	},
 	props: {
 		id: String,
 		isMock: Boolean,
+		padName: String,
 	},
 	computed: {
 		elementId() {
@@ -41,7 +41,7 @@ export default {
 				if (id === "others") {
 					result["Andere"] = "#ccc";
 				} else {
-					const author = this.authors[id];
+					const author = store.getters["users/usersByEpId"][id];
 					if (author) {
 						result[author.epalias] = author.color;
 					}
@@ -76,10 +76,17 @@ export default {
 					this.loadLine());
 		}
 	},
+	watch: {
+		padName() {
+			if (!this.isMock) {
+				this.getData().then(() =>
+						this.loadLine());
+			}
+		}
+	},
 	methods: {
 		async getData() {
-			this.authors = await Communication.getFromEVA("minimap/authorInfo");
-			return Communication.getFromEVA(`activity/activities/${store.state.base.padName}`)
+			return Communication.getFromEVA(`activity/activities/${this.padName}`)
 					.then(data => {
 						this.data = data;
 					})
@@ -88,7 +95,7 @@ export default {
 					});
 		},
 		loadLine: function () {
-
+			document.getElementById(this.elementId).childNodes.forEach(c => c.remove());
 			let width = this.$refs.chart.getBoundingClientRect().width - 25,
 					height = this.$refs.chart.getBoundingClientRect().height - 60;
 
@@ -153,7 +160,7 @@ export default {
 
 			Object.entries(datasets).forEach(([authorId, datapoints]) => {
 
-				const author = this.authors[authorId];
+				const author = store.getters["users/usersByEpId"][authorId];
 				const color = author ? author.color : "#ccc";
 
 				const y = d3.scaleLinear(datapoints)

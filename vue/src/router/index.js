@@ -12,8 +12,8 @@ import Task from "../views/task.vue";
 // will not be called.
 const routes = [
 	{path: "/", name: "task", component: Task},
-	{path: "/editor", name: "editor", component: Editor},
-	{path: "/dashboard", name: "dashboard", component: Dashboard},
+	{path: "/editor/:padName", name: "editor", component: Editor},
+	{path: "/dashboard/:padName", name: "dashboard", component: Dashboard},
 	{path: "/:pathMatch(.*)*", name: "not found", component: NotFound},
 ];
 

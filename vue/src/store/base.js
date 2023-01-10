@@ -2,20 +2,16 @@ import Communication from "../classes/communication";
 
 export default {
 	state: {
-		padName: null,
+		editorInstances:[],
 		isModerator: false,
-		groupId: null,
-		editorLink: null,
 		evaUri: null,
 		jwt: null,
 		initialized: false,
 	},
 	mutations: {
 		setEditorInfo(state, payload) {
-			state.padName = payload.padName;
+			state.editorInstances = payload.editorInstances;
 			state.isModerator = payload.isModerator;
-			state.groupId = payload.groupId;
-			state.editorLink = payload.link;
 			state.evaUri = payload.eva;
 			state.jwt = payload.jwt;
 			state.initialized = true;

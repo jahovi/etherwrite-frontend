@@ -28,6 +28,7 @@ export default {
 	props: {
 		id: String,
 		isMock: Boolean,
+		padName: String,
 	},
 	computed: {
 		elementId() {
@@ -49,20 +50,28 @@ export default {
 			this.loadPie();
 		} else {
 			this.getData().then(() =>
+				this.loadPie());
+		}
+	},
+	watch: {
+		padName() {
+			if (!this.isMock) {
+				this.getData().then(() =>
 					this.loadPie());
+			}
 		}
 	},
 	methods: {
 		async getData() {
-			return Communication.getFromEVA("authoring_ratios", {pad: store.state.base.padName})
-					.then(data => {
-						this.authors = data.authors;
-						this.ratios = data.ratios;
-						this.colors = data.colors;
-					})
-					.catch(() => {
-						store.commit("setAlertWithTimeout", ["alert-danger", store.getters.getStrings.unknown_error, 3000]);
-					});
+			return Communication.getFromEVA("authoring_ratios", { pad: this.padName })
+				.then(data => {
+					this.authors = data.authors;
+					this.ratios = data.ratios;
+					this.colors = data.colors;
+				})
+				.catch(() => {
+					store.commit("setAlertWithTimeout", ["alert-danger", store.getters.getStrings.unknown_error, 3000]);
+				});
 
 		},
 
@@ -70,6 +79,7 @@ export default {
 
 			// Add a filler if the given numbers don't add up to 100%.
 			// Can happen with weird test data.
+			document.getElementById(this.elementId).childNodes.forEach(c => c.remove());
 			const sum = this.ratios.reduce((result, entry) => result + entry, 0);
 			if (sum < 1) {
 				this.authors = [...this.authors, "Unbekannt"];
@@ -78,28 +88,28 @@ export default {
 			}
 
 			const svg = d3.select(`#${this.elementId}`),
-					width = svg.attr("width"),
-					height = svg.attr("height"),
-					radius = Math.min(width, height) / 2;
+				width = svg.attr("width"),
+				height = svg.attr("height"),
+				radius = Math.min(width, height) / 2;
 
 			const chart = svg.append("g")
-					.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+				.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
 			const pie = d3.pie();
 			const arc = d3.arc()
-					.innerRadius(0)
-					.outerRadius(radius);
+				.innerRadius(0)
+				.outerRadius(radius);
 
 			const arcs = chart.selectAll("arc")
-					.data(pie(this.ratios))
-					.enter().append("g")
-					.attr("class", "arc");
+				.data(pie(this.ratios))
+				.enter().append("g")
+				.attr("class", "arc");
 
 			arcs.append("path")
-					.attr("fill", (d, i) => this.colorFn(i))
-					.attr("d", arc)
-					.append("title")
-					.text(d => `${d.value} %`);
+				.attr("fill", (d, i) => this.colorFn(i))
+				.attr("d", arc)
+				.append("title")
+				.text(d => `${d.value} %`);
 		},
 	},
 };
