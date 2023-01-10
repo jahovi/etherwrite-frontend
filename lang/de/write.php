@@ -45,3 +45,18 @@ $string['widgets.category.other'] = 'Sonstige';
 
 $string['widgets.groupParticipants'] = "Projektteilnehmer(innen)";
 $string['widgets.groupParticipants.group'] = "Gruppe";
+$string['widgets.barchart'] = 'Balkendiagramm';
+$string['widgets.piechart'] = 'Kuchendiagramm';
+$string['widgets.linechart'] = 'Liniendiagramm';
+$string['widgets.other'] = 'Sonstige';
+
+// Operations widget
+$string['operationswidgettitle'] = 'Durchgeführte Operationen';
+$string['operationswidgetedit'] = 'Bearbeiten';
+$string['operationswidgetwrite'] = 'Schreiben';
+$string['operationswidgetpaste'] = 'Kopieren';
+$string['operationswidgetdelete'] = 'Löschen';
+$string['operationswidgetaverage'] = 'Durchschnitt';
+$string['operationswidgetxaxisteacher'] = 'Operationen je Teilnehmer';
+$string['operationswidgetxaxisstudent'] = 'Operationen';
+$string['operationswidgetyaxis'] = 'Anzahl';
