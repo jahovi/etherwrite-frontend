@@ -1,6 +1,7 @@
 <template>
 	<div class="chart-wrapper" :id="'chart-wrapper-' + id" :name="component">
-		<component :padName="padName" :is="component" :id="'custom-chart-' + id" :isMock="isMock" @click.capture="stopEvents" style="height: 100%"/>
+		<component :padName="padName" :is="component" :id="'custom-chart-' + id" :isMock="isMock"
+			@click.capture="stopEvents" style="height: 100%; overflow-x: scroll; overflow-y:hidden" />
 		<slot name="btn"></slot>
 	</div>
 </template>
