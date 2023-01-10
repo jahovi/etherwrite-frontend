@@ -73,7 +73,8 @@ export default {
             return Communication.getFromEVA(`activity/operations/${store.state.base.padName}`,
                 { padName: store.state.base.padName })
                 .then(res => {
-                    for (let entry of res) {
+                    let filtered = res.filter(el => Object.keys(el.authorToOperations).length !== 0);
+                    for (let entry of filtered) {
                         // check format {EDIT: number, WRITE: number, PASTE: number, DELETE: number}
                         for (let key in entry.authorToOperations) {
                             if (entry.authorToOperations[key].EDIT === undefined) {
@@ -170,6 +171,9 @@ export default {
             let margin = { top: 10, right: 30, bottom: 30, left: 30 };
             let width = this.$el.parentElement.clientWidth;
             let height = this.$el.parentElement.clientHeight;
+            if (this.isMock) {
+                height *= 2;
+            }
             // svg object 
             let svg = d3.select(`#${this.elementId}`)
                 .append("svg")
@@ -177,7 +181,7 @@ export default {
                 .attr("preserveAspectRatio", "xMinYMin meet")
                 .attr("viewBox", `-20 -10 ${width} ${height}`)
                 .classed("svg-content-responsive", true)
-                .append("g") 
+                .append("g")
                 .attr("transform",
                     `translate(${margin.left}, ${margin.top})`)
                 .attr("transform", "scale(0.8 0.8)");
