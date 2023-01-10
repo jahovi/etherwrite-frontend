@@ -13,6 +13,7 @@
 						style="width: 32%"
 				>
 				</ChartWrapper>
+				<Countdown />
 			</div>
 		</div>
 		<!-- custom dashboard -->
@@ -77,6 +78,7 @@ import ChartWrapper from "../components/chart-wrapper.vue";
 import WidgetCatalog from "../components/widget-catalog.vue";
 import Communication from "../classes/communication";
 import { v4 as uuid } from "uuid";
+import Countdown from "../components/kpis/countdown.vue";
 
 
 export default {
@@ -86,6 +88,7 @@ export default {
 		GridItem,
 		ChartWrapper,
 		WidgetCatalog,
+		Countdown,
 	},
 	data: () => ({
 		projectCharts: [],

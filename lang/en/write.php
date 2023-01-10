@@ -45,3 +45,7 @@ $string['widgets.category.other'] = 'Other';
 
 $string['widgets.groupParticipants'] = "Project participants";
 $string['widgets.groupParticipants.group'] = "Group";
+
+// KPIs
+$string['kpi-countdown-text']= 'Time till deadline: ';
+$string['kpi-countdown-no-deadline'] = 'no deadline';
