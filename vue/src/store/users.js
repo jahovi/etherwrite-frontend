@@ -73,6 +73,7 @@ export default {
 			commit("setAuthorInfo", authorInfo);
 		},
 		async initialize({dispatch}) {
+			await dispatch("load");
 			setInterval(() => dispatch("load"), 5000);
 		},
 	},

@@ -43,15 +43,15 @@
 				>
 					<GridItem
 							v-for="item in userCharts"
-										:x="item.x"
-										:y="item.y"
-										:w="item.w"
-										:h="item.h"
-										:i="item.i"
-										:key="item.i"
-										@moved="saveGrid"
-										@resized="saveGrid"
-title="Press CTRL + Left Mouse to drag the element"
+							:x="item.x"
+							:y="item.y"
+							:w="item.w"
+							:h="item.h"
+							:i="item.i"
+							:key="item.i"
+							@moved="saveGrid"
+							@resized="saveGrid"
+							title="Press CTRL + Left Mouse to drag the element"
 					>
 						<ChartWrapper
 								:component="item.component"
@@ -196,17 +196,17 @@ export default {
 	},
 	mounted() {
 		const cmid = this.$store.getters.getCMID;
-		Communication.webservice("getDashboards", {cmid}).then(result => {
-			this.projectCharts = result.project.map(this.transformWidget);
+		this.$store.dispatch("users/initialize").then(() => {
+			Communication.webservice("getDashboards", {cmid}).then(result => {
+				this.projectCharts = result.project.map(this.transformWidget);
+				this.userCharts = result.user.map(this.transformWidget);
+				// Make the UI resize according to the rendered grid.
+				window.dispatchEvent(new Event("resize"));
+			});
 
-			this.userCharts = result.user.map(this.transformWidget);
-			// Make the UI resize according to the rendered grid.
-			window.dispatchEvent(new Event("resize"));
+			document.addEventListener("keydown", this.onKeyDown);
+			document.addEventListener("keyup", this.onKeyUp);
 		});
-		this.$store.dispatch("users/initialize");
-
-		document.addEventListener("keydown", this.onKeyDown);
-		document.addEventListener("keyup", this.onKeyUp);
 	},
 };
 </script>
