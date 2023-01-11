@@ -58,9 +58,6 @@ export default {
             }
             return d3.scaleOrdinal(this.colors);
         },
-        users() {
-            return this.$store.state.users.users;
-        },
         getStrings() {
             return this.$store.getters.getStrings;
         },
@@ -83,21 +80,6 @@ export default {
                 .then(res => {
                     let filtered = res.filter(el => Object.keys(el.authorToOperations).length !== 0);
                     for (let entry of filtered) {
-                        // check format {EDIT: number, WRITE: number, PASTE: number, DELETE: number}
-                        for (let key in entry.authorToOperations) {
-                            if (entry.authorToOperations[key].EDIT === undefined) {
-                                entry.authorToOperations[key].EDIT = 0;
-                            }
-                            if (entry.authorToOperations[key].WRITE === undefined) {
-                                entry.authorToOperations[key].WRITE = 0;
-                            }
-                            if (entry.authorToOperations[key].PASTE === undefined) {
-                                entry.authorToOperations[key].PASTE = 0;
-                            }
-                            if (entry.authorToOperations[key].DELETE === undefined) {
-                                entry.authorToOperations[key].DELETE = 0;
-                            }
-                        }
                         let keys = Object.keys(entry.authorToOperations);
                         for (let key of keys) {
                             // add author if not already in authorsToOperations
@@ -125,6 +107,7 @@ export default {
                             author[key].delete += entry.authorToOperations[key].DELETE;
                         }
                     }
+                    console.log(this.authorsToOperations)
                 })
                 .catch(() => {
                     store.commit("setAlertWithTimeout", ["alert-danger", store.getters.getStrings.unknown_error, 3000]);
@@ -145,18 +128,18 @@ export default {
                 for (let [key, value] of Object.entries(authorsInfo)) {
                     if (!this.isMock) {
                         if (Object.keys(author)[0] === key) {
-                            group = value.epalias;
+                            group = value.fullName;
                         }
                     }
                     if (this.isMock) {
                         group = Object.keys(author)[0];
                     }
                     if (Object.keys(author)[0] === "others") {
-                        group = "Average";
+                        group = "others";
                     }
                 }
                 // operations of student(s) or average of others 
-                let multiplier = Object.keys(author)[0] !== "others" ? 1 : 1 / this.users.length;
+                let multiplier = Object.keys(author)[0] !== "others" ? 1 : 1 / this.authorsInfo.length;
                 data.push({
                     group: group,
                     [this.operationsStrings[0]]: Object.values(author)[0].edit * multiplier,
@@ -178,6 +161,9 @@ export default {
             let height = this.$el.parentElement.clientHeight;
             if (this.isMock) {
                 height *= 2;
+            }
+            if (!this.isMock) {
+                height *= 0.8;
             }
             // svg object
             let svg = d3.select(`#${this.elementId}`)
