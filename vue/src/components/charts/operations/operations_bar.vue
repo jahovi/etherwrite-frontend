@@ -107,7 +107,6 @@ export default {
                             author[key].delete += entry.authorToOperations[key].DELETE;
                         }
                     }
-                    console.log(this.authorsToOperations)
                 })
                 .catch(() => {
                     store.commit("setAlertWithTimeout", ["alert-danger", store.getters.getStrings.unknown_error, 3000]);
@@ -139,7 +138,7 @@ export default {
                     }
                 }
                 // operations of student(s) or average of others 
-                let multiplier = Object.keys(author)[0] !== "others" ? 1 : 1 / this.authorsInfo.length;
+                let multiplier = Object.keys(author)[0] !== "others" ? 1 : 1 / Object.keys(authorsInfo).length;
                 data.push({
                     group: group,
                     [this.operationsStrings[0]]: Object.values(author)[0].edit * multiplier,
@@ -165,6 +164,10 @@ export default {
             if (!this.isMock) {
                 height *= 0.8;
             }
+            let offsetXAxisLable = 180;
+            if (!this.isModerator) {
+                offsetXAxisLable = 100;
+            }
             // svg object
             let svg = d3.select(`#${this.elementId}`)
                 .append("svg")
@@ -181,7 +184,7 @@ export default {
             svg.append("text")
                 .attr("class", "x label")
                 .attr("text-anchor", "end")
-                .attr("x", width + 180)
+                .attr("x", width + offsetXAxisLable)
                 .attr("y", height + 5)
                 .text(this.getStrings[`operationswidgetxaxis${suffix}`]);
             svg.append("text")
