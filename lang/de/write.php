@@ -58,3 +58,13 @@ $string['widget-info-groupParticipants'] = 'Beschreibung des Gruppen-Partizipati
 $string['widget-info-operations_bar'] = 'Beschreibung des Operations-Diagramms.';
 $string['widget-info-activityOverTime'] = 'Beschreibung des Aktivitäts-Diagramms über die Zeit.';
 $string['widget-info-etherViz'] = 'Beschreibung des etherViz-Diagramms.';
+// Operations widget
+$string['operationswidgettitle'] = 'Durchgeführte Operationen';
+$string['operationswidgetedit'] = 'Bearbeiten';
+$string['operationswidgetwrite'] = 'Schreiben';
+$string['operationswidgetpaste'] = 'Kopieren';
+$string['operationswidgetdelete'] = 'Löschen';
+$string['operationswidgetaverage'] = 'Durchschnitt';
+$string['operationswidgetxaxisteacher'] = 'Operationen je Teilnehmer';
+$string['operationswidgetxaxisstudent'] = 'Operationen';
+$string['operationswidgetyaxis'] = 'Anzahl';
