@@ -78,6 +78,23 @@ export default {
             this.authorsToOperations = [];
             return Communication.getFromEVA(`activity/operations/${this.padName}`, { padName: this.padName })
                 .then(res => {
+                    for (let entry of res) {
+                        // check format {EDIT: number, WRITE: number, PASTE: number, DELETE: number}
+                        for (let key in entry.authorToOperations) {
+                            if (entry.authorToOperations[key].EDIT === undefined) {
+                                entry.authorToOperations[key].EDIT = 0;
+                            }
+                            if (entry.authorToOperations[key].WRITE === undefined) {
+                                entry.authorToOperations[key].WRITE = 0;
+                            }
+                            if (entry.authorToOperations[key].PASTE === undefined) {
+                                entry.authorToOperations[key].PASTE = 0;
+                            }
+                            if (entry.authorToOperations[key].DELETE === undefined) {
+                                entry.authorToOperations[key].DELETE = 0;
+                            }
+                        }
+                    }
                     let filtered = res.filter(el => Object.keys(el.authorToOperations).length !== 0);
                     for (let entry of filtered) {
                         let keys = Object.keys(entry.authorToOperations);
