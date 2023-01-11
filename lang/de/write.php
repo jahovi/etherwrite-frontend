@@ -49,3 +49,12 @@ $string['widgets.groupParticipants.group'] = "Gruppe";
 // KPIs
 $string['kpi-countdown-text']= 'Zeit bis zur Abgabefrist: ';
 $string['kpi-countdown-no-deadline'] = 'Keine Abgabefrist';
+
+// Widgets Info-Texts
+$string['widget-info-authoringRatios_pie'] = 'Beschreibung des Authorenanteil-Kuchendiagramms.';
+$string['widget-info-authoringRatios_bar'] = 'Beschreibung des Authorenanteil-Balkendiagramms.';
+$string['widget-info-participation_diagram'] = 'Beschreibunf des Partizipation-Diagramms';
+$string['widget-info-groupParticipants'] = 'Beschreibung des Gruppen-Partizipations-Diagramms.';
+$string['widget-info-operations_bar'] = 'Beschreibung des Operations-Diagramms.';
+$string['widget-info-activityOverTime'] = 'Beschreibung des Aktivitäts-Diagramms über die Zeit.';
+$string['widget-info-etherViz'] = 'Beschreibung des etherViz-Diagramms.';

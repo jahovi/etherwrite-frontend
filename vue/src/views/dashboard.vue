@@ -39,7 +39,7 @@
 						:responsive="responsive"
 						:vertical-compact="true"
 						:prevent-collision="true"
-						:use-css-transforms="true"
+						:use-css-transforms="false"
 				>
 					<GridItem
 							v-for="item in userCharts"
