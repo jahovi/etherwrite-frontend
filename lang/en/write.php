@@ -49,3 +49,14 @@ $string['widgets.groupParticipants.group'] = "Group";
 // KPIs
 $string['kpi-countdown-text']= 'Time till deadline: ';
 $string['kpi-countdown-no-deadline'] = 'no deadline';
+
+// Operations widget
+$string['operationswidgettitle'] = 'Operations performed';
+$string['operationswidgetedit'] = 'Edit';
+$string['operationswidgetwrite'] = 'Write';
+$string['operationswidgetpaste'] = 'Paste';
+$string['operationswidgetdelete'] = 'Delete';
+$string['operationswidgetaverage'] = 'Average';
+$string['operationswidgetxaxisteacher'] = 'Operations per participant';
+$string['operationswidgetxaxisstudent'] = 'Operations';
+$string['operationswidgetyaxis'] = 'Count';

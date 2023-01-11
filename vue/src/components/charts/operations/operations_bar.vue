@@ -1,16 +1,16 @@
 <template>
     <div>
-        <h4>Durchgeführte Operationen</h4>
+        <h4>{{ getStrings["operationswidgettitle"] }}</h4>
         <div class="chart-container">
             <div class="chart" :id="elementId"></div>
             <ul class="legend mt-3">
-                <li v-if="isModerator" v-for="operation, key of operations" :key="key">
+                <li v-for="str, key of operationsStrings" :key="key">
                     <i class="fa fa-square" :style="{ color: operationsColors(key) }"></i>
-                    {{ operation }}
+                    {{ str }}
                 </li>
                 <li v-if="!isModerator">
                     <i class="fa fa-square" style="color: #d3d3d3"></i>
-                    Durchschnitt
+                    {{ getStrings["operationswidgetaverage"] }}
                 </li>
             </ul>
         </div>
@@ -42,8 +42,9 @@ export default {
                 "edit",
                 "write",
                 "paste",
-                "delete"
+                "delete",
             ],
+            operationsStrings: [],
             isModerator: false,
         };
     },
@@ -60,25 +61,28 @@ export default {
         users() {
             return this.$store.state.users.users;
         },
+        getStrings() {
+            return this.$store.getters.getStrings;
+        },
     },
-	watch: {
-		padName() {
-			if (!this.isMock) {
-				this.getData().then(() =>
-					this.loadBar());
-			}
-		}
-	},
+    watch: {
+        padName() {
+            if (!this.isMock) {
+                this.getData().then(() =>
+                    this.loadBar());
+            }
+        }
+    },
     methods: {
         /**
          * Get data from EVA and sum up edits, writes, pastes and deletes for each author.
          */
         async getData() {
             this.authorsToOperations = [];
-            return Communication.getFromEVA(`activity/operations/${this.padName}`,
-                { padName: store.state.base.padName })
+            return Communication.getFromEVA(`activity/operations/${this.padName}`, { padName: this.padName })
                 .then(res => {
-                    for (let entry of res) {
+                    let filtered = res.filter(el => Object.keys(el.authorToOperations).length !== 0);
+                    for (let entry of filtered) {
                         // check format {EDIT: number, WRITE: number, PASTE: number, DELETE: number}
                         for (let key in entry.authorToOperations) {
                             if (entry.authorToOperations[key].EDIT === undefined) {
@@ -130,7 +134,7 @@ export default {
          * Load the chart.
          */
         async loadBar() {
-						document.getElementById(this.elementId).childNodes.forEach(c => c.remove());
+            document.getElementById(this.elementId).childNodes.forEach(c => c.remove());
             let data = [];
             let dataValues = [];
             // get authors info
@@ -151,52 +155,62 @@ export default {
                         group = "Average";
                     }
                 }
-                // operations of student(s)
-                if (Object.keys(author)[0] !== "others") {
-                    data.push({
-                        group: group,
-                        edit: Object.values(author)[0].edit,
-                        write: Object.values(author)[0].write,
-                        paste: Object.values(author)[0].paste,
-                        delete: Object.values(author)[0].delete,
-                    });
-                }
-                // average of other students
-                if (Object.keys(author)[0] === "others") {
-                    data.push({
-                        group: group,
-                        edit: Object.values(author)[0].edit / this.users.length,
-                        write: Object.values(author)[0].write / this.users.length,
-                        paste: Object.values(author)[0].paste / this.users.length,
-                        delete: Object.values(author)[0].delete / this.users.length,
-                    });
-                }
+                // operations of student(s) or average of others 
+                let multiplier = Object.keys(author)[0] !== "others" ? 1 : 1 / this.users.length;
+                data.push({
+                    group: group,
+                    [this.operationsStrings[0]]: Object.values(author)[0].edit * multiplier,
+                    [this.operationsStrings[1]]: Object.values(author)[0].write * multiplier,
+                    [this.operationsStrings[2]]: Object.values(author)[0].paste * multiplier,
+                    [this.operationsStrings[3]]: Object.values(author)[0].delete * multiplier,
+                });
                 // data values for calculation of y-axis range
-                dataValues.push(Object.values(author)[0].edit);
-                dataValues.push(Object.values(author)[0].write);
-                dataValues.push(Object.values(author)[0].paste);
-                dataValues.push(Object.values(author)[0].delete);
+                dataValues.push(Object.values(author)[0].edit * multiplier);
+                dataValues.push(Object.values(author)[0].write * multiplier);
+                dataValues.push(Object.values(author)[0].paste * multiplier);
+                dataValues.push(Object.values(author)[0].delete * multiplier);
             }
             // set y-axis range boundary
-            let yAxisRangeTop = Math.ceil(Math.max(...dataValues) / 100) * 100;
-            // margin
-            let margin = { top: 20, right: 30, bottom: 30, left: 30 };
-            let width = 460 - margin.left - margin.right;
-            let height = 230 - margin.top - margin.bottom;
+            let yAxisRangeTop = Math.ceil(Math.max(...dataValues) / 10) * 10;
+            // margin, width, height
+            let margin = { top: 10, right: 30, bottom: 30, left: 30 };
+            let width = this.$el.parentElement.clientWidth;
+            let height = this.$el.parentElement.clientHeight;
+            if (this.isMock) {
+                height *= 2;
+            }
             // svg object
             let svg = d3.select(`#${this.elementId}`)
                 .append("svg")
-                .attr("width", width + margin.left + margin.right)
-                .attr("height", height + margin.top + margin.bottom)
+                .classed("svg-container", true)
+                .attr("preserveAspectRatio", "xMinYMin meet")
+                .attr("viewBox", `-20 -10 ${width} ${height}`)
+                .classed("svg-content-responsive", true)
                 .append("g")
                 .attr("transform",
-                    "translate(" + margin.left + "," + margin.top + ")");
+                    `translate(${margin.left}, ${margin.top})`)
+                .attr("transform", "scale(0.8 0.8)");
+            // labels x- and y-axis
+            let suffix = this.isModerator ? "teacher" : "student";
+            svg.append("text")
+                .attr("class", "x label")
+                .attr("text-anchor", "end")
+                .attr("x", width + 180)
+                .attr("y", height + 5)
+                .text(this.getStrings[`operationswidgetxaxis${suffix}`]);
+            svg.append("text")
+                .attr("class", "y label")
+                .attr("text-anchor", "end")
+                .attr("y", 5)
+                .attr("dy", ".75em")
+                .attr("transform", "rotate(-90)")
+                .text(this.getStrings["operationswidgetyaxis"]);
             /*
              * teacher chart
              */
             if (this.isModerator) {
                 // subgroups
-                let subgroups = this.operations;
+                let subgroups = this.operationsStrings;
                 // groups
                 let groups = [];
                 for (let entry of data) {
@@ -208,7 +222,7 @@ export default {
                     .range([0, width])
                     .padding([0.2]);
                 svg.append("g")
-                    .attr("transform", "translate(0," + height + ")")
+                    .attr("transform", `translate(0, ${height})`)
                     .call(d3.axisBottom(xAxis).tickSize(0));
                 // y-axis
                 let yAxis = d3.scaleLinear()
@@ -227,7 +241,7 @@ export default {
                     .data(data)
                     .enter()
                     .append("g")
-                    .attr("transform", function (d) { return "translate(" + xAxis(d.group) + ",0)"; })
+                    .attr("transform", function (d) { return `translate(${xAxis(d.group)}, 0)`; })
                     .selectAll("rect")
                     .data(function (d) { return subgroups.map(function (key) { return { key: key, value: d[key] }; }); })
                     .enter().append("rect")
@@ -244,17 +258,17 @@ export default {
                 // x-axis
                 let xAxis = d3.scaleBand()
                     .range([0, width])
-                    .domain(this.operations.map(function (o) { return o; }))
+                    .domain(this.operationsStrings.map(function (o) { return o; }))
                     .padding(0.2);
                 svg.append("g")
-                    .attr("transform", "translate(0," + height + ")")
+                    .attr("transform", `translate(0, ${height})`)
                     .call(d3.axisBottom(xAxis))
                     .selectAll("text")
                     .style("text-anchor", "center");
                 // y-axis
                 let yAxis = d3.scaleLinear()
                     .domain([0, yAxisRangeTop])
-                    .range([height, 0]);
+                    .range([height, 0])
                 svg.append("g")
                     .call(d3.axisLeft(yAxis));
                 // seperate data for multiple bars
@@ -295,6 +309,10 @@ export default {
     },
     mounted() {
         this.isModerator = store._state.data.base.isModerator;
+
+        for (let operation of this.operations) {
+            this.operationsStrings.push(this.getStrings[`operationswidget${operation}`]);
+        }
         /*
          * use mock data
          */
@@ -302,26 +320,26 @@ export default {
             this.authorsToOperations = [
                 {
                     Mueller: {
-                        edit: 40,
-                        write: 90,
-                        paste: 10,
+                        edit: 400,
+                        write: 900,
+                        paste: 100,
                         delete: 20,
                     }
                 },
                 {
                     Fuchs: {
-                        edit: 20,
-                        write: 110,
-                        paste: 30,
-                        delete: 40,
+                        edit: 200,
+                        write: 1100,
+                        paste: 300,
+                        delete: 400,
                     }
                 },
                 {
                     Gamma: {
-                        edit: 10,
-                        write: 80,
-                        paste: 20,
-                        delete: 50,
+                        edit: 100,
+                        write: 800,
+                        paste: 200,
+                        delete: 200,
                     }
                 }
             ];
@@ -368,6 +386,22 @@ export default {
     gap: 20px;
 }
 
+.svg-container {
+    display: inline-block;
+    position: relative;
+    width: 100%;
+    padding-bottom: 100%;
+    vertical-align: top;
+    overflow: hidden;
+}
+
+.svg-content-responsive {
+    display: inline-block;
+    position: absolute;
+    top: 10px;
+    left: 0;
+}
+
 .chart {
     width: 100%;
     height: 100%;
@@ -375,6 +409,7 @@ export default {
 
 .legend {
     position: absolute;
+    top: 25px;
     right: 5px;
 }
 </style>
