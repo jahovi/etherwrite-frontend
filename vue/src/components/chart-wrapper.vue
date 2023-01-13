@@ -1,10 +1,10 @@
 <template>
 	<div class="chart-wrapper" :id="'chart-wrapper-' + id" :name="component">
-		<component :padName="padName" :is="component" :id="'custom-chart-' + id" :isMock="isMock"
-			@click.capture="stopEvents" style="height: 100%; overflow-x: scroll; overflow-y:hidden" />
+		<component :padName="padName" :is="component" :id="'custom-chart-' + id" :isMock="isMock" @click.capture="stopEvents"
+							 style="height: 100%; overflow-x: scroll; overflow-y:hidden"/>
 		<slot name="btn"></slot>
 		<button class="btn info-btn-circle border fa fa-question" @focusin.prevent="toggleInfoPanel(true)"
-			@focusout.prevent="toggleInfoPanel(false)"></button>
+						@focusout.prevent="toggleInfoPanel(false)"></button>
 		<div :id="'chart-wrapper-info' + id" class="info-panel border rounded" v-if="isInfoPanelOpen">
 			{{ getStrings[`widget-info-${component}`] }}
 		</div>
@@ -20,8 +20,7 @@ import operations_bar from "./charts/operations/operations_bar.vue";
 import activityOverTime from "./charts/activityOverTime.vue";
 import etherViz from "./charts/etherViz.vue";
 import cohesionDiagram from "./charts/cohesionDiagram.vue";
-import documentMetrics from "./charts/wsTestWidget.vue";
-import wsTestWidget from "./charts/wsTestWidget.vue";
+import documentMetrics from "./charts/documentMetrics.vue";
 
 
 export default {
@@ -35,7 +34,6 @@ export default {
 		activityOverTime,
 		etherViz,
 		cohesionDiagram,
-		wsTestWidget,
 		documentMetrics,
 	},
 	props: {
@@ -49,7 +47,8 @@ export default {
 			isInfoPanelOpen: false,
 		};
 	},
-	mounted() { },
+	mounted() {
+	},
 	methods: {
 		stopEvents(event) {
 			if (this.isMock) {

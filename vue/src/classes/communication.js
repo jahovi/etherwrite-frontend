@@ -14,19 +14,19 @@ import { io } from "socket.io-client";
 export default class Communication {
 	static webservice(method, param = {}) {
 		return new Promise(
-			(resolve, reject) => {
-				ajax.call([{
-					methodname: "mod_write_" + method,
-					args: param ? param : {},
-					timeout: 3000,
-					done: function (data) {
-						return resolve(data);
-					},
-					fail: function (error) {
-						return reject(error);
-					},
-				}]);
-			},
+				(resolve, reject) => {
+					ajax.call([{
+						methodname: "mod_write_" + method,
+						args: param ? param : {},
+						timeout: 3000,
+						done: function (data) {
+							return resolve(data);
+						},
+						fail: function (error) {
+							return reject(error);
+						},
+					}]);
+				},
 		);
 	}
 
@@ -38,8 +38,8 @@ export default class Communication {
 			jwt,
 		};
 		let queryString = Object.entries(myQuery)
-			.map(([param, value]) => `${param}=${value}`)
-			.join("&");
+				.map(([param, value]) => `${param}=${value}`)
+				.join("&");
 		return fetch(`${ipAddress}/${endpoint}?${queryString}`, {
 			method: "GET",
 			headers: {
@@ -47,15 +47,23 @@ export default class Communication {
 				"Accept": "application/json",
 			},
 		})
-			.then(response => response.json())
-			.catch(e => console.log("Error fetching EVA: " + e));
+				.then(response => response.json())
+				.catch(e => console.log("Error fetching EVA: " + e));
 	}
 
-	static openSocket(endpoint) {
+	static openSocket(endpoint, query = {}) {
 		const ipAddress = store.state.base.evaUri;
 		const jwt = store.state.base.jwt;
+		const myQuery = {
+			...query,
+			jwt,
+		};
 
-		const socket = io(`${ipAddress}/${endpoint}`, {auth: {token: jwt}});
+		const socket = io(`${ipAddress}/${endpoint}`, {
+			auth: {token: jwt},
+			query: myQuery,
+			transports: ["websocket"],
+		});
 
 		socket.on("connect", () => {
 			console.log("Socket connected to " + endpoint);
@@ -63,10 +71,10 @@ export default class Communication {
 		socket.on("disconnect", (reason) => {
 			console.log("Socket to " + endpoint + " disconnected due to " + reason);
 		});
-		socket.on("connect_error", () => {
-			console.log("Socket connection to " + endpoint + "could not be established");
+		socket.on("connect_error", error => {
+			console.log("Socket connection to " + endpoint + " could not be established: ", error.message);
 		});
-		
+
 		return socket;
 	}
 
