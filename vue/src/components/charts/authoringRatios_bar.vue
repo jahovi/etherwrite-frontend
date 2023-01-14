@@ -109,6 +109,41 @@ export default {
 				this.colors = [...this.colors, "#ccc"];
 			}
 
+<<<<<<< HEAD
+=======
+			console.log(this.ratios);
+
+			// d3.select(`#${this.elementId}`)
+			// 	.selectAll("div")
+			// 	.data(this.ratios)
+			// 	.enter()
+			// 	.append("div")
+			// 	.attr("class", "bar")
+			// 	.style("width", d => d + "%")
+			// 	.style("background-color", (i) => this.colorFn(i))
+			// 	.style("overflow", "visible")
+			// 	.append("span")
+			// 	.attr("class", "chart-label")
+			// 	.text(d => `${d} %`)
+
+			const svg = d3.select(`#${this.elementId}`);
+
+			const chart = svg.append("bar")
+				.attr("class", "bar");
+			
+			//Eigenschaften der Balken festlegen	
+			const arcs = chart.selectAll("arc")
+				.data(this.ratios)
+				.enter().append("div")
+				.style("width", d => d + "%")
+				.style("background-color", (i) => this.colorFn(i))
+				.style("overflow", "visible");
+			
+			//Text auf den Balken mit dem jeweiligen Wert
+			arcs.append("span")
+				.attr("class", "chart-label")
+				.text(d => `${d} %`);
+>>>>>>> 9c29d1b (Kommentare reingeschrieben, weil ich die sonst immer vergesse)
 
 			d3.select("#authoringRatiosBar-svg").remove();
 
