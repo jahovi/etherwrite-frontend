@@ -86,9 +86,11 @@ export default {
 		async getData() {
 			return Communication.getFromEVA("authoring_ratios", { pad: this.padName })
 				.then(data => {
+
 					const base = data.ratios.reduce((e, result) => e+result);
 					this.authors = data.authors;
 					this.ratios = data.ratios.map(e => e/base*100);
+
 					this.colors = data.colors;
 				})
 				.catch(() => {
@@ -96,6 +98,8 @@ export default {
 				});
 		},
 		loadBar() {
+			document.getElementById(this.elementId).childNodes.forEach(c => c.remove());
+
 			// Add a filler if the given numbers don't add up to 100%.
 			// Can happen with weird test data.
 			const sum = this.ratios.reduce((result, entry) => result + entry, 0);
@@ -104,6 +108,7 @@ export default {
 				this.ratios = [...this.ratios, 1 - sum];
 				this.colors = [...this.colors, "#ccc"];
 			}
+
 
 			d3.select("#authoringRatiosBar-svg").remove();
 
@@ -163,6 +168,7 @@ export default {
 				.attr("width", function(d) { return x(d.ratio); })
 				.attr("height", y.bandwidth() )
 				.attr("fill", d => d.color);
+
 
 	},
 	}
