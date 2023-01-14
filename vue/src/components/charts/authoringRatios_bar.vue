@@ -104,14 +104,16 @@ export default {
 
 			const chart = svg.append("bar")
 				.attr("class", "bar");
-				
+			
+			//Eigenschaften der Balken festlegen	
 			const arcs = chart.selectAll("arc")
 				.data(this.ratios)
 				.enter().append("div")
 				.style("width", d => d + "%")
 				.style("background-color", (i) => this.colorFn(i))
 				.style("overflow", "visible");
-				
+			
+			//Text auf den Balken mit dem jeweiligen Wert
 			arcs.append("span")
 				.attr("class", "chart-label")
 				.text(d => `${d} %`);
