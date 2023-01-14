@@ -72,14 +72,12 @@ export default {
 				.catch(() => {
 					store.commit("setAlertWithTimeout", ["alert-danger", store.getters.getStrings.unknown_error, 3000]);
 				});
-
 		},
-
-		async loadPie() {
-
+		loadPie() {
+			document.getElementById(this.elementId).childNodes.forEach(c => c.remove());
+			
 			// Add a filler if the given numbers don't add up to 100%.
 			// Can happen with weird test data.
-			document.getElementById(this.elementId).childNodes.forEach(c => c.remove());
 			const sum = this.ratios.reduce((result, entry) => result + entry, 0);
 			if (sum < 1) {
 				this.authors = [...this.authors, "Unbekannt"];
@@ -106,7 +104,7 @@ export default {
 				.attr("class", "arc");
 
 			arcs.append("path")
-				.attr("fill", (d, i) => this.colorFn(i))
+				.attr("fill", (i) => this.colorFn(i))
 				.attr("d", arc)
 				.append("title")
 				.text(d => `${d.value} %`);
