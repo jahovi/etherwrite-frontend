@@ -47,9 +47,8 @@ export default {
 		return {
 			keepRefreshing: true,
 			coloredBlocks: [],
-			blockInfo: [],
-			scrollPos: {},
 			userPositions: [],
+			websocket: null,
 		};
 	},
 	directives: {
@@ -60,37 +59,37 @@ export default {
 	},
 	computed: {},
 	mounted() {
-		this.refreshMinimap();
+		this.openSocket();
+	},
+	unmounted() {
+		this.websocket.close();
 	},
 	methods: {
-		refreshMinimap: async function () {
+		openSocket() {
 
-			while (this.keepRefreshing) {
+			this.websocket = Communication.openSocket("minimap", {
+				padName: this.padName,
+			});
 
-				Communication.getFromEVA("minimap/blockInfo", {
-					padName: this.padName,
-				}).then(blockInfo => this.blockInfo = blockInfo);
-
-				Communication.getFromEVA("minimap/scrollPositions", {
-					padName: this.padName,
-				}).then(scrollPos => this.scrollPos = scrollPos);
-
-				this.processTextBlocks();
-				this.processScrollPos();
-
-				await this.sleep(2000);
-			}
+			this.websocket.on("update", data => {
+				if (data.blocks) {
+					this.processTextBlocks(data.blocks);
+				}
+				if (data.scrollPos) {
+					this.processScrollPos(data.scrollPos);
+				}
+			});
 		},
-		processScrollPos: function () {
+		processScrollPos: function (scrollPos) {
 
 			this.userPositions = [];
 
 			if (this.$refs.textBlocks) {
 				const textBlocks = this.$refs.textBlocks.children;
-				for (const [authorId, scrollPosInfo] of Object.entries(this.scrollPos)) {
+				for (const [authorId, scrollPosInfo] of Object.entries(scrollPos)) {
 
-				if (textBlocks.length > scrollPosInfo.topIndex - 1) {
-					const authorColor = store.getters["users/usersByEpId"][authorId].color;
+					if (textBlocks.length > scrollPosInfo.topIndex - 1) {
+						const authorColor = store.getters["users/usersByEpId"][authorId].color;
 
 						// Use the top of the minimap as an anchor reference point to position the viewport of the users.
 						// Subtract the text block container margin.
@@ -102,14 +101,14 @@ export default {
 				}
 			}
 		},
-		processTextBlocks: function () {
+		processTextBlocks: function (blockInfo) {
 
 			this.coloredBlocks = [];
 			let isHeading = false;
 			let currentHeadingType = "normal";
 			const sampleText = "Lorem ipsum dolor sit amet consetetur sadipscing elitr sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat sed diam voluptua At vero eos et accusam et justo duo dolores et ea rebum Stet clita kasd gubergren no sea takimata sanctus est Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet consetetur sadipscing elitr sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat sed diam voluptua At vero eos et accusam et justo duo dolores et ea rebum Stet clita kasd gubergren no sea takimata sanctus est Lorem ipsum dolor sit amet";
 
-			this.blockInfo.forEach((block) => {
+			blockInfo.forEach((block) => {
 				let rndContent = "";
 				const blockColor = block.ignoreColor ? "transparent" : store.getters["users/usersByEpId"][block.author]["color"]; //Getting the author's color for the current block
 				let sampleIndex = 0;
@@ -146,6 +145,12 @@ export default {
 		},
 		async sleep(ms) {
 			return new Promise(resolve => setTimeout(resolve, ms));
+		},
+	},
+	watch: {
+		padName() {
+			this.websocket.close();
+			this.openSocket();
 		},
 	},
 };

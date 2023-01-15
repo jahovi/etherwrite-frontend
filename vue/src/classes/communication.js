@@ -54,16 +54,13 @@ export default class Communication {
 	static openSocket(endpoint, query = {}) {
 		const ipAddress = store.state.base.evaUri;
 		const jwt = store.state.base.jwt;
-		const myQuery = {
-			...query,
-			jwt,
-		};
 
 		const socket = io(`${ipAddress}/${endpoint}`, {
 			auth: {token: jwt},
-			query: myQuery,
-			transports: ["websocket"],
+			query,
 		});
+
+		console.log(`Connecting socket to ${ipAddress}/${endpoint}`);
 
 		socket.on("connect", () => {
 			console.log("Socket connected to " + endpoint);

@@ -42,6 +42,7 @@ export default {
 	name: "app",
 	async mounted() {
 		await this.$store.dispatch("loadEditorBaseInfo");
+		await this.$store.dispatch("users/load");
 		this.baseInfoLoaded = true;
 	},
 	computed: {
