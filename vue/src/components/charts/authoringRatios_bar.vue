@@ -1,4 +1,5 @@
 <template>
+<<<<<<< HEAD
   <div>
     <h4>Schreibanteil pro Person</h4>
     <div class="chart-container">
@@ -15,6 +16,19 @@
       </ul>
     </div>
   </div>
+=======
+	<div>
+		<h4>Schreibanteil pro Person</h4>
+		<div class="chart-container">
+			<ul class="legend mt-3" v-if="authors.length" style="flex-shrink: 0">
+				<li v-for="author in authors" :key="author">
+					{{ author }} <i class="fa fa-square" :style="{ color: colorFn(author) }"></i>
+				</li>
+			</ul>
+			<div class="chart" style="width: 100%; height: 100%" :id="elementId"></div>
+		</div>
+	</div>
+>>>>>>> 6edd61f (Legende verschoben)
 </template>
 
 <script>
@@ -113,19 +127,6 @@ export default {
 =======
 			console.log(this.ratios);
 
-			// d3.select(`#${this.elementId}`)
-			// 	.selectAll("div")
-			// 	.data(this.ratios)
-			// 	.enter()
-			// 	.append("div")
-			// 	.attr("class", "bar")
-			// 	.style("width", d => d + "%")
-			// 	.style("background-color", (i) => this.colorFn(i))
-			// 	.style("overflow", "visible")
-			// 	.append("span")
-			// 	.attr("class", "chart-label")
-			// 	.text(d => `${d} %`)
-
 			const svg = d3.select(`#${this.elementId}`);
 
 			const chart = svg.append("bar")
@@ -212,10 +213,17 @@ export default {
 </script>
 <style scoped>
 .chart-container {
+<<<<<<< HEAD
   display: flex;
   flex-direction: row;
   justify-content: left;
   align-items: center;
+=======
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: 20px;
+>>>>>>> 6edd61f (Legende verschoben)
 }
 
 .chart-container .bar {
