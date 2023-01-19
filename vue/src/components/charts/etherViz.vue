@@ -14,13 +14,16 @@
           :min="0"
           :max="numberOfRevisions"
           :step="1"
-          :ruler="true"
+          :ruler="false"
           :label="true"
           :labels="labels"
           :minValue="sliderMinValue"
           :maxValue="sliderMaxValue"
           @input="updateValues"
-          :style="{ width: widthOfSvg * 0.9 + 'px' }"
+          :style="{
+            width: widthOfSvg * 0.95 - 100 - 10 + 'px',
+            'margin-left': '20px',
+          }"
         />
       </div>
       <div
@@ -53,6 +56,7 @@ export default {
 			sliderMaxValue: 1,
 			numberOfRevisions: 1,
 			sliderHasBeenModified: false,
+			widthOfSlider: 560,
 			widthOfSvg: 560,
 			heightOfSvg: 500,
 		};
@@ -73,8 +77,8 @@ export default {
 		},
 		labels() {
 			return this.revisionDateTimes.map(e => {
-				if(this.revisionDateTimes.indexOf(e) == 0 || this.revisionDateTimes.indexOf(e) == this.revisionDateTimes.length -1 ) {
-					return e.toLocaleDateString();// + ", " + e.toLocaleTimeString().substring(0, 5);
+				if(this.revisionDateTimes.indexOf(e) == 0 || this.revisionDateTimes.indexOf(e) == this.revisionDateTimes.length - 1) {
+					return e.toLocaleDateString("de-DE", {day: "2-digit", month: "2-digit", year: "2-digit"});
 				}
 				else {
 					return "";
@@ -113,12 +117,13 @@ export default {
 	},
 	methods: {
 		getDashboardDimensions() {
-			return {w: 7, h: 17};
+			return {w: 8, h: 17};
 		},
 		updateValues(e) {
 			this.sliderMinValue = e.minValue;
 			this.sliderMaxValue = e.maxValue;
 			this.loadEtherViz();
+
 		},
 		dateIsInRange(dateTime) {
 			const minDate = this.revisionDateTimes[this.sliderMinValue];
@@ -126,22 +131,23 @@ export default {
 			return minDate <= dateTime && dateTime <= maxDate;
 		},
 		parseDate(dateTimeString) {
-			const dateRegex = /(\d{2})\.(\d{2})\.(\d{2}),\s(\d{2}):(\d{2})/;
+			const dateRegex = /(\d{2})\.(\d{2})\.(\d{2})/;
 			const match = dateRegex.exec(dateTimeString);
 
 			if (match) {
 				const day = match[1];
 				const month = match[2] - 1; // subtract 1 to convert from 1-based to 0-based
 				const year = "20" + match[3];
-				const hours = match[4];
-				const minutes = match[5];
+				//const hours = match[4];
+				//const minutes = match[5];
 
-				return new Date(year, month, day, hours, minutes);
+				return new Date(year, month, day);
 			} else {
 				return new Date("invalid date");
 			}
 		},
 		prepareData(data) {
+
 			data.forEach(d => {
 				d.dateTime = this.parseDate(d.dateTime);
 			});
@@ -164,8 +170,17 @@ export default {
 		async loadEtherViz() {
 			this.etherVizData = [];
 
+			const xAxisLabels = document.getElementById("etherViz-X-Axis-Labels");
+
+			if(xAxisLabels != undefined) {
+				console.log(xAxisLabels.getBoundingClientRect().width);
+				console.log(xAxisLabels);
+				this.widthOfSlider = xAxisLabels.getBoundingClientRect().width;
+			}
+
+
 			this.responseData.forEach(d => {
-				const dateTimeLabel = d.dateTime.toLocaleDateString("de-DE", {day: "2-digit", month: "2-digit", year: "2-digit"}) + ", " + d.dateTime.toLocaleTimeString().substring(0, 5);
+				const dateTimeLabel = d.dateTime.toLocaleDateString("de-DE", {day: "2-digit", month: "2-digit", year: "2-digit"}); //+ ", " + d.dateTime.toLocaleTimeString().substring(0, 5);
 
 				if (this.dateIsInRange(d.dateTime)) {
 					if ("rectangles" in d) {
@@ -186,8 +201,7 @@ export default {
 								{dateTime: dateTimeLabel + "b", parallelograms: []}
 						);
 					}
-				}
-				
+				}			
 			});
 			this.etherVizData = this.etherVizData.slice(0, this.etherVizData.length - 1);
 
@@ -196,12 +210,13 @@ export default {
 			}).flat()) + 1;
 
 			// set the dimensions and margins of the graph
-			var margin = {top: 110, right: 30, bottom: 0, left: 60},
+			var margin = {top: 100, right: 30, bottom: 0, left: 100},
 					width = this.widthOfSvg * 0.95 - margin.left - margin.right,
 					height = this.heightOfSvg * 0.95 - margin.top - margin.bottom;
 
 			d3.select("#etherViz-svg").remove();
 
+			
 			// append the svg object to the body of the page
 			var svg = d3.select(`#${this.elementId}`)
 					.append("svg")
@@ -212,15 +227,15 @@ export default {
 					.attr("transform",
 							"translate(" + margin.left + "," + margin.top + ")");
 
-			// X axis
+			// Add X axis
 			var x = d3.scaleBand()
 					.range([0, width])
 					.domain(this.etherVizData.map(function (d) {
 						return d.dateTime;
 					}));
-			//.padding(0.2);
 			svg.append("g")
 					.attr("transform", "translate(0, 0)")
+					.attr("id", "etherViz-X-Axis-Labels")
 					.call(d3.axisTop(x).tickSize(0))
 					.selectAll("text")
 					.attr("transform", "translate(10,-10)rotate(-90)")
@@ -232,6 +247,21 @@ export default {
 					.range([height, 0]);
 			svg.append("g")
 					.call(d3.axisLeft(y));
+
+			// Add Axis Labels
+			svg.append("text")
+				.attr("transform", "rotate(-90)")
+				.attr("y", 0 - (margin.left-10))
+				.attr("x",0 - (height / 2))
+				.attr("dy", "1em")
+				.style("text-anchor", "middle")
+				.style("font-weight", "bold")
+				.text("Buchstaben pro Revision");
+			svg.append("text")
+				.attr("transform", "translate(" + (width / 2) + " ," + (0 - (margin.top-20)) + ")")
+				.style("text-anchor", "middle")
+				.style("font-weight", "bold")
+				.text("Tage");
 
 			this.etherVizData.forEach((d) => {
 				if ("rectangles" in d) {
@@ -269,6 +299,9 @@ export default {
 			ticks.each(function (val) {
 				if (x(val) !== undefined && val.endsWith("b")) {
 					d3.select(this).remove();
+				}
+				else {
+					d3.select(this).style("font-size", "12px");
 				}
 			});
 		},
@@ -495,14 +528,20 @@ export default {
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
+  font-size: 16px;
 }
 
 .chart-etherViz >>> div {
-  font: 10px sans-serif;
+  font: 14px sans-serif;
   text-align: right;
   padding: 3px;
   margin: 1px;
   color: white;
+}
+
+.ruler-rule {
+  visibility: hidden;
+  display: none;
 }
 
 .MultiRangeSliderContainer {
@@ -511,6 +550,8 @@ export default {
 
 #dateSlider {
   min-width: none;
+  border: none;
+  box-shadow: none;
 }
 @import "../../style/charts.scss";
 </style>
