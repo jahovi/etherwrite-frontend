@@ -1,15 +1,20 @@
 <template>
-	<div class="chart-outer-container">
-		<h4>Aktivitäten (zeitlicher Verlauf)</h4>
-		<div class="chart-container">
-			<div class="chart" style="width: 100%; height: 100%" :id="elementId" ref="chart"></div>
-			<ul class="legend mt-3" style="flex-shrink: 0">
-				<li v-for="(color, author) in legend" :key="author">
-					<i class="fa fa-square" :style="{ color }"></i> {{ author }}
-				</li>
-			</ul>
-		</div>
-	</div>
+  <div class="chart-outer-container">
+    <h4>Aktivitäten (zeitlicher Verlauf)</h4>
+    <div class="chart-container">
+      <div
+        class="chart"
+        style="width: 100%; height: 100%"
+        :id="elementId"
+        ref="chart"
+      ></div>
+      <ul class="legend mt-3" style="flex-shrink: 0">
+        <li v-for="(color, author) in legend" :key="author">
+          <i class="fa fa-square" :style="{ color }"></i> {{ author }}
+        </li>
+      </ul>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -75,6 +80,7 @@ export default {
 			this.getData().then(() =>
 					this.loadLine());
 		}
+		this.$emit("dashboardDimensions", this.getDashboardDimensions);
 	},
 	watch: {
 		padName() {
@@ -85,6 +91,9 @@ export default {
 		}
 	},
 	methods: {
+		getDashboardDimensions() {
+			return {w: 9, h: 9};
+		},
 		async getData() {
 			return Communication.getFromEVA(`activity/activities/${this.padName}`)
 					.then(data => {
@@ -187,17 +196,17 @@ export default {
 </script>
 <style scoped lang="css">
 .chart-outer-container {
-	height: 100%;
-	display: flex;
-	flex-direction: column;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .chart-container {
-	display: flex;
-	flex-direction: row;
-	justify-content: flex-start;
-	align-items: center;
-	gap: 20px;
-	flex-grow: 1;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 20px;
+  flex-grow: 1;
 }
 </style>

@@ -1,10 +1,10 @@
 <template>
-    <div>
-        <h4>Kohäsion</h4>
-        <div class="chart-container">
-            <div :id="elementId" class="chart"></div>
-        </div>
+  <div>
+    <h4>Kohäsion</h4>
+    <div class="chart-container">
+      <div :id="elementId" class="chart"></div>
     </div>
+  </div>
 </template>
 <script>
 import * as d3 from "d3";
@@ -34,9 +34,13 @@ export default {
         }
 
         this.buildDiagram();
+        this.$emit("dashboardDimensions", this.getDashboardDimensions);
 
     },
     methods: {
+        getDashboardDimensions() {
+			return {w: 7, h: 17};
+		},
         buildDiagram() {
             const data = this.diagramData;
 
@@ -503,7 +507,7 @@ export default {
 }
 
 .chart {
-  width: 100%; 
+  width: 100%;
   height: 100%;
   display: block;
   margin: auto;

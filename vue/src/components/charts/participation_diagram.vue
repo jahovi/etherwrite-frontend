@@ -1,15 +1,19 @@
 <template>
-	<div class="chart-outer-container">
-		<h4>Partizipationsdiagramm {{ time }}</h4>
-		<div class="chart-container">
-			<div class="chart" :id="elementId" ref="chart"></div>
-			<ul class="legend mt-3" v-if="authorSet.size">
-				<li v-for="author of Array.from(authorSet).reverse()" :key="author">
-					<i class="fa fa-square" :style="{ color: getAuthorColor(author) }"></i> {{ getUsername(author) }}
-				</li>
-			</ul>
-		</div>
-	</div>
+  <div class="chart-outer-container">
+    <h4>Partizipationsdiagramm</h4>
+    <div class="chart-container">
+      <div class="chart" :id="elementId" ref="chart"></div>
+      <ul class="legend mt-3" v-if="authorSet.size">
+        <li v-for="author of Array.from(authorSet).reverse()" :key="author">
+          <i
+            class="fa fa-square"
+            :style="{ color: getAuthorColor(author) }"
+          ></i>
+          {{ getUsername(author) }}
+        </li>
+      </ul>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -30,45 +34,45 @@ export default {
 			datasets: [],
 			authorColors: [],
 			authorSet: {},
-
-            hourlyTimestamp: false,
-        };
-    },
-    computed: {
-        elementId() {
-            return `participation_diagram_${this.id}`;
-        },
-    },
-    mounted() {
-        if (this.isMock) {
-            this.authorSet = new Set(["Mueller", "Fuchs", "Gamma"]);
-            this.authorColors = ["#00B2EE", "#FF7F24", "#008B45"];
-            this.datasets = [
-                {
-                    timestamp: new Date("2023-01-01"),
-                    Mueller: 0.2,
-                    Fuchs: 0.3,
-                    Gamma: 0.5,
-                },
-                {
-                    timestamp: new Date("2023-02-01"),
-                    Mueller: 0,
-                    Fuchs: 0,
-                    Gamma: 0,
-                },
-                {
-                    timestamp: new Date("2023-03-01"),
-                    Mueller: 0,
-                    Fuchs: 0.7,
-                    Gamma: 0.3,
-                },
-            ];
-            this.loadChart();
-        } else {
-            this.getData().then(() => this.loadChart());
-        }
-    },
-    watch: {
+			hourlyTimestamp: false,
+		};
+	},
+	computed: {
+		elementId() {
+			return `participation_diagram_${this.id}`;
+		},
+	},
+	mounted() {
+		if (this.isMock) {
+			this.authorSet = new Set(["Mueller", "Fuchs", "Gamma"]);
+			this.authorColors = ["#00B2EE", "#FF7F24", "#008B45"];
+			this.datasets = [
+				{
+					timestamp: new Date("2023-01-01"),
+					Mueller: 0.2,
+					Fuchs: 0.3,
+					Gamma: 0.5,
+				},
+				{
+					timestamp: new Date("2023-02-01"),
+					Mueller: 0,
+					Fuchs: 0,
+					Gamma: 0,
+				},
+				{
+					timestamp: new Date("2023-03-01"),
+					Mueller: 0,
+					Fuchs: 0.7,
+					Gamma: 0.3,
+				},
+			];
+			this.loadChart();
+		} else {
+			this.getData().then(() => this.loadChart());
+		}
+		this.$emit("dashboardDimensions", this.getDashboardDimensions);
+	},
+	watch: {
 		padName() {
 			if (!this.isMock) {
 				this.getData().then(() =>
@@ -77,6 +81,9 @@ export default {
 		}
 	},
 	methods: {
+		getDashboardDimensions() {
+			return {w: 8, h: 8};
+		},
 		getUsername(author) {
 			if (this.isMock) {
 				return author;
@@ -234,27 +241,27 @@ export default {
 
 <style scoped lang="css">
 .chart-outer-container {
-	height: 100%;
-	display: flex;
-	flex-direction: column;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .chart-container {
-	display: flex;
-	flex-direction: row;
-	justify-content: flex-start;
-	align-items: center;
-	gap: 20px;
-	flex-grow: 1;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 20px;
+  flex-grow: 1;
 }
 
 .chart {
-	width: 100%;
-	height: 100%;
+  width: 100%;
+  height: 100%;
 }
 
 .legend {
-	position: absolute;
-	right: 5px;
+  position: absolute;
+  right: 5px;
 }
 </style>

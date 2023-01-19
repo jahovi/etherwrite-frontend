@@ -1,18 +1,25 @@
 <template>
-	<div>
-		<h4>{{ i18n["widgets.groupParticipants"] }}</h4>
-		<h5 v-if="group">{{ i18n["widgets.groupParticipants.group"] }} <strong>{{ group.name }}</strong></h5>
-		<ul class="legend" v-if="group">
-			<li v-for="user in members" :key="user.id">
-				<template v-if="user.color && `${user.color}`.startsWith('#')">
-					<i v-if="user.color === '#FFF' || user.color === '#FFFFFF'" class="fa fa-square-o" style="color: black"></i>
-					<i v-else class="fa fa-square" :style="{ color: user.color }"></i>
-				</template>
-				<i v-else class="fa fa-square-o" style="color: lightgrey"></i>
-				{{ user.fullName }}
-			</li>
-		</ul>
-	</div>
+  <div>
+    <h4>{{ i18n["widgets.groupParticipants"] }}</h4>
+    <h5 v-if="group">
+      {{ i18n["widgets.groupParticipants.group"] }}
+      <strong>{{ group.name }}</strong>
+    </h5>
+    <ul class="legend" v-if="group">
+      <li v-for="user in members" :key="user.id">
+        <template v-if="user.color && `${user.color}`.startsWith('#')">
+          <i
+            v-if="user.color === '#FFF' || user.color === '#FFFFFF'"
+            class="fa fa-square-o"
+            style="color: black"
+          ></i>
+          <i v-else class="fa fa-square" :style="{ color: user.color }"></i>
+        </template>
+        <i v-else class="fa fa-square-o" style="color: lightgrey"></i>
+        {{ user.fullName }}
+      </li>
+    </ul>
+  </div>
 </template>
 
 <script>

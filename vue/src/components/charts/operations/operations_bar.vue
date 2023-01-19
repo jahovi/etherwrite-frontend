@@ -1,20 +1,20 @@
 <template>
-    <div>
-        <h4>{{ getStrings["operationswidgettitle"] }}</h4>
-        <div class="chart-container">
-            <div class="chart" :id="elementId"></div>
-            <ul class="legend mt-3">
-                <li v-for="str, key of operationsStrings" :key="key">
-                    <i class="fa fa-square" :style="{ color: operationsColors(key) }"></i>
-                    {{ str }}
-                </li>
-                <li v-if="!isModerator">
-                    <i class="fa fa-square" style="color: #d3d3d3"></i>
-                    {{ getStrings["operationswidgetaverage"] }}
-                </li>
-            </ul>
-        </div>
+  <div>
+    <h4>{{ getStrings["operationswidgettitle"] }}</h4>
+    <div class="chart-container">
+      <div class="chart" :id="elementId"></div>
+      <ul class="legend mt-3">
+        <li v-for="(str, key) of operationsStrings" :key="key">
+          <i class="fa fa-square" :style="{ color: operationsColors(key) }"></i>
+          {{ str }}
+        </li>
+        <li v-if="!isModerator">
+          <i class="fa fa-square" style="color: #d3d3d3"></i>
+          {{ getStrings["operationswidgetaverage"] }}
+        </li>
+      </ul>
     </div>
+  </div>
 </template>
 
 <script>
@@ -74,6 +74,9 @@ export default {
         /**
          * Get data from EVA and sum up edits, writes, pastes and deletes for each author.
          */
+        getDashboardDimensions() {
+			return {w: 8, h: 12};
+		},
         async getData() {
             this.authorsToOperations = [];
             return Communication.getFromEVA(`activity/operations/${this.padName}`, { padName: this.padName })
@@ -379,43 +382,44 @@ export default {
             this.getData().then(() =>
                 this.loadBar());
         }
+        this.$emit("dashboardDimensions", this.getDashboardDimensions);
     },
 };
 </script>
 
 <style scoped lang="css">
 .chart-container {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    align-items: center;
-    gap: 20px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 20px;
 }
 
 .svg-container {
-    display: inline-block;
-    position: relative;
-    width: 100%;
-    padding-bottom: 100%;
-    vertical-align: top;
-    overflow: hidden;
+  display: inline-block;
+  position: relative;
+  width: 100%;
+  padding-bottom: 100%;
+  vertical-align: top;
+  overflow: hidden;
 }
 
 .svg-content-responsive {
-    display: inline-block;
-    position: absolute;
-    top: 10px;
-    left: 0;
+  display: inline-block;
+  position: absolute;
+  top: 10px;
+  left: 0;
 }
 
 .chart {
-    width: 100%;
-    height: 100%;
+  width: 100%;
+  height: 100%;
 }
 
 .legend {
-    position: absolute;
-    top: 25px;
-    right: 5px;
+  position: absolute;
+  top: 25px;
+  right: 5px;
 }
 </style>

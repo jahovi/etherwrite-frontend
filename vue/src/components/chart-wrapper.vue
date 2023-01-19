@@ -1,14 +1,30 @@
 <template>
-	<div class="chart-wrapper" :id="'chart-wrapper-' + id" :name="component">
-		<component :padName="padName" :is="component" :id="'custom-chart-' + id" :isMock="isMock" @click.capture="stopEvents"
-							 style="height: 100%; overflow-x: scroll; overflow-y:hidden"/>
-		<slot name="btn"></slot>
-		<button class="btn info-btn-circle border fa fa-question" @focusin.prevent="toggleInfoPanel(true)"
-						@focusout.prevent="toggleInfoPanel(false)"></button>
-		<div :id="'chart-wrapper-info' + id" class="info-panel border rounded" v-if="isInfoPanelOpen">
-			{{ getStrings[`widget-info-${component}`] }}
-		</div>
-	</div>
+  <div class="chart-wrapper" :id="'chart-wrapper-' + id" :name="component">
+    <component
+      :padName="padName"
+      :is="component"
+      :id="'custom-chart-' + id"
+      :isMock="isMock"
+      :w="w"
+      :h="h"
+      @click.capture="stopEvents"
+      @dashboardDimensions="setDashboardDimensions"
+      style="height: 100%; overflow-x: hidden; overflow-y: hidden"
+    />
+    <slot name="btn"></slot>
+    <button
+      class="btn info-btn-circle border fa fa-question"
+      @focusin.prevent="toggleInfoPanel(true)"
+      @focusout.prevent="toggleInfoPanel(false)"
+    ></button>
+    <div
+      :id="'chart-wrapper-info' + id"
+      class="info-panel border rounded"
+      v-if="isInfoPanelOpen"
+    >
+      {{ getStrings[`widget-info-${component}`] }}
+    </div>
+  </div>
 </template>
 
 <script lang="js">
@@ -41,6 +57,8 @@ export default {
 		id: Number,
 		isMock: Boolean,
 		padName: String,
+    w: Number,
+    h: Number,
 	},
 	data: function () {
 		return {
@@ -50,6 +68,9 @@ export default {
 	mounted() {
 	},
 	methods: {
+		setDashboardDimensions(dimensions) {
+			this.$emit("dashboardDimensions", dimensions);
+		},
 		stopEvents(event) {
 			if (this.isMock) {
 				event.stopPropagation();
@@ -70,30 +91,30 @@ export default {
 
 <style scoped lang="css">
 .chart-wrapper {
-	border: 1px solid rgba(0, 0, 0, 0.125);
-	padding: 12px;
-	width: 100%;
-	height: 100%;
+  border: 1px solid rgba(0, 0, 0, 0.125);
+  padding: 12px;
+  width: 100%;
+  height: 100%;
 }
 
 .info-btn-circle {
-	position: absolute;
-	bottom: 2px;
-	left: 2px;
-	width: 30px;
-	height: 30px;
-	text-align: center;
-	padding: 6px;
-	font-size: 1em;
-	border-radius: 15px;
+  position: absolute;
+  bottom: 2px;
+  left: 2px;
+  width: 30px;
+  height: 30px;
+  text-align: center;
+  padding: 6px;
+  font-size: 1em;
+  border-radius: 15px;
 }
 
 .info-panel {
-	position: absolute;
-	display: flex;
-	overflow-y: auto;
-	background-color: white;
-	z-index: 999;
-	padding: 10px;
+  position: absolute;
+  display: flex;
+  overflow-y: auto;
+  background-color: white;
+  z-index: 999;
+  padding: 10px;
 }
 </style>

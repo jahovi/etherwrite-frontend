@@ -4,9 +4,13 @@
 <template>
   <div>
     <h4>Revisionshistorie</h4>
-    <div class="chart-container">
+    <div
+      class="chart-container"
+      :style="{ 'align-items': isMock ? 'start' : 'center' }"
+    >
       <div class="MultiRangeSliderContainer">
         <MultiRangeSlider
+          id="dateSlider"
           :min="0"
           :max="numberOfRevisions"
           :step="1"
@@ -16,11 +20,12 @@
           :minValue="sliderMinValue"
           :maxValue="sliderMaxValue"
           @input="updateValues"
+          :style="{ width: widthOfSvg * 0.9 + 'px' }"
         />
       </div>
       <div
         :id="elementId"
-        class="chart"
+        class="chart-etherViz"
         style="width: 100%; height: 100%"
       ></div>
     </div>
@@ -33,6 +38,11 @@ import Communication from "../../classes/communication";
 import store from "../../store";
 import MultiRangeSlider from "multi-range-slider-vue";
 
+
+/* Problems:
+Colliding css klassen -> chart-container
+
+*/
 export default {
 	data() {
 		return {
@@ -42,7 +52,9 @@ export default {
 			sliderMinValue: 0,
 			sliderMaxValue: 1,
 			numberOfRevisions: 1,
-			sliderHasBeenModified: false
+			sliderHasBeenModified: false,
+			widthOfSvg: 560,
+			heightOfSvg: 500,
 		};
 	},
 	components: {
@@ -52,6 +64,8 @@ export default {
 		id: String,
 		isMock: Boolean,
 		padName: String,
+		w: Number,
+		h: Number,
 	},
 	computed: {
 		elementId() {
@@ -78,8 +92,18 @@ export default {
 			this.getData().then(() =>
 					this.loadEtherViz());
 		}
+		document.getElementById("dateSlider").classList.remove(".multi-range-slider");
+		this.$emit("dashboardDimensions", this.getDashboardDimensions);
 	},
 	watch: {
+		w(val) {
+			this.widthOfSvg = val;
+			this.loadEtherViz();
+		},
+		h(val) {
+			this.heightOfSvg = val;
+			this.loadEtherViz();
+		},
 		padName() {
 			if (!this.isMock) {
 				this.getData().then(() =>
@@ -88,6 +112,9 @@ export default {
 		}
 	},
 	methods: {
+		getDashboardDimensions() {
+			return {w: 7, h: 17};
+		},
 		updateValues(e) {
 			this.sliderMinValue = e.minValue;
 			this.sliderMaxValue = e.maxValue;
@@ -113,7 +140,6 @@ export default {
 			} else {
 				return new Date("invalid date");
 			}
-
 		},
 		prepareData(data) {
 			data.forEach(d => {
@@ -170,20 +196,21 @@ export default {
 			}).flat()) + 1;
 
 			// set the dimensions and margins of the graph
-			var margin = {top: 110, right: 30, bottom: 30, left: 60},
-					width = 560 - margin.left - margin.right,
-					height = 500 - margin.top - margin.bottom;
+			var margin = {top: 110, right: 30, bottom: 0, left: 60},
+					width = this.widthOfSvg * 0.95 - margin.left - margin.right,
+					height = this.heightOfSvg * 0.95 - margin.top - margin.bottom;
 
-			d3.select("svg").remove();
+			d3.select("#etherViz-svg").remove();
+
 			// append the svg object to the body of the page
 			var svg = d3.select(`#${this.elementId}`)
 					.append("svg")
+					.attr("id", "etherViz-svg")
 					.attr("width", width + margin.left + margin.right)
 					.attr("height", height + margin.top + margin.bottom)
 					.append("g")
 					.attr("transform",
 							"translate(" + margin.left + "," + margin.top + ")");
-
 
 			// X axis
 			var x = d3.scaleBand()
@@ -467,10 +494,10 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  align-items: flex-start;
+  align-items: center;
 }
 
-.chart >>> div {
+.chart-etherViz >>> div {
   font: 10px sans-serif;
   text-align: right;
   padding: 3px;
@@ -479,13 +506,13 @@ export default {
 }
 
 .MultiRangeSliderContainer {
-  margin-left: 50px;
-  margin-bottom: -30px;
-  padding: 5px;
-  float: right;
-  width: 100%;
-  max-width: 485px;
+  margin-bottom: 10px;
 }
 
+#dateSlider {
+  min-width: none;
+}
 @import "../../style/charts.scss";
 </style>
+
+
