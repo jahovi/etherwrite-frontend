@@ -97,15 +97,8 @@ export default {
 				});
 		},
 		loadPie() {
-<<<<<<< HEAD
+			document.getElementById(this.elementId).childNodes.forEach(c => c.remove());			
 
-			document.getElementById(this.elementId).childNodes.forEach(c => c.remove());
-			
-
-=======
-			document.getElementById(this.elementId).childNodes.forEach(c => c.remove());
-			
->>>>>>> dceab9e4e0c18ffab69e6f91701b0ceee8bf0c3d
 			// Add a filler if the given numbers don't add up to 100%.
 			// Can happen with weird test data.
 			const sum = this.ratios.reduce((result, entry) => result + entry, 0);

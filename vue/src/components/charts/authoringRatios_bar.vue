@@ -1,22 +1,4 @@
 <template>
-<<<<<<< HEAD
-  <div>
-    <h4>Schreibanteil pro Person</h4>
-    <div class="chart-container">
-      <div
-        class="chart"
-        style="width: 100%; height: 100%"
-        :id="elementId"
-      ></div>
-      <ul class="legend mt-3" v-if="authors.length" style="flex-shrink: 0">
-        <li v-for="author in authors" :key="author">
-          <i class="fa fa-square" :style="{ color: colorFn(author) }"></i>
-          {{ author }}
-        </li>
-      </ul>
-    </div>
-  </div>
-=======
 	<div>
 		<h4>Schreibanteil pro Person</h4>
 		<div class="chart-container">
@@ -28,7 +10,6 @@
 			<div class="chart" style="width: 100%; height: 100%" :id="elementId"></div>
 		</div>
 	</div>
->>>>>>> 6edd61f (Legende verschoben)
 </template>
 
 <script>
@@ -42,16 +23,12 @@ export default {
 			authors: [],
 			ratios: [],
 			colors: [],
-			widthOfSvg: 800,
-			heightOfSvg: 200,
 		};
 	},
 	props: {
 		id: String,
 		isMock: Boolean,
 		padName: String,
-		w: Number,
-		h: Number,
 	},
 	computed: {
 		elementId() {
@@ -75,17 +52,8 @@ export default {
 			this.getData().then(() =>
 				this.loadBar());
 		}
-		this.$emit("dashboardDimensions", this.getDashboardDimensions);
 	},
 	watch: {
-		w(val) {
-			this.widthOfSvg = val;
-			this.loadBar();
-		},
-		h(val) {
-			this.heightOfSvg = val;
-			this.loadBar();
-		},
 		padName() {
 			if (!this.isMock) {
 				this.getData().then(() =>
@@ -94,22 +62,11 @@ export default {
 		}
 	},
 	methods: {
-		getDashboardDimensions() {
-			return {w: 7, h: 12};
-		},
 		async getData() {
 			return Communication.getFromEVA("authoring_ratios", { pad: this.padName })
 				.then(data => {
-<<<<<<< HEAD
-
-					const base = data.ratios.reduce((e, result) => e+result);
-					this.authors = data.authors;
-					this.ratios = data.ratios.map(e => e/base*100);
-
-=======
 					this.authors = data.authors;
 					this.ratios = data.ratios;
->>>>>>> dceab9e4e0c18ffab69e6f91701b0ceee8bf0c3d
 					this.colors = data.colors;
 				})
 				.catch(() => {
@@ -128,11 +85,6 @@ export default {
 				this.colors = [...this.colors, "#ccc"];
 			}
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> dceab9e4e0c18ffab69e6f91701b0ceee8bf0c3d
 			console.log(this.ratios);
 
 			const svg = d3.select(`#${this.elementId}`);
@@ -152,104 +104,30 @@ export default {
 			arcs.append("span")
 				.attr("class", "chart-label")
 				.text(d => `${d} %`);
-<<<<<<< HEAD
->>>>>>> 9c29d1b (Kommentare reingeschrieben, weil ich die sonst immer vergesse)
-
-			d3.select("#authoringRatiosBar-svg").remove();
-
-			const data = [];
-			for (let i = 0; i < this.ratios.length; i++) {
-				data.push({
-					author: this.authors[i],
-					ratio: this.ratios[i],
-					color: this.colors[i],
-				});
-			}
-
-			// set the dimensions and margins of the graph
-			var margin = {top: 25, right: 0, bottom: 25, left: 130},
-				width = this.widthOfSvg * 0.6 - margin.left - margin.right,
-				height = this.heightOfSvg - margin.top - margin.bottom;
-
-			// append the svg object to the body of the page
-			const svg = d3.select(`#${this.elementId}`)
-				.append("svg")
-				.attr("id", "authoringRatiosBar-svg")
-				.attr("width", width + margin.left + margin.right)
-				.attr("height", height + margin.top + margin.bottom)
-			.append("g")
-				.attr("transform",
-					"translate(" + margin.left + "," + margin.top + ")");
-
-			// Add X axis
-			var x = d3.scaleLinear()
-				.domain([0, 100])
-				.range([ 0, width]);
-
-			var xAxis = d3.axisBottom(x);
-
-			svg.append("g")
-				.attr("transform", "translate(0," + height + ")")
-				.call(xAxis)
-				.selectAll("text")
-				.attr("transform", "translate(-10,0)rotate(-45)")
-				.style("text-anchor", "end");
-
-			// Y axis
-			var y = d3.scaleBand()
-				.range([ 0, height ])
-				.domain(data.map(function(d) { return d.author; }))
-				.padding(.1);
-			svg.append("g")
-				.call(d3.axisLeft(y));
-
-			//Bars
-			svg.selectAll("myRect")
-				.data(data)
-				.enter()
-				.append("rect")
-				.attr("x", x(0) )
-				.attr("y", function(d) { return y(d.author); })
-				.attr("width", function(d) { return x(d.ratio); })
-				.attr("height", y.bandwidth() )
-				.attr("fill", d => d.color);
-
-
-=======
 
 		},
->>>>>>> dceab9e4e0c18ffab69e6f91701b0ceee8bf0c3d
 	},
-	}
 };
-
 </script>
-<style scoped>
+<style lang="css">
 .chart-container {
-<<<<<<< HEAD
-  display: flex;
-  flex-direction: row;
-  justify-content: left;
-  align-items: center;
-=======
 	display: flex;
 	flex-direction: row;
 	justify-content: flex-start;
 	align-items: center;
 	gap: 20px;
->>>>>>> 6edd61f (Legende verschoben)
 }
 
 .chart-container .bar {
-  text-align: right;
+	text-align: right;
 }
 
 .chart-label {
-  background-color: rgba(255, 255, 255, 0.6);
-  color: black;
-  padding: 2px;
-  font: 10px sans-serif;
-  white-space: nowrap;
-  vertical-align: middle;
+	background-color: rgba(255, 255, 255, 0.6);
+	color: black;
+	padding: 2px;
+	font: 10px sans-serif;
+	white-space: nowrap;
+	vertical-align: middle;
 }
 </style>
