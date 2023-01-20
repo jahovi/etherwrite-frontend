@@ -4,7 +4,7 @@
 		<div class="chart-container">
 			<ul class="legend mt-3" v-if="authors.length" style="flex-shrink: 0">
 				<li v-for="author in authors" :key="author">
-					{{ author }} <i class="fa fa-square" :style="{ color: colorFn(author) }"></i>
+					{{ author }}<i class="fa fa-square" :style="{ color: colorFn(author) }"></i>
 				</li>
 			</ul>
 			<div class="chart" style="width: 100%; height: 100%" :id="elementId"></div>
@@ -91,7 +91,7 @@ export default {
 
 			const chart = svg.append("bar")
 				.attr("class", "bar");
-			
+
 			//Eigenschaften der Balken festlegen	
 			const arcs = chart.selectAll("arc")
 				.data(this.ratios)
@@ -99,7 +99,7 @@ export default {
 				.style("width", d => d + "%")
 				.style("background-color", (i) => this.colorFn(i))
 				.style("overflow", "visible");
-			
+
 			//Text auf den Balken mit dem jeweiligen Wert
 			arcs.append("span")
 				.attr("class", "chart-label")
@@ -113,6 +113,7 @@ export default {
 .chart-container {
 	display: flex;
 	flex-direction: row;
+	justify-content: flex-start;
 	align-items: center;
 	gap: 20px;
 }
