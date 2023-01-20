@@ -100,11 +100,16 @@ export default {
 		async getData() {
 			return Communication.getFromEVA("authoring_ratios", { pad: this.padName })
 				.then(data => {
+<<<<<<< HEAD
 
 					const base = data.ratios.reduce((e, result) => e+result);
 					this.authors = data.authors;
 					this.ratios = data.ratios.map(e => e/base*100);
 
+=======
+					this.authors = data.authors;
+					this.ratios = data.ratios;
+>>>>>>> dceab9e4e0c18ffab69e6f91701b0ceee8bf0c3d
 					this.colors = data.colors;
 				})
 				.catch(() => {
@@ -124,7 +129,10 @@ export default {
 			}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> dceab9e4e0c18ffab69e6f91701b0ceee8bf0c3d
 			console.log(this.ratios);
 
 			const svg = d3.select(`#${this.elementId}`);
@@ -144,6 +152,7 @@ export default {
 			arcs.append("span")
 				.attr("class", "chart-label")
 				.text(d => `${d} %`);
+<<<<<<< HEAD
 >>>>>>> 9c29d1b (Kommentare reingeschrieben, weil ich die sonst immer vergesse)
 
 			d3.select("#authoringRatiosBar-svg").remove();
@@ -206,6 +215,10 @@ export default {
 				.attr("fill", d => d.color);
 
 
+=======
+
+		},
+>>>>>>> dceab9e4e0c18ffab69e6f91701b0ceee8bf0c3d
 	},
 	}
 };
