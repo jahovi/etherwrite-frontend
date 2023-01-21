@@ -37,6 +37,9 @@ $string['couldnotcreatepad'] = 'Could not create Etherpad pad.';
 $string['couldnotcreateauthor'] = 'Could not create Etherpad author.';
 $string['couldnotcreatesession'] = 'Could not create Etherpad session.';
 
+$string['legend'] = 'Legend';
+$string['legend.click-to-highlight'] = 'Click to highlight';
+
 // Widget categories
 $string['widgets.category.barchart'] = 'Bar chart';
 $string['widgets.category.piechart'] = 'Pie chart';
@@ -46,8 +49,10 @@ $string['widgets.category.other'] = 'Other';
 $string['widgets.groupParticipants'] = "Project participants";
 $string['widgets.groupParticipants.group'] = "Group";
 
+$string['widgets.cohesionDiagram.title'] = "Cohesion (Interaction between participants)";
+
 // KPIs
-$string['kpi-countdown-text']= 'Time till deadline: ';
+$string['kpi-countdown-text'] = 'Time till deadline: ';
 $string['kpi-countdown-no-deadline'] = 'no deadline';
 
 // Widgets Info-Texts
@@ -58,6 +63,9 @@ $string['widget-info-groupParticipants'] = 'Description of group participation c
 $string['widget-info-operations_bar'] = 'Description of operations chart.';
 $string['widget-info-activityOverTime'] = 'Description of activity over time chart.';
 $string['widget-info-etherViz'] = 'Description of etherViz chart.';
+$string['widget-info-cohesionDiagram'] = 'Shows the cohesion between the participants of the group. The distance between two circles represents the frequency in which the two participants worked together in the text. 
+Directional arrows represent collaboration on the text of others. An arrow from A to B indicates that participant(s) A added to or edited B\'s text. The thickness of the arrow shows the intensity of the collaboration.
+<em><strong>Note:</strong> With click on the legend an individual participant can be highlighted.</em>';
 // Operations widget
 $string['operationswidgettitle'] = 'Operations performed';
 $string['operationswidgetedit'] = 'Edit';

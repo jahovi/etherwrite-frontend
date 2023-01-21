@@ -37,6 +37,9 @@ $string['couldnotcreatepad'] = 'Etherpad-Pad konnte nicht erstellt werden.';
 $string['couldnotcreateauthor'] = 'Konnte den Etherpad-Autor nicht erstellen.';
 $string['couldnotcreatesession'] = 'Die Etherpad-Sitzung konnte nicht erstellt werden.';
 
+$string['legend'] = 'Legende';
+$string['legend.click-to-highlight'] = 'Zum Hervorheben klicken';
+
 // Widget categories
 $string['widgets.category.barchart'] = 'Balkendiagramm';
 $string['widgets.category.piechart'] = 'Kuchendiagramm';
@@ -46,8 +49,10 @@ $string['widgets.category.other'] = 'Sonstige';
 $string['widgets.groupParticipants'] = "Projektteilnehmer(innen)";
 $string['widgets.groupParticipants.group'] = "Gruppe";
 
+$string['widgets.cohesionDiagram.title'] = "Kohäsion (Interaktion zwischen Teilnehmern)";
+
 // KPIs
-$string['kpi-countdown-text']= 'Zeit bis zur Abgabefrist: ';
+$string['kpi-countdown-text'] = 'Zeit bis zur Abgabefrist: ';
 $string['kpi-countdown-no-deadline'] = 'Keine Abgabefrist';
 
 // Widgets Info-Texts
@@ -58,6 +63,9 @@ $string['widget-info-groupParticipants'] = 'Beschreibung des Gruppen-Partizipati
 $string['widget-info-operations_bar'] = 'Beschreibung des Operations-Diagramms.';
 $string['widget-info-activityOverTime'] = 'Beschreibung des Aktivitäts-Diagramms über die Zeit.';
 $string['widget-info-etherViz'] = 'Beschreibung des etherViz-Diagramms.';
+$string['widget-info-cohesionDiagram'] = 'Zeigt die Kohäsion zwischen den Teilnehmern der Gruppe. Der Abstand zwischen zwei Kreisen stellt die Häufigkeit dar, in der die beiden Teilnehmer(innen) gemeinsam im Text gearbeitet haben. 
+Die gerichteten Pfeile stehen für die Mitarbeit am Text anderer. Ein Pfeil von A nach B deutet darauf hin, dass Teilnehmer(in) A den Text von B ergänzt oder bearbeitet hat. Die Dicke des Pfeils zeigt die Intensivität der Mitarbeit.
+<em><strong>Hinweis:</strong> Mit Klick auf die Legende können einzelne Teilnehmer(innen) hervorgehoben werden.</em>';
 // Operations widget
 $string['operationswidgettitle'] = 'Durchgeführte Operationen';
 $string['operationswidgetedit'] = 'Bearbeiten';
