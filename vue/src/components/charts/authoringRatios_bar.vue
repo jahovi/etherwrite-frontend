@@ -85,8 +85,6 @@ export default {
 				this.colors = [...this.colors, "#ccc"];
 			}
 
-			console.log(this.ratios);
-
 			const svg = d3.select(`#${this.elementId}`);
 
 			const chart = svg.append("bar")
