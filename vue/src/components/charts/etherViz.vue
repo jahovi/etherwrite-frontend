@@ -9,8 +9,18 @@
       :style="{ 'align-items': isMock ? 'start' : 'center' }"
     >
       <div class="MultiRangeSliderContainer">
+        <div
+          class="etherVizSlider"
+          id="etherVizSliderNear"
+          :style="{
+            width: widthOfSvg * 0.95 - 100 - 10 + 'px',
+          }"
+        >
+          {{ sliderMinLabel + " - " + sliderMaxLabel }}
+        </div>
         <MultiRangeSlider
           id="dateSlider"
+          v-if="!isMock"
           :min="0"
           :max="numberOfRevisions"
           :step="1"
@@ -22,7 +32,6 @@
           @input="updateValues"
           :style="{
             width: widthOfSvg * 0.95 - 100 - 10 + 'px',
-            'margin-left': '20px',
           }"
         />
       </div>
@@ -41,11 +50,6 @@ import Communication from "../../classes/communication";
 import store from "../../store";
 import MultiRangeSlider from "multi-range-slider-vue";
 
-
-/* Problems:
-Colliding css klassen -> chart-container
-
-*/
 export default {
 	data() {
 		return {
@@ -72,6 +76,30 @@ export default {
 		h: Number,
 	},
 	computed: {
+		barMaxLabel() {
+			if(this.revisionDateTimes.length > 0) {
+				return this.revisionDateTimes[0].toLocaleDateString("de-DE", {day: "2-digit", month: "2-digit", year: "2-digit"});
+			}
+			return "";
+		},
+		barMinLabel() {
+			if(this.revisionDateTimes.length > 0) {
+				return this.revisionDateTimes[this.revisionDateTimes.length -1].toLocaleDateString("de-DE", {day: "2-digit", month: "2-digit", year: "2-digit"});
+			}
+			return "";	
+		},
+		sliderMinLabel() {
+			if(this.revisionDateTimes.length > 0) {
+				return this.revisionDateTimes[this.sliderMinValue].toLocaleDateString("de-DE", {day: "2-digit", month: "2-digit", year: "2-digit"});
+			}
+			return "";	
+		},
+		sliderMaxLabel() {
+			if(this.revisionDateTimes.length > 0) {
+				return this.revisionDateTimes[this.sliderMaxValue].toLocaleDateString("de-DE", {day: "2-digit", month: "2-digit", year: "2-digit"});
+			}
+			return "";	
+		},
 		elementId() {
 			return `etherViz_${this.id}`;
 		},
@@ -84,6 +112,9 @@ export default {
 					return "";
 				}
 			});
+		},
+		rangeHasBeenSpecified() {
+			return this.sliderMinValue > 0 || this.sliderMaxValue < this.numberOfRevisions;
 		}
 	},
 	name: "etherViz",
@@ -95,9 +126,10 @@ export default {
 		} else {
 			this.getData().then(() =>
 					this.loadEtherViz());
-		}
-		document.getElementById("dateSlider").classList.remove(".multi-range-slider");
-		this.$emit("dashboardDimensions", this.getDashboardDimensions);
+
+			document.getElementById("dateSlider").classList.remove(".multi-range-slider");
+			this.$emit("dashboardDimensions", this.getDashboardDimensions);
+		}	
 	},
 	watch: {
 		w(val) {
@@ -120,10 +152,10 @@ export default {
 			return {w: 8, h: 17};
 		},
 		updateValues(e) {
-			this.sliderMinValue = e.minValue;
-			this.sliderMaxValue = e.maxValue;
+            this.sliderMinValue = e.minValue;
+            this.sliderMaxValue = e.maxValue;
+            
 			this.loadEtherViz();
-
 		},
 		dateIsInRange(dateTime) {
 			const minDate = this.revisionDateTimes[this.sliderMinValue];
@@ -138,8 +170,6 @@ export default {
 				const day = match[1];
 				const month = match[2] - 1; // subtract 1 to convert from 1-based to 0-based
 				const year = "20" + match[3];
-				//const hours = match[4];
-				//const minutes = match[5];
 
 				return new Date(year, month, day);
 			} else {
@@ -167,17 +197,28 @@ export default {
 					store.commit("setAlertWithTimeout", ["alert-danger", store.getters.getStrings.unknown_error, 3000]);
 				});
 		},
+		modifySliderLabels() {
+			const etherVizSliderNear = document.getElementById("etherVizSliderNear");
+			if(this.rangeHasBeenSpecified) {
+				
+				etherVizSliderNear.setAttribute("style", "visibility:visible;");
+			}
+			else {
+				etherVizSliderNear.setAttribute("style", "visibility:hidden;");
+			}
+
+			Array.from(document.getElementsByClassName("label")).forEach(e => {
+				e.setAttribute("style", "font-weight: bold;");
+			})
+		},
 		async loadEtherViz() {
 			this.etherVizData = [];
 
 			const xAxisLabels = document.getElementById("etherViz-X-Axis-Labels");
 
 			if(xAxisLabels != undefined) {
-				console.log(xAxisLabels.getBoundingClientRect().width);
-				console.log(xAxisLabels);
 				this.widthOfSlider = xAxisLabels.getBoundingClientRect().width;
 			}
-
 
 			this.responseData.forEach(d => {
 				const dateTimeLabel = d.dateTime.toLocaleDateString("de-DE", {day: "2-digit", month: "2-digit", year: "2-digit"}); //+ ", " + d.dateTime.toLocaleTimeString().substring(0, 5);
@@ -216,7 +257,6 @@ export default {
 
 			d3.select("#etherViz-svg").remove();
 
-			
 			// append the svg object to the body of the page
 			var svg = d3.select(`#${this.elementId}`)
 					.append("svg")
@@ -304,6 +344,8 @@ export default {
 					d3.select(this).style("font-size", "12px");
 				}
 			});
+			this.modifySliderLabels();
+
 		},
 		getMockData() { 
 			return [{
@@ -545,13 +587,35 @@ export default {
 }
 
 .MultiRangeSliderContainer {
-  margin-bottom: 10px;
+  margin-right: -65px;
+  margin-left: "20px";
+}
+
+.etherVizSlider {
+  font: 14px sans-serif;
+  border: 0px;
+  height: 35px;
+  offset: 0px 0px;
+  position: relative;
+  line-height: 35px;
+  text-align: center;
+  vertical-align: middle;
+  font-weight: bold;
+}
+
+.sliderLabel {
+  position: absolute;
 }
 
 #dateSlider {
   min-width: none;
   border: none;
   box-shadow: none;
+  margin-top: -15px;
+}
+
+#etherVizSliderNear {
+  width: 180px;
 }
 @import "../../style/charts.scss";
 </style>

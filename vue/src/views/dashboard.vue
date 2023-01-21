@@ -250,6 +250,7 @@ h3 {
 
 #custom-dashboard {
   justify-content: center;
+  min-height: 800px;
 }
 
 .btn {
