@@ -49,7 +49,7 @@ export default {
 							.find(a => a.id === parseInt(epAuthorData.mapper2author));
 					if (author) {
 						author.epId = epId;
-						author.epAlias = epAuthorData.epAlias;
+						author.epalias = epAuthorData.epalias;
 						author.color = epAuthorData.color;
 					}
 				}
