@@ -188,7 +188,7 @@ export default {
             const yAxisRangeTop = Math.ceil(Math.max(...dataValues) / 10) * 10;
             // margin, width, height
             const margin = { top: 40, right: 150, bottom: 30, left: 75 };
-            const width = this.widthOfSvg - margin.right - margin.left;
+            const width = this.widthOfSvg - margin.right - margin.left; 
             const height = this.heightOfSvg - margin.bottom - margin.top;
             // svg object
             const svg = d3.select(`#${this.elementId}`)
