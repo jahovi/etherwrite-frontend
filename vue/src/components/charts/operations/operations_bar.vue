@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="chart-outer-container">
         <h2>{{ getStrings["operationswidgettitle"] }}</h2>
         <div class="chart-container">
             <div class="chart" :id="elementId"></div>
@@ -87,15 +87,15 @@ export default {
          * Get data from EVA and sum up edits, writes, pastes and deletes for each author.
          */
         getDashboardDimensions() {
-            return { w: 22, h: 14 };
+            return { w: 20, h: 14 };
         },
         async getData() {
             this.authorsToOperations = [];
             return Communication.getFromEVA(`activity/operations/${this.padName}`)
                 .then(res => {
-                    for (let entry of res) {
+                    for (const entry of res) {
                         // check format {EDIT: number, WRITE: number, PASTE: number, DELETE: number}
-                        for (let key in entry.authorToOperations) {
+                        for (const key in entry.authorToOperations) {
                             if (entry.authorToOperations[key].EDIT === undefined) {
                                 entry.authorToOperations[key].EDIT = 0;
                             }
@@ -130,7 +130,7 @@ export default {
                                 );
                             }
                             // sum up authors operations
-                            let author = this.authorsToOperations.find(obj => {
+                            const author = this.authorsToOperations.find(obj => {
                                 return Object.keys(obj).toString() === key;
                             });
                             author[key].edit += entry.authorToOperations[key].EDIT;
@@ -149,14 +149,14 @@ export default {
          */
         async loadChart() {
             document.getElementById(this.elementId).childNodes.forEach(c => c.remove());
-            let data = [];
-            let dataValues = [];
+            const data = [];
+            const dataValues = [];
             // get authors info
-            let authorsInfo = store.getters["users/usersByEpId"];
+            const authorsInfo = store.getters["users/usersByEpId"];
             // aggregate x- and y-axes data
-            for (let author of this.authorsToOperations) {
+            for (const author of this.authorsToOperations) {
                 let group = "";
-                for (let [key, value] of Object.entries(authorsInfo)) {
+                for (const [key, value] of Object.entries(authorsInfo)) {
                     if (!this.isMock) {
                         if (Object.keys(author)[0] === key) {
                             group = value.fullName;
@@ -170,7 +170,7 @@ export default {
                     }
                 }
                 // operations of student(s) or average of others 
-                let multiplier = Object.keys(author)[0] !== "others" ? 1 : 1 / Object.keys(authorsInfo).length;
+                const multiplier = Object.keys(author)[0] !== "others" ? 1 : 1 / Object.keys(authorsInfo).length;
                 data.push({
                     group: group,
                     [this.operationsStrings[0]]: Object.values(author)[0].edit * multiplier,
@@ -185,17 +185,22 @@ export default {
                 dataValues.push(Object.values(author)[0].delete * multiplier);
             }
             // set y-axis range boundary
-            let yAxisRangeTop = Math.ceil(Math.max(...dataValues) / 10) * 10;
+            const yAxisRangeTop = Math.ceil(Math.max(...dataValues) / 10) * 10;
             // margin, width, height
-            let margin = { top: 10, right: 30, bottom: 30, left: 30 };
-            let widht = this.widthOfSvg - margin.right - margin.left;
-            let height = this.heightOfSvg - margin.bottom - margin.top;
+            const margin = { top: 40, right: 30, bottom: 40, left: 30 };
+            const width = this.widthOfSvg - margin.right - margin.left;
+            const height = this.heightOfSvg - margin.bottom - margin.top;
+
+            console.log(`props w: ${this.$props.w}`)
+            console.log(`props h: ${this.$props.h}`)
+            // console.log(this.widthOfSvg)
+            // console.log(width)
 
             // svg object
-            let svg = d3.select(`#${this.elementId}`)
+            const svg = d3.select(`#${this.elementId}`)
                 .append("svg")
-                .attr("width", widht + margin.right)
-                .attr("height", height + margin.bottom)
+                .attr("width", width + margin.right + margin.left)
+                .attr("height", height + margin.bottom + margin.top)
                 .append("g")
                 .attr("transform",
                     "translate(" + margin.left + "," + margin.top + ")");
@@ -203,14 +208,14 @@ export default {
             svg.append("text")
                 .attr("class", "x label")
                 .attr("text-anchor", "start")
-                .attr("x", widht + 50)
+                .attr("x", width + 50)
                 .attr("y", height + 20)
                 .attr("font-size", "1.1em")
                 .text(this.getStrings[`operationswidgetxaxis${this.isModerator ? "teacher" : "student"}`]);
             svg.append("text")
                 .attr("class", "y label")
                 .attr("text-anchor", "start")
-                .attr("y", 10)
+                .attr("y", -20)
                 .attr("dy", ".75em")
                 .attr("font-size", "1.1em")
                 .text(this.getStrings["operationswidgetyaxis"]);
@@ -219,28 +224,37 @@ export default {
              */
             if (this.isModerator) {
                 // subgroups
-                let subgroups = this.operationsStrings;
+                const subgroups = this.operationsStrings;
                 // groups
-                let groups = [];
-                for (let entry of data) {
+                const groups = [];
+                for (const entry of data) {
                     groups.push(entry.group);
                 }
                 // x-axis
-                let xAxis = d3.scaleBand()
+                const xAxis = d3.scaleBand()
                     .domain(groups)
-                    .range([0, widht])
+                    .range([0, width])
                     .padding([0.2]);
                 svg.append("g")
+                    .call(d3.axisBottom(xAxis).tickSize(0))
                     .attr("transform", `translate(0, ${height})`)
-                    .call(d3.axisBottom(xAxis).tickSize(0));
+                    .style("text-anchor", "center")
+                    .attr("font-size", "1.1em");
+
+                /*
+                .selectAll("text")
+                .attr("transform", "translate(-10,0)rotate(-10)")
+                .style("text-anchor", "end");
+                */
                 // y-axis
-                let yAxis = d3.scaleLinear()
+                const yAxis = d3.scaleLinear()
                     .domain([0, yAxisRangeTop])
                     .range([height, 0]);
                 svg.append("g")
-                    .call(d3.axisLeft(yAxis));
+                    .call(d3.axisLeft(yAxis))
+                    .attr("font-size", "1em");
                 // subgroup position
-                let xSubgroup = d3.scaleBand()
+                const xSubgroup = d3.scaleBand()
                     .domain(subgroups)
                     .range([0, xAxis.bandwidth()])
                     .padding([0.05]);
@@ -265,30 +279,32 @@ export default {
              */
             if (!this.isModerator) {
                 // x-axis
-                let xAxis = d3.scaleBand()
-                    .range([0, widht])
+                const xAxis = d3.scaleBand()
+                    .range([0, width])
                     .domain(this.operationsStrings.map(function (o) { return o; }))
                     .padding(0.2);
                 svg.append("g")
-                    .attr("transform", `translate(0, ${height})`)
                     .call(d3.axisBottom(xAxis))
+                    .attr("transform", `translate(0, ${height})`)
                     .selectAll("text")
                     .style("text-anchor", "center");
                 // y-axis
-                let yAxis = d3.scaleLinear()
+                const yAxis = d3.scaleLinear()
                     .domain([0, yAxisRangeTop])
                     .range([height, 0])
                 svg.append("g")
-                    .call(d3.axisLeft(yAxis));
+                    .call(d3.axisLeft(yAxis))
+                    .style("text-anchor", "center")
+                    .attr("font-size", "1.1em");
                 // seperate data for multiple bars
-                let userData = []
-                for (let [key, value] of Object.entries(data[0])) {
+                const userData = []
+                for (const [key, value] of Object.entries(data[0])) {
                     if (key !== "group") {
                         userData.push({ [key]: value });
                     }
                 }
-                let averageData = [];
-                for (let [key, value] of Object.entries(data[1])) {
+                const averageData = [];
+                for (const [key, value] of Object.entries(data[1])) {
                     if (key !== "group") {
                         averageData.push({ [key]: value });
                     }
@@ -319,7 +335,7 @@ export default {
     mounted() {
         this.isModerator = store._state.data.base.isModerator;
 
-        for (let operation of this.operations) {
+        for (const operation of this.operations) {
             this.operationsStrings.push(this.getStrings[`operationswidget${operation}`]);
         }
         /*
@@ -388,28 +404,18 @@ export default {
 </script>
 
 <style scoped lang="css">
+.chart-outer-container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
 .chart-container {
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
     align-items: center;
     gap: 20px;
-}
-
-.svg-container {
-    display: inline-block;
-    position: relative;
-    width: 100%;
-    padding-bottom: 100%;
-    vertical-align: top;
-    overflow: hidden;
-}
-
-.svg-content-responsive {
-    display: inline-block;
-    position: absolute;
-    top: 10px;
-    left: 0;
 }
 
 .chart {
@@ -419,7 +425,6 @@ export default {
 
 .legend {
     position: absolute;
-    top: 25px;
     right: 5px;
 }
 </style>
