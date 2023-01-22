@@ -1,23 +1,23 @@
 <template>
-  <div>
-    <h4>{{ getStrings["operationswidgettitle"] }}</h4>
-    <div class="chart-container">
-      <div class="chart" :id="elementId"></div>
-      <ul class="legend mt-3">
-        <li v-for="(str, key) of operationsStrings" :key="key">
-          <i class="fa fa-square" :style="{ color: operationsColors(key) }"></i>
-          {{ str }}
-        </li>
-        <li v-if="!isModerator">
-          <i class="fa fa-square" style="color: #d3d3d3"></i>
-          {{ getStrings["operationswidgetaverage"] }}
-        </li>
-      </ul>
+    <div>
+        <h2>{{ getStrings["operationswidgettitle"] }}</h2>
+        <div class="chart-container">
+            <div class="chart" :id="elementId"></div>
+            <ul class="legend mt-3">
+                <li v-for="(str, key) of operationsStrings" :key="key">
+                    <i class="fa fa-square" :style="{ color: operationsColors(key) }"></i>
+                    {{ str }}
+                </li>
+                <li v-if="!isModerator">
+                    <i class="fa fa-square" style="color: #d3d3d3"></i>
+                    {{ getStrings["operationswidgetaverage"] }}
+                </li>
+            </ul>
+        </div>
     </div>
-  </div>
 </template>
 
-<script>
+<script lang="js">
 import * as d3 from "d3";
 import Communication from "../../../classes/communication";
 import store from "../../../store";
@@ -28,6 +28,8 @@ export default {
         id: String,
         isMock: Boolean,
         padName: String,
+        w: Number,
+        h: Number,
     },
     data() {
         return {
@@ -46,6 +48,8 @@ export default {
             ],
             operationsStrings: [],
             isModerator: false,
+            widthOfSvg: 560,
+            heightOfSvg: 500,
         };
     },
     computed: {
@@ -66,20 +70,28 @@ export default {
         padName() {
             if (!this.isMock) {
                 this.getData().then(() =>
-                    this.loadBar());
+                    this.loadChart());
             }
-        }
+        },
+        w(val) {
+            this.widthOfSvg = val;
+            this.loadChart();
+        },
+        h(val) {
+            this.heightOfSvg = val;
+            this.loadChart();
+        },
     },
     methods: {
         /**
          * Get data from EVA and sum up edits, writes, pastes and deletes for each author.
          */
         getDashboardDimensions() {
-			return {w: 8, h: 12};
-		},
+            return { w: 22, h: 14 };
+        },
         async getData() {
             this.authorsToOperations = [];
-            return Communication.getFromEVA(`activity/operations/${this.padName}`, { padName: this.padName })
+            return Communication.getFromEVA(`activity/operations/${this.padName}`)
                 .then(res => {
                     for (let entry of res) {
                         // check format {EDIT: number, WRITE: number, PASTE: number, DELETE: number}
@@ -98,10 +110,10 @@ export default {
                             }
                         }
                     }
-                    let filtered = res.filter(el => Object.keys(el.authorToOperations).length !== 0);
-                    for (let entry of filtered) {
-                        let keys = Object.keys(entry.authorToOperations);
-                        for (let key of keys) {
+                    const filtered = res.filter(el => Object.keys(el.authorToOperations).length !== 0);
+                    for (const entry of filtered) {
+                        const keys = Object.keys(entry.authorToOperations);
+                        for (const key of keys) {
                             // add author if not already in authorsToOperations
                             if (!this.authorsToOperations.some(obj => {
                                 return Object.keys(obj).toString() === key;
@@ -135,7 +147,7 @@ export default {
         /**
          * Load the chart.
          */
-        async loadBar() {
+        async loadChart() {
             document.getElementById(this.elementId).childNodes.forEach(c => c.remove());
             let data = [];
             let dataValues = [];
@@ -176,43 +188,31 @@ export default {
             let yAxisRangeTop = Math.ceil(Math.max(...dataValues) / 10) * 10;
             // margin, width, height
             let margin = { top: 10, right: 30, bottom: 30, left: 30 };
-            let width = this.$el.parentElement.clientWidth;
-            let height = this.$el.parentElement.clientHeight;
-            if (this.isMock) {
-                height *= 2;
-            }
-            if (!this.isMock) {
-                height *= 0.8;
-            }
-            let offsetXAxisLable = 180;
-            if (!this.isModerator) {
-                offsetXAxisLable = 100;
-            }
+            let widht = this.widthOfSvg - margin.right - margin.left;
+            let height = this.heightOfSvg - margin.bottom - margin.top;
+
             // svg object
             let svg = d3.select(`#${this.elementId}`)
                 .append("svg")
-                .classed("svg-container", true)
-                .attr("preserveAspectRatio", "xMinYMin meet")
-                .attr("viewBox", `-20 -10 ${width} ${height}`)
-                .classed("svg-content-responsive", true)
+                .attr("width", widht + margin.right)
+                .attr("height", height + margin.bottom)
                 .append("g")
                 .attr("transform",
-                    `translate(${margin.left}, ${margin.top})`)
-                .attr("transform", "scale(0.8 0.8)");
+                    "translate(" + margin.left + "," + margin.top + ")");
             // labels x- and y-axis
-            let suffix = this.isModerator ? "teacher" : "student";
             svg.append("text")
                 .attr("class", "x label")
-                .attr("text-anchor", "end")
-                .attr("x", width + offsetXAxisLable)
-                .attr("y", height + 5)
-                .text(this.getStrings[`operationswidgetxaxis${suffix}`]);
+                .attr("text-anchor", "start")
+                .attr("x", widht + 50)
+                .attr("y", height + 20)
+                .attr("font-size", "1.1em")
+                .text(this.getStrings[`operationswidgetxaxis${this.isModerator ? "teacher" : "student"}`]);
             svg.append("text")
                 .attr("class", "y label")
-                .attr("text-anchor", "end")
-                .attr("y", 5)
+                .attr("text-anchor", "start")
+                .attr("y", 10)
                 .attr("dy", ".75em")
-                .attr("transform", "rotate(-90)")
+                .attr("font-size", "1.1em")
                 .text(this.getStrings["operationswidgetyaxis"]);
             /*
              * teacher chart
@@ -228,7 +228,7 @@ export default {
                 // x-axis
                 let xAxis = d3.scaleBand()
                     .domain(groups)
-                    .range([0, width])
+                    .range([0, widht])
                     .padding([0.2]);
                 svg.append("g")
                     .attr("transform", `translate(0, ${height})`)
@@ -266,7 +266,7 @@ export default {
             if (!this.isModerator) {
                 // x-axis
                 let xAxis = d3.scaleBand()
-                    .range([0, width])
+                    .range([0, widht])
                     .domain(this.operationsStrings.map(function (o) { return o; }))
                     .padding(0.2);
                 svg.append("g")
@@ -352,7 +352,7 @@ export default {
                     }
                 }
             ];
-            this.loadBar();
+            this.loadChart();
         }
         if (this.isMock && !this.isModerator) {
             this.authorsToOperations = [
@@ -373,14 +373,14 @@ export default {
                     },
                 },
             ];
-            this.loadBar();
+            this.loadChart();
         }
         /*
          * use eva data
          */
         if (!this.isMock) {
             this.getData().then(() =>
-                this.loadBar());
+                this.loadChart());
         }
         this.$emit("dashboardDimensions", this.getDashboardDimensions);
     },
@@ -389,37 +389,37 @@ export default {
 
 <style scoped lang="css">
 .chart-container {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: center;
-  gap: 20px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 20px;
 }
 
 .svg-container {
-  display: inline-block;
-  position: relative;
-  width: 100%;
-  padding-bottom: 100%;
-  vertical-align: top;
-  overflow: hidden;
+    display: inline-block;
+    position: relative;
+    width: 100%;
+    padding-bottom: 100%;
+    vertical-align: top;
+    overflow: hidden;
 }
 
 .svg-content-responsive {
-  display: inline-block;
-  position: absolute;
-  top: 10px;
-  left: 0;
+    display: inline-block;
+    position: absolute;
+    top: 10px;
+    left: 0;
 }
 
 .chart {
-  width: 100%;
-  height: 100%;
+    width: 100%;
+    height: 100%;
 }
 
 .legend {
-  position: absolute;
-  top: 25px;
-  right: 5px;
+    position: absolute;
+    top: 25px;
+    right: 5px;
 }
 </style>
