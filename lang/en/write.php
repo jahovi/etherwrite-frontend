@@ -56,9 +56,12 @@ $string['kpi-countdown-text'] = 'Time till deadline: ';
 $string['kpi-countdown-no-deadline'] = 'no deadline';
 
 // Widgets Info-Texts
-$string['widget-info-authoringRatios_pie'] = 'The pie chart shows the percentage per author of the written text in the editor of the project.';
-$string['widget-info-authoringRatios_bar'] = 'The bar diagram shows the percentage per author of the written text in the editor of the project.';
-$string['widget-info-participation_diagram'] = 'Description of participation chart.';
+$string['widget-info-authoringRatios_pie'] = 'Description of author ratios piechart.';
+$string['widget-info-authoringRatios_bar'] = 'Description of of author ratios barchart.';
+$string['widget-info-participation_diagram'] = 'This chart shows attendee participation for individual hours or days.
+If the work is still very short, the participation is displayed for hours.
+For work that has been going on for some time, participation is displayed daily.
+The users are displayed in their respective color on the bar. For an hour / a day, where no work has been done, no bar exists. Otherwise, the total height of a bar is always 1.0 and refers to the work done in one hour / one day.';
 $string['widget-info-groupParticipants'] = 'Description of group participation chart.';
 $string['widget-info-operations_bar'] = 'Description of operations chart.';
 $string['widget-info-activityOverTime'] = 'Description of activity over time chart.';
@@ -77,3 +80,8 @@ $string['operationswidgetaverage'] = 'Average';
 $string['operationswidgetxaxisteacher'] = 'Operations per participant';
 $string['operationswidgetxaxisstudent'] = 'Operations';
 $string['operationswidgetyaxis'] = 'Count';
+
+// Participation Widget
+$string['participationwidgettitle'] = 'Participation';
+$string['participationwidgetyaxis'] = 'Participation';
+$string['participationwidgetxaxis'] = 'Date';

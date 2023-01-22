@@ -56,6 +56,12 @@ $string['kpi-countdown-text'] = 'Zeit bis zur Abgabefrist: ';
 $string['kpi-countdown-no-deadline'] = 'Keine Abgabefrist';
 
 // Widgets Info-Texts
+$string['widget-info-authoringRatios_pie'] = 'Beschreibung des Authorenanteil-Kuchendiagramms.';
+$string['widget-info-authoringRatios_bar'] = 'Beschreibung des Authorenanteil-Balkendiagramms.';
+$string['widget-info-participation_diagram'] = 'Dieses Diagramm zeigt die Partizipation der Teilnehmer zu einzelnen Stunden oder Tagen an. 
+Bei noch sehr kurzen Arbeiten wird die Partizipation stündlich angezeigt. 
+Bei Arbeiten, welche bereits länger laufen wird die Partizipation täglich angezeigt. 
+Die Nutzer werden in ihrer jeweiligen Farbe auf den Balken angezeigt. Sollte in einer Stunde / an einem Tag keine Arbeit geleistet worden sein, existiert kein Balken. Sonst ist die Gesamthöhe eines Balkens immer 1.0 und bezieht sich auf die gesamte geleistete Arbeit zu einer Stunde / einem Tag.';
 $string['widget-info-authoringRatios_pie'] = 'Das Kuchendiagramm zeigt den prozentualen Anteil pro Autor am geschriebenen Text im Editor des Projekts.';
 $string['widget-info-authoringRatios_bar'] = 'Das Balkendiagramm zeigt den prozentualen Anteil pro Autor am geschriebenen Text im Editor des Projekts.';
 $string['widget-info-participation_diagram'] = 'Beschreibunf des Partizipation-Diagramms';
@@ -77,3 +83,8 @@ $string['operationswidgetaverage'] = 'Durchschnitt';
 $string['operationswidgetxaxisteacher'] = 'Operationen je Teilnehmer';
 $string['operationswidgetxaxisstudent'] = 'Operationen';
 $string['operationswidgetyaxis'] = 'Anzahl';
+
+// Participation Widget
+$string['participationwidgettitle'] = 'Partizipationsdiagramm';
+$string['participationwidgetyaxis'] = 'Partizipation';
+$string['participationwidgetxaxis'] = 'Datum';

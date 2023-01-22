@@ -1,8 +1,8 @@
 <template>
   <div class="chart-outer-container">
-    <h4>Partizipationsdiagramm</h4>
+    <h2>{{ getStrings["participationwidgettitle"] }}</h2>
     <div class="chart-container">
-      <div class="chart" :id="elementId" ref="chart"></div>
+      <div class="chart" :id="elementId" ref="chart" style="width: 100%; height: 100%"></div>
       <ul class="legend mt-3" v-if="authorSet.size">
         <li v-for="author of Array.from(authorSet).reverse()" :key="author">
           <i
@@ -16,7 +16,7 @@
   </div>
 </template>
 
-<script>
+<script lang="js">
 import * as d3 from "d3";
 import Communication from "../../classes/communication";
 import store from "../../store";
@@ -28,6 +28,8 @@ export default {
 		id: String,
 		isMock: Boolean,
 		padName: String,
+		w: Number,
+		h: Number,
 	},
 	data() {
 		return {
@@ -35,12 +37,17 @@ export default {
 			authorColors: [],
 			authorSet: {},
 			hourlyTimestamp: false,
+			widthOfSvg: 560,
+			heightOfSvg: 500,
 		};
 	},
 	computed: {
 		elementId() {
 			return `participation_diagram_${this.id}`;
 		},
+		getStrings() {
+            return this.$store.getters.getStrings;
+        },
 	},
 	mounted() {
 		if (this.isMock) {
@@ -78,28 +85,34 @@ export default {
 				this.getData().then(() =>
 						this.loadChart());
 			}
-		}
+		},
+		w(val) {
+			this.widthOfSvg = val;
+			this.loadChart();
+		},
+		h(val) {
+			this.heightOfSvg = val;
+			this.loadChart();
+		},
 	},
 	methods: {
 		getDashboardDimensions() {
-			return {w: 8, h: 8};
+			return {w: 12, h: 10};
 		},
 		getUsername(author) {
 			if (this.isMock) {
 				return author;
 			}
-			return store.getters["users/usersByEpId"][author].epalias;
+			return store.getters["users/usersByEpId"][author].fullName;
         },
         getAuthorColor(author) {
             const index = [...this.authorSet].indexOf(author);
             return this.authorColors[index];
         },
         async getData() {
-            // get data
-
-			let data;
+			let data = null;
 			try {
-				data = await Communication.getFromEVA(`activity/activities/${store.state.base.padName}`);
+				data = await Communication.getFromEVA(`activity/activities/${this.padName}`);
 			} catch {
 				store.commit("setAlertWithTimeout", ["alert-danger", store.getters.getStrings.unknown_error, 3000]);
 			}
@@ -121,7 +134,7 @@ export default {
 
 			// reformat data, convert activity counts to percentages
 			for (const elem of data) {
-				let dataset;
+				let dataset = null;
 				if (elem.timestamp.indexOf(",") > -1) {
 					// timestamp contains comma therefore it contains a time of day
 					this.hourlyTimestamp = true;
@@ -136,7 +149,7 @@ export default {
 				for (const author of this.authorSet.values()) {
 					if (Object.hasOwn(elem.authorToActivities, author.toString())) {
 						// author had activity for this timestamp
-						dataset[author] = (elem.authorToActivities[author] / activitySum);
+						dataset[author] = elem.authorToActivities[author] / activitySum;
 					} else {
 						dataset[author] = 0;
 					}
@@ -145,19 +158,19 @@ export default {
 			}
 		},
 
-		loadChart() {
+		async loadChart() {
 			document.getElementById(this.elementId).childNodes.forEach(c => c.remove());
 			// vars
 			const margin = {top: 20, right: 300, bottom: 40, left: 30};
-			let w = this.$refs.chart.getBoundingClientRect().width - margin.right;
-			let h = this.$refs.chart.getBoundingClientRect().height - margin.bottom;
+			let w = this.widthOfSvg - margin.right;
+			let h = this.heightOfSvg - margin.bottom;
 			if (w < 0) {
 				w = 100;
 			}
 			if (h < 0) {
 				h = 110;
 			}
-			const barPadding = 1;
+			const barPadding = 3;
 			const barWidth = (w / this.datasets.length - barPadding) > 50 ? 50 : (w / this.datasets.length - barPadding);
 
 			// stack data
@@ -167,7 +180,7 @@ export default {
 			// init scales
 			const xScale = d3.scaleTime()
 					.domain([this.datasets[0].timestamp, this.datasets[this.datasets.length - 1].timestamp])
-					.range([margin.left, w]);
+					.range([margin.left, w]);	
 
 			const yScale = d3.scaleLinear()
 					.domain([0, 1])
@@ -183,10 +196,39 @@ export default {
 					.attr("width", w + margin.left + margin.right)
 					.attr("height", h + margin.top + margin.bottom);
 
-			// define xAxis
+			// labels for x- and y-axes
+			svg.append("text")
+                .attr("class", "x label")
+                .attr("text-anchor", "start")
+                .attr("x", w + 50)
+                .attr("y", h + 20)
+				.attr("font-size", "1.1em")
+                .text(this.getStrings["participationwidgetxaxis"]);
+            svg.append("text")
+                .attr("class", "y label")
+                .attr("text-anchor", "start")
+                .attr("y", 10)
+                .attr("dy", ".75em")
+				.attr("font-size", "1.1em")
+                .text(this.getStrings["participationwidgetyaxis"]);
+
+			// define xAxis	
+			let daysWithActivities = [];
+			this.datasets.forEach(set => {
+				let sum = 0;
+				for (let key in set) {
+					if(key !== "timestamp") {
+						sum += set[key];
+					}
+				}
+				if(sum === 1) {
+					daysWithActivities.push(set);
+				}
+			});
+
 			let xAxis = d3.axisBottom(xScale)
 					.tickSizeOuter(0)
-					.tickValues(this.datasets.map(d => d.timestamp));
+					.tickValues(daysWithActivities.map(d => d.timestamp));
 			if (this.hourlyTimestamp) {
 				xAxis.tickFormat(d3.timeFormat("%H:%M"));
 			} else {
@@ -199,7 +241,8 @@ export default {
 					.call(xAxis)
 					.selectAll("text")
 					.attr("transform", "translate(-10, 2)rotate(-65)")
-					.style("text-anchor", "end");
+					.style("text-anchor", "end")
+					.attr("font-size", "1.5em");
 
 			// Add blank axis to bridge gap between x and y axis
 			let xAxisBlank = d3.axisBottom(xScale)
@@ -209,12 +252,13 @@ export default {
 					.attr("transform", "translate(" + 0 + "," + h + ")")
 					.call(xAxisBlank);
 
-			// yAxis
+			// append yAxis
 			let yAxis = d3.axisLeft(yScale)
 					.ticks(8);
 			svg.append("g")
 					.attr("transform", "translate(" + margin.left + "," + "0)")
-					.call(yAxis);
+					.call(yAxis)
+					.attr("font-size", "1em");
 
 			// add group for each author series
 			const series = svg
@@ -236,7 +280,6 @@ export default {
 		},
 	},
 };
-
 </script>
 
 <style scoped lang="css">
