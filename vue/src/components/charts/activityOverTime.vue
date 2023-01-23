@@ -234,23 +234,14 @@ export default {
 					.attr("d", d3.line()
 						.x(d => x(d.timestamp))
 						.y(d => y(d.activity))(datapoints),
-					)
-					.style("stroke-dasharray", getDashingPattern())
-					;
+					);
 			});
 		},
 	},
 };
 
-function getDashingPattern() {
-	const length = 3;
-	let pattern = "";
-	for (let i = 0; i < length; i++) {
-		pattern += `${Math.floor(Math.random() * 10) + 2},`;
-	}
-	pattern = pattern.slice(0, -1);
-	return pattern;
-}
+
+
 </script>
 <style scoped lang="css">
 .chart-outer-container {
