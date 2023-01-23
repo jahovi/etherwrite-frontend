@@ -23,7 +23,7 @@
   </div>
 </template>
 
-<script>
+<script lang=js>
 import Communication from "../../classes/communication";
 import store from "../../store";
 import * as d3 from "d3";
@@ -33,12 +33,16 @@ export default {
 		return {
 			data: [],
 			scaling: "linear",
+			widthOfSvg: 1000,
+			heightOfSvg: 150,
 		};
 	},
 	props: {
 		id: String,
 		isMock: Boolean,
 		padName: String,
+		w: Number,
+		h: Number,
 	},
 	computed: {
 		elementId() {
@@ -67,17 +71,17 @@ export default {
 	mounted() {
 		if (this.isMock) {
 			this.data = [{
-				timestamp: "01.01.2023",
+				timestamp: "01.01.23",
 				authorToActivities: {
 					"others": 15,
 				},
 			}, {
-				timestamp: "02.01.2023",
+				timestamp: "02.01.23",
 				authorToActivities: {
 					"others": 0,
 				},
 			}, {
-				timestamp: "03.01.2023",
+				timestamp: "03.01.23",
 				authorToActivities: {
 					"others": 65,
 				},
@@ -99,10 +103,18 @@ export default {
 		scaling() {
 			this.loadLine();
 		},
+		w(val) {
+			this.widthOfSvg = val;
+			this.loadLine();
+		},
+		h(val) {
+			this.heightOfSvg = val;
+			this.loadLine();
+		},
 	},
 	methods: {
 		getDashboardDimensions() {
-			return {w: 9, h: 9};
+			return {w: 12, h: 10};
 		},
 		async getData() {
 			return Communication.getFromEVA(`activity/activities/${this.padName}`)
@@ -115,9 +127,14 @@ export default {
 		},
 		loadLine: function () {
 			document.getElementById(this.elementId).childNodes.forEach(c => c.remove());
-			let width = this.$refs.chart.getBoundingClientRect().width - 25,
-					height = this.$refs.chart.getBoundingClientRect().height - 60;
+			// let width = this.$refs.chart.getBoundingClientRect().width - 25,
+			// 		height = this.$refs.chart.getBoundingClientRect().height - 60;
 
+			let width = this.widthOfSvg - 350;
+			let height = this.heightOfSvg - 80;
+			console.log(width);
+			console.log(height);
+	
 			if (width < 0) {
 				width = 100;
 			}
