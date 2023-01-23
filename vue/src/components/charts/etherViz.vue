@@ -209,7 +209,7 @@ export default {
 
 			Array.from(document.getElementsByClassName("label")).forEach(e => {
 				e.setAttribute("style", "font-weight: bold;");
-			})
+			});
 		},
 		async loadEtherViz() {
 			this.etherVizData = [];
@@ -221,7 +221,7 @@ export default {
 			}
 
 			this.responseData.forEach(d => {
-				const dateTimeLabel = d.dateTime.toLocaleDateString("de-DE", {day: "2-digit", month: "2-digit", year: "2-digit"}); //+ ", " + d.dateTime.toLocaleTimeString().substring(0, 5);
+				const dateTimeLabel = d.dateTime.toLocaleDateString("de-DE", {day: "2-digit", month: "2-digit", year: "2-digit"});
 
 				if (this.dateIsInRange(d.dateTime)) {
 					if ("rectangles" in d) {

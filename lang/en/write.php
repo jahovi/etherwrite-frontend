@@ -57,7 +57,7 @@ $string['widget-info-participation_diagram'] = 'Description of participation cha
 $string['widget-info-groupParticipants'] = 'Description of group participation chart.';
 $string['widget-info-operations_bar'] = 'Description of operations chart.';
 $string['widget-info-activityOverTime'] = 'Description of activity over time chart.';
-$string['widget-info-etherViz'] = 'Description of etherViz chart.';
+$string['widget-info-etherViz'] = 'The EtherViz diagram gives you an overview of the text creation over time. The y-axis shows the number of characters in the text at a given date. The x-axis shows you as many revisions as the project has days.';
 // Operations widget
 $string['operationswidgettitle'] = 'Operations performed';
 $string['operationswidgetedit'] = 'Edit';
