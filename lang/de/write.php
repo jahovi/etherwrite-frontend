@@ -90,4 +90,4 @@ $string['participationwidgetxaxis'] = 'Datum';
 // ActivityOverTime Widget
 $string['activityovertimewidgettitle'] = 'Aktivitäten im Zeitverlauf';
 $string['activityovertimewidgetyaxis'] = 'Aktivität';
-$string['activityovertimewidgetxaxis'] = 'Time';
+$string['activityovertimewidgetxaxis'] = 'Zeit';

@@ -1,6 +1,7 @@
 <template>
   <div class="chart-outer-container">
-    <h4>Aktivitäten (zeitlicher Verlauf)</h4>
+    <!-- <h4>Aktivitäten (zeitlicher Verlauf)</h4> -->
+    <h2>{{ getStrings["activityovertimewidgettitle"]}}</h2>
 	<div class="chart-options">
 		<input type="radio" id="linear" value="linear" v-model="scaling">
 		<label for="linear">Linear</label>
@@ -182,7 +183,7 @@ export default {
 				.attr("x", width)
 				.attr("y", height + 50)
 				.attr("font-size", "1.1em")
-				.text("Zeit");
+				.text(this.getStrings["activityovertimewidgetxaxis"]);
 			svg.append("text")
 				.attr("class", "y label")
 				.attr("text-anchor", "start")
@@ -190,9 +191,7 @@ export default {
 				.attr("y", -5)
 				.attr("dy", ".75em")
 				.attr("font-size", "1.1em")
-				.text("Aktivität");
-
-			console.log(this.getStrings["activityovertimewidgetxaxis"]);
+				.text(this.getStrings["activityovertimewidgetyaxis"]);
 
 			const x = d3.scaleOrdinal()
 					.domain(timestamps)
