@@ -126,8 +126,6 @@ export default {
 		},
 		loadLine: function () {
 			document.getElementById(this.elementId).childNodes.forEach(c => c.remove());
-			// let width = this.$refs.chart.getBoundingClientRect().width - 25,
-			// 		height = this.$refs.chart.getBoundingClientRect().height - 60;
 
 			let width = this.widthOfSvg - 350;
 			let height = this.heightOfSvg - 80;
@@ -208,7 +206,6 @@ export default {
 				});
 			});
 
-			// let lineW = Object.entries(datasets).length;
 			Object.entries(datasets).forEach(([authorId, datapoints]) => {
 
 				const author = store.getters["users/usersByEpId"][authorId];
@@ -233,8 +230,6 @@ export default {
 					.data(datapoints)
 					.attr("fill", "none")
 					.attr("stroke", color)
-					// .attr("stroke-width", lineW * 1.5)
-					// .attr("stroke-width", 1.5)
 					.attr("stroke-width", 3)
 					.attr("d", d3.line()
 						.x(d => x(d.timestamp))
@@ -242,7 +237,6 @@ export default {
 					)
 					.style("stroke-dasharray", getDashingPattern())
 					;
-				// lineW--;
 			});
 		},
 	},
