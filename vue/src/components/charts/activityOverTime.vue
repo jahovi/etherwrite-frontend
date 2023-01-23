@@ -1,12 +1,11 @@
 <template>
   <div class="chart-outer-container">
-    <!-- <h4>Aktivitäten (zeitlicher Verlauf)</h4> -->
     <h2>{{ getStrings["activityovertimewidgettitle"]}}</h2>
 	<div class="chart-options">
 		<input type="radio" id="linear" value="linear" v-model="scaling">
-		<label for="linear">Linear</label>
+		<label for="linear" class="radioLabel">Linear</label>
 		<input type="radio" id="logarithmic" value="logarithmic" v-model="scaling">
-		<label for="linear">Logarithmisch</label>
+		<label for="linear" class="radioLabel">Logarithmisch</label>
 	</div>
     <div class="chart-container">
       <div
@@ -280,5 +279,8 @@ function getDashingPattern() {
   align-items: center;
   gap: 20px;
   flex-grow: 1;
+}
+label.radioLabel {
+	width: 60px;
 }
 </style>
