@@ -1,6 +1,12 @@
 <template>
   <div class="chart-outer-container">
     <h4>Aktivitäten (zeitlicher Verlauf)</h4>
+	<div class="chart-options">
+		<input type="radio" id="linear" value="linear" v-model="scaling">
+		<label for="linear">Linear</label>
+		<input type="radio" id="logarithmic" value="logarithmic" v-model="scaling">
+		<label for="linear">Logarithmisch</label>
+	</div>
     <div class="chart-container">
       <div
         class="chart"
@@ -26,6 +32,7 @@ export default {
 	data() {
 		return {
 			data: [],
+			scaling: "linear",
 		};
 	},
 	props: {
@@ -48,7 +55,7 @@ export default {
 				} else {
 					const author = store.getters["users/usersByEpId"][id];
 					if (author) {
-						result[author.epalias] = author.color;
+						result[author.fullName] = author.color;
 					}
 				}
 
@@ -88,7 +95,10 @@ export default {
 				this.getData().then(() =>
 						this.loadLine());
 			}
-		}
+		},
+		scaling() {
+			this.loadLine();
+		},
 	},
 	methods: {
 		getDashboardDimensions() {
@@ -121,7 +131,7 @@ export default {
 					.attr("height", "100%")
 					.append("g")
 					.attr("transform",
-							"translate(30, 0)");
+							"translate(30, 5)");
 
 			const timestamps = this.data.map(d => d.timestamp);
 			const range = [];
@@ -167,14 +177,22 @@ export default {
 				});
 			});
 
+			let lineW = Object.entries(datasets).length;
 			Object.entries(datasets).forEach(([authorId, datapoints]) => {
 
 				const author = store.getters["users/usersByEpId"][authorId];
 				const color = author ? author.color : "#ccc";
 
-				const y = d3.scaleLinear(datapoints)
-						.domain([0, max])
-						.range([height, 0]);
+				let y;
+				if (this.scaling === "linear") {
+					y = d3.scaleLinear(datapoints)
+							.domain([0, max])
+							.range([height, 0]);
+				} else {
+					y = d3.scaleLog(datapoints)
+							.domain([1, max])
+							.range([height, 0]).clamp(true);
+				}
 
 				svg.append("g")
 						.call(d3.axisLeft(y).ticks(5));
@@ -184,15 +202,30 @@ export default {
 						.data(datapoints)
 						.attr("fill", "none")
 						.attr("stroke", color)
-						.attr("stroke-width", 1.5)
+						// .attr("stroke-width", lineW * 1.5)
+						// .attr("stroke-width", 1.5)
+						.attr("stroke-width", 3)
 						.attr("d", d3.line()
 								.x(d => x(d.timestamp))
 								.y(d => y(d.activity))(datapoints),
-						);
+						)
+						.style("stroke-dasharray", getDashingPattern())
+						;
+				lineW--;
 			});
 		},
 	},
 };
+
+function getDashingPattern() {
+	const length = 3;
+	let pattern = "";
+	for (let i = 0; i < length; i++) {
+		pattern += `${Math.floor(Math.random() * 10) + 2},`;
+	}
+	pattern = pattern.slice(0, -1);
+	return pattern;
+}
 </script>
 <style scoped lang="css">
 .chart-outer-container {
