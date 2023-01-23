@@ -51,13 +51,14 @@ $string['kpi-countdown-text']= 'Time till deadline: ';
 $string['kpi-countdown-no-deadline'] = 'no deadline';
 
 // Widgets Info-Texts
-$string['widget-info-authoringRatios_pie'] = 'Description of author ratios piechart.';
-$string['widget-info-authoringRatios_bar'] = 'Description of of author ratios barchart.';
+$string['widget-info-authoringRatios_pie'] = 'The pie chart shows the percentage per author of the written text in the editor of the project.';
+$string['widget-info-authoringRatios_bar'] = 'The bar diagram shows the percentage per author of the written text in the editor of the project.';
 $string['widget-info-participation_diagram'] = 'Description of participation chart.';
 $string['widget-info-groupParticipants'] = 'Description of group participation chart.';
 $string['widget-info-operations_bar'] = 'Description of operations chart.';
 $string['widget-info-activityOverTime'] = 'Description of activity over time chart.';
 $string['widget-info-etherViz'] = 'Description of etherViz chart.';
+
 // Operations widget
 $string['operationswidgettitle'] = 'Operations performed';
 $string['operationswidgetedit'] = 'Edit';
