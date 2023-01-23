@@ -1,26 +1,21 @@
 <template>
-  <div class="chart-outer-container">
-    <h2>{{ getStrings["activityovertimewidgettitle"]}}</h2>
-	<div class="chart-options">
-		<input type="radio" id="linear" value="linear" v-model="scaling">
-		<label for="linear" class="radioLabel">Linear</label>
-		<input type="radio" id="logarithmic" value="logarithmic" v-model="scaling">
-		<label for="linear" class="radioLabel">Logarithmisch</label>
+	<div class="chart-outer-container">
+		<div class="chart-options">
+			<h2 style="display: inline-block;padding-right: 1cm;">{{ getStrings["activityovertimewidgettitle"]}}</h2>
+			<input type="radio" id="linear" value="linear" v-model="scaling" class="radioButton">
+			<label for="linear" class="radioLabel">Linear</label>
+			<input type="radio" id="logarithmic" value="logarithmic" v-model="scaling" class="radioButton">
+			<label for="linear" class="radioLabel">Logarithmisch</label>
+		</div>
+		<div class="chart-container">
+			<div class="chart" style="width: 100%; height: 100%" :id="elementId" ref="chart"></div>
+			<ul class="legend mt-3" style="flex-shrink: 0">
+				<li v-for="(color, author) in legend" :key="author">
+					<i class="fa fa-square" :style="{ color }"></i> {{ author }}
+				</li>
+			</ul>
+		</div>
 	</div>
-    <div class="chart-container">
-      <div
-        class="chart"
-        style="width: 100%; height: 100%"
-        :id="elementId"
-        ref="chart"
-      ></div>
-      <ul class="legend mt-3" style="flex-shrink: 0">
-        <li v-for="(color, author) in legend" :key="author">
-          <i class="fa fa-square" :style="{ color }"></i> {{ author }}
-        </li>
-      </ul>
-    </div>
-  </div>
 </template>
 
 <script lang=js>
@@ -50,9 +45,9 @@ export default {
 		},
 		legend() {
 			const authorIds = this.data
-					.map(d => d.authorToActivities)
-					.map(a2a => Object.keys(a2a))
-					.reduce((prev, curr) => [...prev, ...curr], []);
+				.map(d => d.authorToActivities)
+				.map(a2a => Object.keys(a2a))
+				.reduce((prev, curr) => [...prev, ...curr], []);
 			return authorIds.reduce((result, id) => {
 				if (id === "others") {
 					result["Andere"] = "#ccc";
@@ -93,7 +88,7 @@ export default {
 			this.loadLine();
 		} else {
 			this.getData().then(() =>
-					this.loadLine());
+				this.loadLine());
 		}
 		this.$emit("dashboardDimensions", this.getDashboardDimensions);
 	},
@@ -101,7 +96,7 @@ export default {
 		padName() {
 			if (!this.isMock) {
 				this.getData().then(() =>
-						this.loadLine());
+					this.loadLine());
 			}
 		},
 		scaling() {
@@ -118,16 +113,16 @@ export default {
 	},
 	methods: {
 		getDashboardDimensions() {
-			return {w: 12, h: 10};
+			return { w: 12, h: 10 };
 		},
 		async getData() {
 			return Communication.getFromEVA(`activity/activities/${this.padName}`)
-					.then(data => {
-						this.data = data;
-					})
-					.catch(() => {
-						store.commit("setAlertWithTimeout", ["alert-danger", store.getters.getStrings.unknown_error, 3000]);
-					});
+				.then(data => {
+					this.data = data;
+				})
+				.catch(() => {
+					store.commit("setAlertWithTimeout", ["alert-danger", store.getters.getStrings.unknown_error, 3000]);
+				});
 		},
 		loadLine: function () {
 			document.getElementById(this.elementId).childNodes.forEach(c => c.remove());
@@ -136,9 +131,7 @@ export default {
 
 			let width = this.widthOfSvg - 350;
 			let height = this.heightOfSvg - 80;
-			console.log(width);
-			console.log(height);
-	
+
 			if (width < 0) {
 				width = 100;
 			}
@@ -147,12 +140,12 @@ export default {
 			}
 
 			const svg = d3.select(`#${this.elementId}`)
-					.append("svg")
-					.attr("width", "100%")
-					.attr("height", "100%")
-					.append("g")
-					.attr("transform",
-							"translate(30, 5)");
+				.append("svg")
+				.attr("width", "100%")
+				.attr("height", "100%")
+				.append("g")
+				.attr("transform",
+					"translate(30, 5)");
 
 			const timestamps = this.data.map(d => d.timestamp);
 			const range = [];
@@ -161,10 +154,10 @@ export default {
 			}
 			const datasets = {};
 			this.data
-					.map(d => d.authorToActivities)
-					.map(a2a => Object.keys(a2a))
-					.reduce((prev, curr) => [...prev, ...curr], [])
-					.forEach(author => datasets[author] = []);
+				.map(d => d.authorToActivities)
+				.map(a2a => Object.keys(a2a))
+				.reduce((prev, curr) => [...prev, ...curr], [])
+				.forEach(author => datasets[author] = []);
 
 			this.data.forEach(entry => {
 				Object.keys(datasets).forEach(key => {
@@ -193,18 +186,18 @@ export default {
 				.text(this.getStrings["activityovertimewidgetyaxis"]);
 
 			const x = d3.scaleOrdinal()
-					.domain(timestamps)
-					.range(range);
+				.domain(timestamps)
+				.range(range);
 
 			svg.append("g")
-					.attr("transform", "translate(0," + height + ")")
-					.call(d3.axisBottom(x)
-							.ticks(timestamps.length))
-					.selectAll("text")
-					.style("text-anchor", "end")
-					.attr("dx", "-.8em")
-					.attr("dy", ".15em")
-					.attr("transform", "rotate(-65)");
+				.attr("transform", "translate(0," + height + ")")
+				.call(d3.axisBottom(x)
+					.ticks(timestamps.length))
+				.selectAll("text")
+				.style("text-anchor", "end")
+				.attr("dx", "-.8em")
+				.attr("dy", ".15em")
+				.attr("transform", "rotate(-65)");
 
 			let max = 0;
 			this.data.forEach(d => {
@@ -224,31 +217,31 @@ export default {
 				let y;
 				if (this.scaling === "linear") {
 					y = d3.scaleLinear(datapoints)
-							.domain([0, max])
-							.range([height, 0]);
+						.domain([0, max])
+						.range([height, 0]);
 				} else {
 					y = d3.scaleLog(datapoints)
-							.domain([1, max])
-							.range([height, 0]).clamp(true);
+						.domain([1, max])
+						.range([height, 0]).clamp(true);
 				}
 
 				svg.append("g")
-						.call(d3.axisLeft(y).ticks(5));
+					.call(d3.axisLeft(y).ticks(5));
 
 				// Add the line
 				svg.append("path")
-						.data(datapoints)
-						.attr("fill", "none")
-						.attr("stroke", color)
-						// .attr("stroke-width", lineW * 1.5)
-						// .attr("stroke-width", 1.5)
-						.attr("stroke-width", 3)
-						.attr("d", d3.line()
-								.x(d => x(d.timestamp))
-								.y(d => y(d.activity))(datapoints),
-						)
-						.style("stroke-dasharray", getDashingPattern())
-						;
+					.data(datapoints)
+					.attr("fill", "none")
+					.attr("stroke", color)
+					// .attr("stroke-width", lineW * 1.5)
+					// .attr("stroke-width", 1.5)
+					.attr("stroke-width", 3)
+					.attr("d", d3.line()
+						.x(d => x(d.timestamp))
+						.y(d => y(d.activity))(datapoints),
+					)
+					.style("stroke-dasharray", getDashingPattern())
+					;
 				// lineW--;
 			});
 		},
@@ -267,20 +260,24 @@ function getDashingPattern() {
 </script>
 <style scoped lang="css">
 .chart-outer-container {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
 }
 
 .chart-container {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: center;
-  gap: 20px;
-  flex-grow: 1;
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-start;
+	align-items: center;
+	gap: 20px;
+	flex-grow: 1;
 }
+
 label.radioLabel {
 	width: 60px;
+}
+.radioButton {
+	margin-right: 2px;
 }
 </style>
