@@ -66,6 +66,10 @@ export default {
 				return result;
 			}, {});
 		},
+		getStrings() {
+			return this.$store.getters.getStrings;
+		},
+
 	},
 	name: "activityOverTime",
 	mounted() {
@@ -171,6 +175,25 @@ export default {
 				});
 			});
 
+			// labels for x- and y-axes
+			svg.append("text")
+				.attr("class", "x label")
+				.attr("text-anchor", "end")
+				.attr("x", width)
+				.attr("y", height + 50)
+				.attr("font-size", "1.1em")
+				.text("Zeit");
+			svg.append("text")
+				.attr("class", "y label")
+				.attr("text-anchor", "start")
+				.attr("x", 10)
+				.attr("y", -5)
+				.attr("dy", ".75em")
+				.attr("font-size", "1.1em")
+				.text("Aktivität");
+
+			console.log(this.getStrings["activityovertimewidgetxaxis"]);
+
 			const x = d3.scaleOrdinal()
 					.domain(timestamps)
 					.range(range);
@@ -194,7 +217,7 @@ export default {
 				});
 			});
 
-			let lineW = Object.entries(datasets).length;
+			// let lineW = Object.entries(datasets).length;
 			Object.entries(datasets).forEach(([authorId, datapoints]) => {
 
 				const author = store.getters["users/usersByEpId"][authorId];
@@ -228,7 +251,7 @@ export default {
 						)
 						.style("stroke-dasharray", getDashingPattern())
 						;
-				lineW--;
+				// lineW--;
 			});
 		},
 	},

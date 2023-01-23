@@ -66,12 +66,12 @@ $string['widget-info-authoringRatios_pie'] = 'Das Kuchendiagramm zeigt den proze
 $string['widget-info-authoringRatios_bar'] = 'Das Balkendiagramm zeigt den prozentualen Anteil pro Autor am geschriebenen Text im Editor des Projekts.';
 $string['widget-info-groupParticipants'] = 'Beschreibung des Gruppen-Partizipations-Diagramms.';
 $string['widget-info-operations_bar'] = 'Beschreibung des Operations-Diagramms.';
-$string['widget-info-activityOverTime'] = 'Beschreibung des Aktivitäts-Diagramms über die Zeit.';
 $string['widget-info-etherViz'] = 'Das EtherViz Diagramm gibt dir eine Übersicht über die Texterstellung im zeitlichen Verlauf. Die y-Achse gibt Aufschluss über die Anzahl Buchstaben, die sich zu einem Stichtag im Text befinden. Die x-Achse zeigt dir so viele Revisionen an, wie das Projekt Tage hat.';
 $string['widget-info-cohesionDiagram'] = 'Zeigt die Kohäsion zwischen den Teilnehmern der Gruppe. Der Abstand zwischen zwei Kreisen stellt die Häufigkeit dar, in der die beiden Teilnehmer(innen) gemeinsam im Text gearbeitet haben. 
 Die gerichteten Pfeile stehen für die Mitarbeit am Text anderer. Ein Pfeil von A nach B deutet darauf hin, dass Teilnehmer(in) A den Text von B ergänzt oder bearbeitet hat. Die Dicke des Pfeils zeigt die Intensivität der Mitarbeit.
 <em><strong>Hinweis:</strong> Mit Klick auf die Legende können einzelne Teilnehmer(innen) hervorgehoben werden.</em>';
 
+$string['widget-info-activityOverTime'] = 'Zeigt die Anzahl der Änderungen jedes Benutzers im Zeitverlauf an. Sind seit Beginn der Aufgabe weniger als drei Tage vergangen, werden die Aktivitäten stündlich gruppiert, danach tageweise.';
 // Operations widget
 $string['operationswidgettitle'] = 'Durchgeführte Operationen';
 $string['operationswidgetedit'] = 'Bearbeiten';
@@ -87,3 +87,7 @@ $string['operationswidgetyaxis'] = 'Anzahl';
 $string['participationwidgettitle'] = 'Partizipationsdiagramm';
 $string['participationwidgetyaxis'] = 'Partizipation';
 $string['participationwidgetxaxis'] = 'Datum';
+// ActivityOverTime Widget
+$string['activityovertimewidgettitle'] = 'Aktivitäten im Zeitverlauf';
+$string['activityovertimewidgetyaxis'] = 'Aktivität';
+$string['activityovertimewidgetxaxis'] = 'Time';
