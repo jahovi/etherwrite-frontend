@@ -187,15 +187,9 @@ export default {
             // set y-axis range boundary
             const yAxisRangeTop = Math.ceil(Math.max(...dataValues) / 10) * 10;
             // margin, width, height
-            const margin = { top: 40, right: 30, bottom: 40, left: 30 };
-            const width = this.widthOfSvg - margin.right - margin.left;
-            const height = this.heightOfSvg - margin.bottom - margin.top;
-
-            console.log(`props w: ${this.$props.w}`)
-            console.log(`props h: ${this.$props.h}`)
-            // console.log(this.widthOfSvg)
-            // console.log(width)
-
+            const margin = { top: 40, right: 30, bottom: 30, left: 50 };
+            const width = this.widthOfSvg - margin.right - margin.left; 
+            const height = this.heightOfSvg - margin.bottom;
             // svg object
             const svg = d3.select(`#${this.elementId}`)
                 .append("svg")
@@ -238,14 +232,11 @@ export default {
                 svg.append("g")
                     .call(d3.axisBottom(xAxis).tickSize(0))
                     .attr("transform", `translate(0, ${height})`)
-                    .style("text-anchor", "center")
-                    .attr("font-size", "1.1em");
+                    .attr("font-size", "1.1em")  
+                    .selectAll("text")
+                    .attr("transform", "translate(70,0)rotate(-5)")
+                    .style("text-anchor", "end");
 
-                /*
-                .selectAll("text")
-                .attr("transform", "translate(-10,0)rotate(-10)")
-                .style("text-anchor", "end");
-                */
                 // y-axis
                 const yAxis = d3.scaleLinear()
                     .domain([0, yAxisRangeTop])
@@ -286,6 +277,7 @@ export default {
                 svg.append("g")
                     .call(d3.axisBottom(xAxis))
                     .attr("transform", `translate(0, ${height})`)
+                    .attr("font-size", "1.1em")  
                     .selectAll("text")
                     .style("text-anchor", "center");
                 // y-axis
