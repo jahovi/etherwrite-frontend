@@ -87,7 +87,7 @@ export default {
          * Get data from EVA and sum up edits, writes, pastes and deletes for each author.
          */
         getDashboardDimensions() {
-            return { w: 20, h: 14 };
+            return { w: 10, h: 14 };
         },
         async getData() {
             this.authorsToOperations = [];
@@ -187,31 +187,35 @@ export default {
             // set y-axis range boundary
             const yAxisRangeTop = Math.ceil(Math.max(...dataValues) / 10) * 10;
             // margin, width, height
-            const margin = { top: 40, right: 30, bottom: 30, left: 50 };
+            const margin = { top: 40, right: 150, bottom: 30, left: 75 };
             const width = this.widthOfSvg - margin.right - margin.left; 
-            const height = this.heightOfSvg - margin.bottom;
+            const height = this.heightOfSvg - margin.bottom - margin.top;
             // svg object
             const svg = d3.select(`#${this.elementId}`)
                 .append("svg")
-                .attr("width", width + margin.right + margin.left)
-                .attr("height", height + margin.bottom + margin.top)
+                .attr("width", width + 250)
+                .attr("height", height + 150)
                 .append("g")
                 .attr("transform",
                     "translate(" + margin.left + "," + margin.top + ")");
             // labels x- and y-axis
+            const offsetYAxisLabel = this.isMock ? -280 : -240;
+            const xAxisLabel = this.isMock ? width / 4 : width /2;
             svg.append("text")
                 .attr("class", "x label")
-                .attr("text-anchor", "start")
-                .attr("x", width + 50)
-                .attr("y", height + 20)
-                .attr("font-size", "1.1em")
+                .attr("text-anchor", "center")
+                .attr("x", xAxisLabel)
+                .attr("y", height + 75)
+                .attr("font-size", "1.25em")
                 .text(this.getStrings[`operationswidgetxaxis${this.isModerator ? "teacher" : "student"}`]);
             svg.append("text")
                 .attr("class", "y label")
-                .attr("text-anchor", "start")
-                .attr("y", -20)
+                .attr("text-anchor", "center")
+                .attr("x", 0)
+                .attr("y", height / 2)
                 .attr("dy", ".75em")
-                .attr("font-size", "1.1em")
+                .attr("font-size", "1.25em")
+                .attr("transform", `translate(${offsetYAxisLabel}, 200)rotate(-90)`)
                 .text(this.getStrings["operationswidgetyaxis"]);
             /*
              * teacher chart
@@ -234,7 +238,7 @@ export default {
                     .attr("transform", `translate(0, ${height})`)
                     .attr("font-size", "1.1em")  
                     .selectAll("text")
-                    .attr("transform", "translate(70,0)rotate(-5)")
+                    .attr("transform", "translate(70, 0)rotate(-5)")
                     .style("text-anchor", "end");
 
                 // y-axis
