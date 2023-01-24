@@ -62,7 +62,7 @@ $string['widget-info-participation_diagram'] = 'Description of participation cha
 $string['widget-info-groupParticipants'] = 'Description of group participation chart.';
 $string['widget-info-operations_bar'] = 'Description of operations chart.';
 $string['widget-info-activityOverTime'] = 'Description of activity over time chart.';
-$string['widget-info-etherViz'] = 'Description of etherViz chart.';
+$string['widget-info-etherViz'] = 'The EtherViz diagram gives you an overview of the text creation over time. The y-axis shows the number of characters in the text at a given date. The x-axis shows you as many revisions as the project has days.';
 $string['widget-info-cohesionDiagram'] = 'Shows the cohesion between the participants of the group. The distance between two circles represents the frequency in which the two participants worked together in the text. 
 Directional arrows represent collaboration on the text of others. An arrow from A to B indicates that participant(s) A added to or edited B\'s text. The thickness of the arrow shows the intensity of the collaboration.
 <em><strong>Note:</strong> With click on the legend an individual participant can be highlighted.</em>';
