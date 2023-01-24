@@ -1,15 +1,20 @@
 <template>
-	<div>
-		<h4>Schreibanteil pro Person</h4>
-		<div class="chart-container">
-			<ul class="legend mt-3" v-if="authors.length" style="flex-shrink: 0">
-				<li v-for="author in authors" :key="author">
-					{{ author }}<i class="fa fa-square" :style="{ color: colorFn(author) }"></i>
-				</li>
-			</ul>
-			<div class="chart" style="width: 100%; height: 100%" :id="elementId"></div>
-		</div>
-	</div>
+  <div>
+    <h4>Schreibanteil pro Person</h4>
+    <div class="chart-container">
+      <ul class="legend mt-3" v-if="authors.length" style="flex-shrink: 0">
+        <li v-for="author in authors" :key="author">
+          {{ author
+          }}<i class="fa fa-square" :style="{ color: colorFn(author) }"></i>
+        </li>
+      </ul>
+      <div
+        class="chart"
+        style="width: 100%; height: 100%"
+        :id="elementId"
+      ></div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -52,6 +57,7 @@ export default {
 			this.getData().then(() =>
 				this.loadBar());
 		}
+		this.$emit("dashboardDimensions", this.getDashboardDimensions);
 	},
 	watch: {
 		padName() {
@@ -62,6 +68,9 @@ export default {
 		}
 	},
 	methods: {
+		getDashboardDimensions() {
+			return {w: 4, h: 8};
+		},
 		async getData() {
 			return Communication.getFromEVA("authoring_ratios", { pad: this.padName })
 				.then(data => {
@@ -109,23 +118,23 @@ export default {
 </script>
 <style lang="css">
 .chart-container {
-	display: flex;
-	flex-direction: row;
-	justify-content: flex-start;
-	align-items: center;
-	gap: 20px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 20px;
 }
 
 .chart-container .bar {
-	text-align: right;
+  text-align: right;
 }
 
 .chart-label {
-	background-color: rgba(255, 255, 255, 0.6);
-	color: black;
-	padding: 2px;
-	font: 10px sans-serif;
-	white-space: nowrap;
-	vertical-align: middle;
+  background-color: rgba(255, 255, 255, 0.6);
+  color: black;
+  padding: 2px;
+  font: 10px sans-serif;
+  white-space: nowrap;
+  vertical-align: middle;
 }
 </style>
