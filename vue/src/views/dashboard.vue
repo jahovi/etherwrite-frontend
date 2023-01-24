@@ -249,7 +249,8 @@ h3 {
 }
 
 #custom-dashboard {
-  justify-content: center;
+  justify-content: top;
+  align-content: flex-start;
   min-height: 800px;
 }
 
