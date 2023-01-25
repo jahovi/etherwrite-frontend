@@ -218,7 +218,7 @@ export default {
             /*
              * teacher chart
              */
-            if (this.isModerator) {
+            if (this.isModerator && data.length !== 0) {
                 // subgroups
                 const subgroups = this.operationsStrings;
                 // groups
@@ -271,7 +271,7 @@ export default {
             /*
              * student chart
              */
-            if (!this.isModerator) {
+            if (!this.isModerator && data.length !== 0) {
                 // x-axis
                 const xAxis = d3.scaleBand()
                     .range([0, width])
@@ -292,7 +292,7 @@ export default {
                     .style("text-anchor", "center")
                     .attr("font-size", "1.1em");
                 // seperate data for multiple bars
-                const userData = []
+                const userData = [];
                 for (const [key, value] of Object.entries(data[1])) {
                     if (key !== "group") {
                         userData.push({ [key]: value });
