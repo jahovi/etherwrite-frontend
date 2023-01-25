@@ -64,7 +64,6 @@ Bei Arbeiten, welche bereits länger laufen wird die Partizipation täglich ange
 Die Nutzer werden in ihrer jeweiligen Farbe auf den Balken angezeigt. Sollte in einer Stunde / an einem Tag keine Arbeit geleistet worden sein, existiert kein Balken. Sonst ist die Gesamthöhe eines Balkens immer 1.0 und bezieht sich auf die gesamte geleistete Arbeit zu einer Stunde / einem Tag.';
 $string['widget-info-authoringRatios_pie'] = 'Das Kuchendiagramm zeigt den prozentualen Anteil pro Autor am geschriebenen Text im Editor des Projekts.';
 $string['widget-info-authoringRatios_bar'] = 'Das Balkendiagramm zeigt den prozentualen Anteil pro Autor am geschriebenen Text im Editor des Projekts.';
-$string['widget-info-participation_diagram'] = 'Beschreibunf des Partizipation-Diagramms';
 $string['widget-info-groupParticipants'] = 'Beschreibung des Gruppen-Partizipations-Diagramms.';
 $string['widget-info-operations_bar'] = 'Beschreibung des Operations-Diagramms.';
 $string['widget-info-activityOverTime'] = 'Beschreibung des Aktivitäts-Diagramms über die Zeit.';
