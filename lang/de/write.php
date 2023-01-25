@@ -78,7 +78,7 @@ $string['operationswidgetwrite'] = 'Schreiben';
 $string['operationswidgetpaste'] = 'Kopieren';
 $string['operationswidgetdelete'] = 'Löschen';
 $string['operationswidgetaverage'] = 'Durchschnitt';
-$string['operationswidgetxaxisteacher'] = 'Operationen je Teilnehmer';
+$string['operationswidgetxaxisteacher'] = 'Teilnehmer';
 $string['operationswidgetxaxisstudent'] = 'Operationen';
 $string['operationswidgetyaxis'] = 'Anzahl';
 

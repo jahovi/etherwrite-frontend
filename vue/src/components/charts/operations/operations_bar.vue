@@ -188,7 +188,7 @@ export default {
             const yAxisRangeTop = Math.ceil(Math.max(...dataValues) / 10) * 10;
             // margin, width, height
             const margin = { top: 40, right: 150, bottom: 30, left: 75 };
-            const width = this.widthOfSvg - margin.right - margin.left; 
+            const width = this.widthOfSvg - margin.right - margin.left;
             const height = this.heightOfSvg - margin.bottom - margin.top;
             // svg object
             const svg = d3.select(`#${this.elementId}`)
@@ -199,23 +199,21 @@ export default {
                 .attr("transform",
                     "translate(" + margin.left + "," + margin.top + ")");
             // labels x- and y-axis
-            const offsetYAxisLabel = this.isMock ? -280 : -240;
-            const xAxisLabel = this.isMock ? width / 4 : width /2;
+            const offsetXWidth = this.isMock ? 0 : 25;
             svg.append("text")
                 .attr("class", "x label")
                 .attr("text-anchor", "center")
-                .attr("x", xAxisLabel)
-                .attr("y", height + 75)
+                .attr("x", width - offsetXWidth)
+                .attr("y", height + 20)
                 .attr("font-size", "1.25em")
                 .text(this.getStrings[`operationswidgetxaxis${this.isModerator ? "teacher" : "student"}`]);
             svg.append("text")
                 .attr("class", "y label")
                 .attr("text-anchor", "center")
                 .attr("x", 0)
-                .attr("y", height / 2)
+                .attr("y", -20)
                 .attr("dy", ".75em")
                 .attr("font-size", "1.25em")
-                .attr("transform", `translate(${offsetYAxisLabel}, 200)rotate(-90)`)
                 .text(this.getStrings["operationswidgetyaxis"]);
             /*
              * teacher chart
@@ -229,6 +227,7 @@ export default {
                     groups.push(entry.group);
                 }
                 // x-axis
+                const offsetXAxisLetterings = this.isMock && this.isModerator ? 0 : 70;
                 const xAxis = d3.scaleBand()
                     .domain(groups)
                     .range([0, width])
@@ -236,9 +235,9 @@ export default {
                 svg.append("g")
                     .call(d3.axisBottom(xAxis).tickSize(0))
                     .attr("transform", `translate(0, ${height})`)
-                    .attr("font-size", "1.1em")  
+                    .attr("font-size", "1.1em")
                     .selectAll("text")
-                    .attr("transform", "translate(70, 0)rotate(-5)")
+                    .attr("transform", `translate(${offsetXAxisLetterings}, 0)rotate(-15)`)
                     .style("text-anchor", "end");
 
                 // y-axis
@@ -281,7 +280,7 @@ export default {
                 svg.append("g")
                     .call(d3.axisBottom(xAxis))
                     .attr("transform", `translate(0, ${height})`)
-                    .attr("font-size", "1.1em")  
+                    .attr("font-size", "1.1em")
                     .selectAll("text")
                     .style("text-anchor", "center");
                 // y-axis
@@ -294,13 +293,13 @@ export default {
                     .attr("font-size", "1.1em");
                 // seperate data for multiple bars
                 const userData = []
-                for (const [key, value] of Object.entries(data[0])) {
+                for (const [key, value] of Object.entries(data[1])) {
                     if (key !== "group") {
                         userData.push({ [key]: value });
                     }
                 }
                 const averageData = [];
-                for (const [key, value] of Object.entries(data[1])) {
+                for (const [key, value] of Object.entries(data[0])) {
                     if (key !== "group") {
                         averageData.push({ [key]: value });
                     }
@@ -370,18 +369,18 @@ export default {
             this.authorsToOperations = [
                 {
                     Mueller: {
-                        edit: 400,
-                        write: 900,
-                        paste: 100,
-                        delete: 200,
+                        edit: 750,
+                        write: 4000,
+                        paste: 500,
+                        delete: 2000,
                     }
                 },
                 {
                     others: {
-                        edit: 200,
-                        write: 900,
-                        paste: 300,
-                        delete: 400,
+                        edit: 2000,
+                        write: 9000,
+                        paste: 3000,
+                        delete: 4000,
                     },
                 },
             ];

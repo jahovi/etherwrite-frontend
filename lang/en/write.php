@@ -76,7 +76,7 @@ $string['operationswidgetwrite'] = 'Write';
 $string['operationswidgetpaste'] = 'Paste';
 $string['operationswidgetdelete'] = 'Delete';
 $string['operationswidgetaverage'] = 'Average';
-$string['operationswidgetxaxisteacher'] = 'Operations per participant';
+$string['operationswidgetxaxisteacher'] = 'Participant';
 $string['operationswidgetxaxisstudent'] = 'Operations';
 $string['operationswidgetyaxis'] = 'Count';
 
