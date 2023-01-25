@@ -1,11 +1,11 @@
 <template>
 	<div class="chart-outer-container">
 		<div class="chart-options">
-			<h2 style="display: inline-block;padding-right: 1cm;">{{ getStrings["activityovertimewidgettitle"]}}</h2>
+			<h2 style="display: inline-block;padding-right: 1cm;">{{ getStrings["activityovertimewidgettitle"] }}</h2>
 			<input type="radio" id="linear" value="linear" v-model="scaling" class="radioButton">
-			<label for="linear" class="radioLabel">Linear</label>
+			<label for="linear" class="radioLabel">{{ getStrings["activityovertimewidgetscalinglinear"] }}</label>
 			<input type="radio" id="logarithmic" value="logarithmic" v-model="scaling" class="radioButton">
-			<label for="linear" class="radioLabel">Logarithmisch</label>
+			<label for="linear" class="radioLabel">{{ getStrings["activityovertimewidgetscalinglogarithmic"] }}</label>
 		</div>
 		<div class="chart-container">
 			<div class="chart" style="width: 100%; height: 100%" :id="elementId" ref="chart"></div>

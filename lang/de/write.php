@@ -91,3 +91,5 @@ $string['participationwidgetxaxis'] = 'Datum';
 $string['activityovertimewidgettitle'] = 'Aktivitäten im Zeitverlauf';
 $string['activityovertimewidgetyaxis'] = 'Aktivität';
 $string['activityovertimewidgetxaxis'] = 'Zeit';
+$string['activityovertimewidgetscalinglinear'] = 'Linear';
+$string['activityovertimewidgetscalinglogarithmic'] = 'Logarithmisch';
