@@ -56,13 +56,14 @@ $string['kpi-countdown-text'] = 'Zeit bis zur Abgabefrist: ';
 $string['kpi-countdown-no-deadline'] = 'Keine Abgabefrist';
 
 // Widgets Info-Texts
+$string['widget-info-authoringRatios_bar'] = 'Das Balkendiagramm zeigt den prozentualen Anteil pro Autor am geschriebenen Text im Editor des Projekts.';
+
+$string['widget-info-authoringRatios_pie'] = 'Das Kuchendiagramm zeigt den prozentualen Anteil pro Autor am geschriebenen Text im Editor des Projekts.';
+
 $string['widget-info-participation_diagram'] = 'Dieses Diagramm zeigt die Partizipation der Teilnehmer zu einzelnen Stunden oder Tagen an. 
 Bei noch sehr kurzen Arbeiten wird die Partizipation stündlich angezeigt. 
 Bei Arbeiten, welche bereits länger laufen wird die Partizipation täglich angezeigt. 
 Die Nutzer werden in ihrer jeweiligen Farbe auf den Balken angezeigt. Sollte in einer Stunde / an einem Tag keine Arbeit geleistet worden sein, existiert kein Balken. Sonst ist die Gesamthöhe eines Balkens immer 1.0 und bezieht sich auf die gesamte geleistete Arbeit zu einer Stunde / einem Tag.';
-
-$string['widget-info-authoringRatios_pie'] = 'Das Kuchendiagramm zeigt den prozentualen Anteil pro Autor am geschriebenen Text im Editor des Projekts.';
-$string['widget-info-authoringRatios_bar'] = 'Das Balkendiagramm zeigt den prozentualen Anteil pro Autor am geschriebenen Text im Editor des Projekts.';
 
 $string['widget-info-groupParticipants'] = 'Beschreibung des Gruppen-Partizipations-Diagramms.';
 
@@ -71,13 +72,14 @@ Für Teilnehmer werden die eigenen durchgeführten Operationen und die von allen
 Für Moderatoren werden die durchgeführten Operationen aller Teilnehmer angezeigt. 
 Operationen sind: Schreiben, Bearbeiten, Kopieren und Löschen.';
 
+$string['widget-info-activityOverTime'] = 'Zeigt die Anzahl der Änderungen jedes Benutzers im Zeitverlauf an. Sind seit Beginn der Aufgabe weniger als drei Tage vergangen, werden die Aktivitäten stündlich gruppiert, danach tageweise.';
+
 $string['widget-info-cohesionDiagram'] = 'Zeigt die Kohäsion zwischen den Teilnehmern der Gruppe. Der Abstand zwischen zwei Kreisen stellt die Häufigkeit dar, in der die beiden Teilnehmer(innen) gemeinsam im Text gearbeitet haben. 
 Die gerichteten Pfeile stehen für die Mitarbeit am Text anderer. Ein Pfeil von A nach B deutet darauf hin, dass Teilnehmer(in) A den Text von B ergänzt oder bearbeitet hat. Die Dicke des Pfeils zeigt die Intensivität der Mitarbeit.
 <em><strong>Hinweis:</strong> Mit Klick auf die Legende können einzelne Teilnehmer(innen) hervorgehoben werden.</em>';
 
-$string['widget-info-activityOverTime'] = 'Zeigt die Anzahl der Änderungen jedes Benutzers im Zeitverlauf an. Sind seit Beginn der Aufgabe weniger als drei Tage vergangen, werden die Aktivitäten stündlich gruppiert, danach tageweise.';
-
 $string['widget-info-etherViz'] = 'Das EtherViz Diagramm gibt dir eine Übersicht über die Texterstellung im zeitlichen Verlauf. Die y-Achse gibt Aufschluss über die Anzahl Buchstaben, die sich zu einem Stichtag im Text befinden. Die x-Achse zeigt dir so viele Revisionen an, wie das Projekt Tage hat.';
+
 
 // Operations widget
 $string['operationswidgettitle'] = 'Durchgeführte Operationen';
