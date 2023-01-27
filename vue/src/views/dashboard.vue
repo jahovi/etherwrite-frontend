@@ -5,53 +5,75 @@
       <h3 class="col-12"></h3>
       <div class="col-12 mt-4 board-area" style="display: flex; gap: 8px">
         <ChartWrapper
-          v-for="(widget, key) in projectCharts"
-          :component="widget.component"
-          :id="widget.id"
-          :key="key"
-          :padName="padName"
-          style="width: 32%"
+            v-for="(widget, key) in projectCharts"
+            :component="widget.component"
+            :id="widget.id"
+            :key="key"
+            :padName="padName"
+            style="width: 32%"
         >
         </ChartWrapper>
-        <Countdown />
+        <Countdown/>
       </div>
     </div>
     <!-- custom dashboard -->
     <div id="custom-dashboard" class="row d-flex dashboard">
-      <h3 class="col-6 mr-auto p-2">Dein Dashboard</h3>
+      <!-- Info on how to move widgets -->
+      <small id="moveInfo" v-if="userCharts.length">
+        <i class="fa fa-info-circle text-info mr-1"></i>
+        <span class="mr-1">{{ getStrings["dashboard.move"] }}</span>
+        <span>
+          <kbd v-if="isMacOS">CMD</kbd><kbd v-else>CTRL</kbd> + <kbd>{{ getStrings["leftclick"] }}</kbd>
+        </span>
+      </small>
+      <div class="flex-grow-1"></div>
       <!-- add widget button -->
       <button
-        id="open-widget-catalog-btn"
-        class="btn btn-success rounded p-2"
-        @click.prevent="openWidgetCatalog()"
+          id="open-widget-catalog-btn"
+          class="btn btn-success rounded p-2"
+          @click.prevent="openWidgetCatalog()"
       >
         <i class="fa fa-plus"></i>
       </button>
       <!-- grid -->
       <div class="col-12">
-        <GridLayout
-          :layout.sync="userCharts"
-          :col-num="colNum"
-          :cols="{ lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 }"
-          :row-height="rowHeight"
-          :is-draggable="draggable"
-          :is-resizable="resizable"
-          :responsive="responsive"
-          :vertical-compact="true"
-          :prevent-collision="false"
-          :use-css-transforms="false"
+        <div id="placeholder" v-if="!userCharts.length">
+          <div id="placeholder_arrow">
+            <i class="fa fa-reply"></i>
+          </div>
+          <div id="placeholder_cta">
+            <strong>{{ getStrings["dashboard.nothingToSee.title"] }}</strong>
+            <br/><br/>
+            <p>
+              <button class="btn btn-success rounded p-2" disabled>
+                <i class="fa fa-plus"></i>
+              </button>
+              {{ getStrings["dashboard.nothingToSee.cta"] }}
+            </p>
+          </div>
+        </div>
+        <GridLayout v-if="userCharts.length"
+                    :layout.sync="userCharts"
+                    :col-num="colNum"
+                    :cols="{ lg: 12, md: 10, sm: 6, xs: 4, xxs: 2 }"
+                    :row-height="rowHeight"
+                    :is-draggable="draggable"
+                    :is-resizable="resizable"
+                    :responsive="responsive"
+                    :vertical-compact="true"
+                    :prevent-collision="false"
+                    :use-css-transforms="false"
         >
           <GridItem
-            v-for="item in userCharts"
-            :x="item.x"
-            :y="item.y"
-            :w="item.w"
-            :h="item.h"
-            :i="item.i"
-            :key="item.i"
-            @moved="saveGrid"
-            @resized="saveGrid"
-            title="Press CTRL + Left Mouse to drag the element"
+              v-for="item in userCharts"
+              :x="item.x"
+              :y="item.y"
+              :w="item.w"
+              :h="item.h"
+              :i="item.i"
+              :key="item.i"
+              @moved="saveGrid"
+              @resized="saveGrid"
           >
             <ChartWrapper
               :component="item.component"
@@ -264,13 +286,7 @@ h3 {
   height: 30px;
   margin: 5px;
   justify-self: center;
-}
-
-.fa {
-  position: relative;
-  top: -5px;
-  left: 0px;
-  font-size: 1em;
+  padding: 0 !important;
 }
 
 /* grid */
@@ -313,13 +329,59 @@ h3 {
   height: 20px;
   top: 0;
   left: 0;
-  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10'><circle cx='5' cy='5' r='5' fill='#999999'/></svg>")
-    no-repeat;
+  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10'><circle cx='5' cy='5' r='5' fill='#999999'/></svg>") no-repeat;
   background-position: bottom right;
   padding: 0 8px 8px 0;
   background-repeat: no-repeat;
   background-origin: content-box;
   box-sizing: border-box;
   cursor: pointer;
+}
+
+#moveInfo {
+  opacity: 0.7;
+}
+
+#placeholder {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  opacity: 0.7;
+  margin-top: 10px;
+  gap: 5px;
+}
+
+#placeholder_cta {
+  width: 100%;
+  max-width: 500px;
+  background-color: lightgrey;
+  border-radius: 5px;
+  padding: 20px;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.2;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+#placeholder_arrow {
+  width: 100%;
+  text-align: right;
+  animation: pulse 1s infinite linear;
+}
+
+#placeholder_arrow > i {
+  margin-right: -10px;
+  font-size: 30pt;
+  color: lightgrey;
+  transform: rotate(90deg);
 }
 </style>

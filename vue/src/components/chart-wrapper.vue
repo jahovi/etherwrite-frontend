@@ -92,29 +92,29 @@ export default {
 
 <style scoped lang="css">
 .chart-wrapper {
-	border: 1px solid rgba(0, 0, 0, 0.125);
-	padding: 12px;
-	width: 100%;
-	height: 100%;
+  border: 1px solid rgba(0, 0, 0, 0.125);
+  padding: 12px;
+  width: 100%;
+  height: 100%;
 }
 
 .info-btn-circle {
-	position: absolute;
-	bottom: 2px;
-	left: 2px;
-	width: 30px;
-	height: 30px;
-	text-align: center;
-	padding: 6px;
-	font-size: 1em;
-	border-radius: 15px;
+  position: absolute;
+  bottom: 2px;
+  left: 2px;
+  width: 30px;
+  height: 30px;
+  text-align: center;
+  padding: 6px;
+  font-size: 1em;
+  border-radius: 15px;
 }
 
 .info-panel {
-	position: absolute;
-	overflow-y: auto;
-	background-color: white;
-	z-index: 999;
-	padding: 10px;
+  position: absolute;
+  overflow-y: auto;
+  background-color: white;
+  z-index: 999;
+  padding: 10px;
 }
 </style>
