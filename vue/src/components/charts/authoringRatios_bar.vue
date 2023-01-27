@@ -84,7 +84,10 @@ export default {
 		},
 		loadBar() {
 			document.getElementById(this.elementId).childNodes.forEach(c => c.remove());
-
+			
+			if (this.ratios.length === 0) {
+        return;
+      }
 			// Add a filler if the given numbers don't add up to 100%.
 			// Can happen with weird test data.
 			const sum = this.ratios.reduce((result, entry) => result + entry, 0);
