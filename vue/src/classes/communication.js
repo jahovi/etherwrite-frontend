@@ -75,4 +75,24 @@ export default class Communication {
 		return socket;
 	}
 
+	/**
+	 * Determines the operating system of the current user.
+	 *
+	 * @return {"WINDOWS" | "MAC" | "LINUX" | "ANY"} The operating system.
+	 */
+	static getOperatingSystem() {
+
+		if (navigator.appVersion.includes("Win")) {
+			return "WINDOWS";
+		}
+		if (navigator.appVersion.includes("Mac")) {
+			return "MAC";
+		}
+		if (navigator.appVersion.includes("Linux")) {
+			return "LINUX";
+		}
+
+		return "ANY";
+	}
+
 }

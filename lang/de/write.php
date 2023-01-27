@@ -25,6 +25,7 @@ $string['grouping'] = 'Gruppierung';
 // Vue
 $string['loadeditor'] = 'Versucht den Editor zu laden ...';
 $string['loading'] = 'Laden..';
+$string['leftclick'] = "Linksklick";
 
 // Webservices
 $string['novalidepurl'] = 'Ungültige Etherpad-URL.';
@@ -39,6 +40,11 @@ $string['couldnotcreatesession'] = 'Die Etherpad-Sitzung konnte nicht erstellt w
 
 $string['legend'] = 'Legende';
 $string['legend.click-to-highlight'] = 'Zum Hervorheben klicken';
+
+// Dashboard
+$string['dashboard.nothingToSee.title'] = "Nichts zu sehen?";
+$string['dashboard.nothingToSee.cta'] = "Einfach mit diesem Button neue Widgets aus dem Katalog hinzufügen";
+$string['dashboard.move'] = "Widgets verschieben mit";
 
 // Widget categories
 $string['widgets.category.barchart'] = 'Balkendiagramm';
