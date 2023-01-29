@@ -5,42 +5,48 @@
   <div>
     <h4>Revisionshistorie</h4>
     <div
-      class="chart-container"
-      :style="{ 'align-items': isMock ? 'start' : 'center' }"
+      id="chart-and-legend-container"
+      :style="{ width: widthOfSvg * 1.2 - 100 - 10 + 'px' }"
     >
-      <div class="MultiRangeSliderContainer">
-        <div
-          class="etherVizSlider"
-          id="etherVizSliderNear"
-          :style="{
-            width: widthOfSvg * 0.95 - 100 - 10 + 'px',
-          }"
-        >
-          {{ sliderMinLabel + " - " + sliderMaxLabel }}
-        </div>
-        <MultiRangeSlider
-          id="dateSlider"
-          v-if="!isMock"
-          :min="0"
-          :max="numberOfRevisions"
-          :step="1"
-          :ruler="false"
-          :label="true"
-          :labels="labels"
-          :minValue="sliderMinValue"
-          :maxValue="sliderMaxValue"
-          @input="updateValues"
-          :style="{
-            width: widthOfSvg * 0.95 - 100 - 10 + 'px',
-          }"
-        />
-      </div>
       <div
-        :id="elementId"
-        class="chart-etherViz"
-        style="width: 100%; height: 100%"
-      ></div>
+        class="chart-container"
+        :style="{ 'align-items': isMock ? 'start' : 'center' }"
+      >
+        <div class="MultiRangeSliderContainer">
+          <div
+            class="etherVizSlider"
+            id="etherVizSliderNear"
+            :style="{
+              width: widthOfSvg * 0.95 - 100 - 10 + 'px',
+            }"
+          >
+            {{ sliderMinLabel + " - " + sliderMaxLabel }}
+          </div>
+          <MultiRangeSlider
+            id="dateSlider"
+            v-if="!isMock"
+            :min="0"
+            :max="numberOfRevisions"
+            :step="1"
+            :ruler="false"
+            :label="true"
+            :labels="labels"
+            :minValue="sliderMinValue"
+            :maxValue="sliderMaxValue"
+            @input="updateValues"
+            :style="{
+              width: widthOfSvg * 0.95 - 100 - 10 + 'px',
+            }"
+          />
+        </div>
+        <div
+          :id="elementId"
+          class="chart-etherViz"
+          style="width: 100%; height: 100%"
+        ></div>
+      </div>
       <AuthorLegend
+        class="authorLegend"
         :chart-id="elementId"
         :authors="authors"
         interactive
@@ -73,6 +79,7 @@ export default {
 			widthOfSvg: 560,
 			heightOfSvg: 500,
 			focusedAuthor: null,
+			authorData: {},
 		};
 	},
 	components: {
@@ -128,14 +135,22 @@ export default {
 			return this.sliderMinValue > 0 || this.sliderMaxValue < this.numberOfRevisions;
 		},
 		authors() {
-			if (!this.diagramData.nodes) {
+			if (!this.authorData.nodes) {
 				return [];
 			} else {
-				return this.diagramData.nodes.map(n => ({
+				const allAuthors = this.authorData.nodes.map(n => ({
 					epId: n.id,
 					fullName: n.name,
 					color: n.color,
 				}));
+				const authorIds = [];
+				this.etherVizData.forEach(d => {
+					if("rectangles" in d) {
+						d.rectangles.forEach(rect => authorIds.push(rect.authorId));
+					}
+				});
+				const onlyRelevantAuthors = allAuthors.filter(e => authorIds.includes(e.epId));
+				return onlyRelevantAuthors;
 			}
 		},
 	},
@@ -155,7 +170,7 @@ export default {
 	},
 	watch: {
 		w(val) {
-			this.widthOfSvg = val;
+			this.widthOfSvg = val - val * 0.2;
 			this.loadEtherViz();
 		},
 		h(val) {
@@ -167,6 +182,9 @@ export default {
 				this.getData().then(() =>
 					this.loadEtherViz());
 			}
+		},
+		focusedAuthor() {
+			this.loadEtherViz();
 		}
 	},
 	methods: {
@@ -213,6 +231,8 @@ export default {
 			}
 		},
 		async getData() {
+			this.authorData = await Communication.getFromEVA("getCohDiagData", {padName: this.padName});
+
 			return Communication.getFromEVA("getEtherVizData", {pad: this.padName})
 				.then(this.prepareData)
 				.catch(() => {
@@ -333,7 +353,8 @@ export default {
 								.attr("y", y(rectangle.upperLeft))
 								.attr("width", x.bandwidth())
 								.attr("height", y(rectangle.lowerLeft - rectangle.upperLeft + 1))
-								.attr("fill", rectangle.authorColor);
+								.attr("fill", rectangle.authorColor)
+								.attr("opacity", rectangle.authorId == this.focusedAuthor || this.focusedAuthor === null ? 1 : 0.3);
 					});
 				} else if ("parallelograms" in d) {
 					d.parallelograms.forEach((pgram) => {
@@ -351,7 +372,7 @@ export default {
 						svg.append("path")
 								.attr("d", areaFunc([0, heightOfPgram]))
 								.attr("fill", pgram.authorColor)
-								.attr("opacity", 0.75);
+								.attr("opacity", pgram.authorId == this.focusedAuthor || this.focusedAuthor === null ? 0.75 : 0.225);
 					});
 				}
 			});
@@ -627,6 +648,15 @@ export default {
 
 .sliderLabel {
   position: absolute;
+}
+
+.authorLegend {
+  align-self: center;
+}
+
+#chart-and-legend-container {
+  display: flex;
+  flex-direction: row;
 }
 
 #dateSlider {
