@@ -40,6 +40,13 @@
         class="chart-etherViz"
         style="width: 100%; height: 100%"
       ></div>
+      <AuthorLegend
+        :chart-id="elementId"
+        :authors="authors"
+        interactive
+        :focused-author="focusedAuthor"
+        @update:focused-author="focusedAuthor = $event"
+      />
     </div>
   </div>
 </template>
@@ -49,6 +56,8 @@ import * as d3 from "d3";
 import Communication from "../../classes/communication";
 import store from "../../store";
 import MultiRangeSlider from "multi-range-slider-vue";
+import AuthorLegend from "../author-legend.vue";
+
 
 export default {
 	data() {
@@ -63,10 +72,12 @@ export default {
 			widthOfSlider: 560,
 			widthOfSvg: 560,
 			heightOfSvg: 500,
+			focusedAuthor: null,
 		};
 	},
 	components: {
 		MultiRangeSlider,
+		AuthorLegend
 	},
 	props: {
 		id: String,
@@ -115,7 +126,18 @@ export default {
 		},
 		rangeHasBeenSpecified() {
 			return this.sliderMinValue > 0 || this.sliderMaxValue < this.numberOfRevisions;
-		}
+		},
+		authors() {
+			if (!this.diagramData.nodes) {
+				return [];
+			} else {
+				return this.diagramData.nodes.map(n => ({
+					epId: n.id,
+					fullName: n.name,
+					color: n.color,
+				}));
+			}
+		},
 	},
 	name: "etherViz",
 	mounted() {
