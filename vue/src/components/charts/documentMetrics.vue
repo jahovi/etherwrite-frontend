@@ -48,7 +48,7 @@ export default {
 			this.ws = Communication.openSocket("wstest", {
 				padName: this.padName,
 			});
-
+			console.log("Socket opened for Metrics of "+this.padName);
 			this.ws.on("update", (msg) => {
 				this.numChars = msg[0];
 				this.numWords = msg[1];

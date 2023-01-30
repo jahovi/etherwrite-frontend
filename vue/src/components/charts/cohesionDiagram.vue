@@ -36,8 +36,8 @@ export default {
 			} else {
 				return this.diagramData.nodes.map(n => ({
 					epId: n.id,
-					fullName: n.name,
-					color: n.color,
+					fullName: n.name ? n.name : store.getters["users/usersByEpId"][n.id].fullName,
+					color: n.color ? n.color : store.getters["users/usersByEpId"][n.id].color,
 				}));
 			}
 		},
@@ -57,6 +57,7 @@ export default {
 				this.diagramData = this.mockData;
 			} else {
 				this.diagramData = await Communication.getFromEVA("getCohDiagData", {padName: this.padName});
+				console.log("Calling Coh API");
 			}
 		},
 		getDashboardDimensions() {
@@ -126,7 +127,7 @@ export default {
 			// Generate a color map from all nodes.
 			const colors = data.nodes.reduce((result, node) => ({
 				...result,
-				[node.id]: node.color,
+				[node.id]: node.color ? node.color : store.getters["users/usersByEpId"][node.id].color,
 			}), {});
 
 			const svg = this.createSvgElement(data, colors);
@@ -139,7 +140,7 @@ export default {
 					.attr("r", nodeRadius)
 					.attr("title", d => d.name)
 					.attr("name", d => d.id)
-					.style("fill", d => d.color);
+					.style("fill", d => colors[d.id]);
 
 			/**
 			 * The following variables will contain the
@@ -198,7 +199,7 @@ export default {
 						})
 						.attr("cy", function (d) {
 							// Make sure that the nodes stay well within the boundaries
-							const y = Math.max(nodeRadius * 1.3, Math.min(height - nodeRadius * 1.8, d.y));
+							const y = Math.max(nodeRadius * 1.3, Math.min(height - nodeRadius * 1.3, d.y));
 							posY[d.id] = y;
 							return y;
 						});

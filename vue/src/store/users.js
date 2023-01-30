@@ -40,6 +40,7 @@ export default {
 		},
 		setAuthorInfo(state, payload) {
 			const groups = state.groups;
+			console.log("setAI "+JSON.stringify(payload).length);
 			Object.entries(payload).forEach(([epId, epAuthorData]) => {
 				if (!epAuthorData.mapper2author) {
 					return;
@@ -59,22 +60,34 @@ export default {
 	},
 	actions: {
 		async getUser({getters, dispatch}, userId) {
-			const user = getters.usersById(userId);
-			if (user === undefined) {
-				await dispatch("load");
-			}
+			// const user = getters.usersById(userId);
+			// if (user === undefined) {
+			// 	await dispatch("load");
+			// }
 			return getters.usersById(userId);
 		},
 		async load({rootGetters, commit}) {
-			const cmid = rootGetters.getCMID;
-			const groups = await Communication.webservice("getAuthors", {cmid});
-			const authorInfo = await Communication.getFromEVA("authors");
-			commit("setGroups", groups);
-			commit("setAuthorInfo", authorInfo);
+			// const cmid = rootGetters.getCMID;
+			// const groups = await Communication.webservice("getAuthors", {cmid});
+			// const authorInfo = await Communication.getFromEVA("authors");
+			// commit("setGroups", groups);
+			// commit("setAuthorInfo", authorInfo);
 		},
 		async initialize({dispatch}) {
 			await dispatch("load");
 			setInterval(() => dispatch("load"), 5000);
 		},
+		async initAuthorsWebsocket({rootGetters, commit}){
+			
+			const websocket = await Communication.openSocket("wsauthors", {padName: "any"});
+			const cmid = rootGetters.getCMID;
+			websocket.on("update", async data => {
+				const groups = await Communication.webservice("getAuthors", {cmid});
+				commit("setGroups", groups);
+				commit("setAuthorInfo", data);
+				console.log("data " + JSON.stringify(data).length);
+			});
+			return websocket;
+		}
 	},
 };
