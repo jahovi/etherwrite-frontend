@@ -49,6 +49,7 @@ export default {
 			coloredBlocks: [],
 			userPositions: [],
 			websocket: null,
+			otherSocket: null,
 		};
 	},
 	directives: {
@@ -63,6 +64,7 @@ export default {
 	},
 	unmounted() {
 		this.websocket.close();
+		this.otherSocket.close();
 	},
 	methods: {
 		openSocket() {
@@ -70,15 +72,24 @@ export default {
 			this.websocket = Communication.openSocket("minimap", {
 				padName: this.padName,
 			});
-
+			console.log("MMSocket started "+this.padName);
 			this.websocket.on("update", data => {
 				if (data.blocks) {
 					this.processTextBlocks(data.blocks);
+					console.log("Blocks received ");
 				}
 				if (data.scrollPos) {
 					this.processScrollPos(data.scrollPos);
+					console.log("Scroll received ");
 				}
 			});
+			this.otherSocket = Communication.openSocket("wstest", {
+				padName: this.padName,
+			});
+			this.openSocket.on("update", data => {
+				console.log("Updating wstest");
+			});
+
 		},
 		processScrollPos: function (scrollPos) {
 

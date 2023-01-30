@@ -37,13 +37,18 @@ export default {
 	data: function () {
 		return {
 			baseInfoLoaded: false,
+			authorWebsocket: null,
 		};
 	},
 	name: "app",
 	async mounted() {
 		await this.$store.dispatch("loadEditorBaseInfo");
 		await this.$store.dispatch("users/load");
+		// this.authorWebsocket = await this.$store.dispatch("users/initAuthorsWebsocket");
 		this.baseInfoLoaded = true;
+	},
+	unmounted(){
+		this.authorWebsocket.close();
 	},
 	computed: {
 		getAlertShow: function () {
