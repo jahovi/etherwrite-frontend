@@ -7,6 +7,11 @@ $string['modulename_help'] = 'Write Plugin';
 $string['pluginadministration'] = 'Administrator';
 $string['pluginname'] = 'Write';
 
+// Time
+$string['days'] = 'd';
+$string['hours'] = 'hr';
+$string['minutes'] = 'min';
+
 // Unknown  error
 $string['unknown_error'] = 'An unknown error has occurred.';
 
@@ -52,13 +57,17 @@ $string['widgets.category.timecourse'] = 'Time course';
 $string['widgets.category.activity'] = 'Activity';
 
 $string['widgets.groupParticipants'] = "Project participants";
-$string['widgets.groupParticipants.group'] = "Group";
+$string['widgets.groupParticipants.group'] = "Group:";
 
 $string['widgets.cohesionDiagram.title'] = "Cohesion (Interaction between participants)";
 
-// KPIs
-$string['kpi-countdown-text'] = 'Time until deadline: ';
-$string['kpi-countdown-no-deadline'] = 'No deadline';
+// Countdown
+$string['kpi-countdown-text'] = 'Time until deadline:';
+$string['kpi-countdown-no-deadline'] = 'none';
+
+// Document Metrics
+$string['document-metrics-chars'] = '# Characters:';
+$string['document-metrics-words'] = '# Words:';
 
 // Widgets Info-Texts
 $string['widget-info-authoringRatios_bar'] = 'Shows the proportion of the current text that has been written by each author';
@@ -82,6 +91,9 @@ Directional arrows represent collaboration on the text of others. An arrow from 
 <em><strong>Note:</strong> By clicking on the legend an individual participant can be highlighted.</em>';
 
 $string['widget-info-etherViz'] = 'The EtherViz diagram gives you an overview of the text creation over time. The y-axis shows the number of characters in the text at a given date. The x-axis shows you as many revisions as the project has days.';
+
+// Dashboard
+$string['your-dashboard'] = 'Your Dashboard';
 
 // Operations widget
 $string['operationswidgettitle'] = 'Operations performed';

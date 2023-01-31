@@ -1,23 +1,9 @@
 <template>
   <div class="container-fluid">
-    <!-- project dashboard -->
-    <div id="project-dashboard" class="row border-bottom dashboard">
-      <h3 class="col-12"></h3>
-      <div class="col-12 mt-4 board-area" style="display: flex; gap: 8px">
-        <ChartWrapper
-            v-for="(widget, key) in projectCharts"
-            :component="widget.component"
-            :id="widget.id"
-            :key="key"
-            :padName="padName"
-            style="width: 32%"
-        >
-        </ChartWrapper>
-        <Countdown/>
-      </div>
-    </div>
+	<KPIs :padName="padName"/>
     <!-- custom dashboard -->
     <div id="custom-dashboard" class="row d-flex dashboard">
+      <h3 class="col-6 mr-auto p-2">{{ getStrings["your-dashboard"] }}</h3>
       <!-- Info on how to move widgets -->
       <small id="moveInfo" v-if="userCharts.length">
         <i class="fa fa-info-circle text-info mr-1"></i>
@@ -106,8 +92,7 @@ import ChartWrapper from "../components/chart-wrapper.vue";
 import WidgetCatalog from "../components/widget-catalog.vue";
 import Communication from "../classes/communication";
 import { v4 as uuid } from "uuid";
-import Countdown from "../components/kpis/countdown.vue";
-
+import KPIs from "../components/kpis.vue";
 
 export default {
 	name: "dashboardView",
@@ -116,7 +101,7 @@ export default {
 		GridItem,
 		ChartWrapper,
 		WidgetCatalog,
-		Countdown,
+		KPIs,
 	},
 	data: () => ({
 		projectCharts: [],
@@ -274,20 +259,17 @@ h3 {
 }
 
 /* dashboards */
-.dashboard {
-  padding: 10px 0 10px 0;
-}
-
 #custom-dashboard {
   justify-content: top;
   align-content: flex-start;
   min-height: 800px;
+  padding: 0px 0px 10px 0px;
 }
 
 .btn {
   width: 30px;
   height: 30px;
-  margin: 5px;
+  margin: 10px 5px 5px 5px;
   justify-self: center;
   padding: 0 !important;
 }

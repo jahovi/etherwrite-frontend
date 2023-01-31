@@ -29,13 +29,9 @@
 import authoringRatios_bar from "./charts/authoringRatios_bar.vue";
 import authoringRatios_pie from "./charts/authoringRatios_pie.vue";
 import participation_diagram from "./charts/participation_diagram.vue";
-import groupParticipants from "./charts/groupParticipants.vue";
-import operations_bar from "./charts/operations/operations_bar.vue";
 import activityOverTime from "./charts/activityOverTime.vue";
 import etherViz from "./charts/etherViz.vue";
 import cohesionDiagram from "./charts/cohesionDiagram.vue";
-import documentMetrics from "./charts/documentMetrics.vue";
-
 
 export default {
 	name: "chart-wrapper",
@@ -43,12 +39,9 @@ export default {
 		authoringRatios_pie,
 		authoringRatios_bar,
 		participation_diagram,
-		groupParticipants,
-		operations_bar,
 		activityOverTime,
 		etherViz,
 		cohesionDiagram,
-		documentMetrics,
 	},
 	props: {
 		component: String,

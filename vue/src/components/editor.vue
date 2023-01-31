@@ -3,6 +3,7 @@
 <!-- @copyright Marc Burchart, 2022, marc.burchart@fernuni-hagen.de -->
 <template>
 	<div>
+		<KPIs :padName="padName"/>
 		<div v-if="!loading">
 			<div class="text-right mb-2">
 				<a href="#" v-on:click="reloadFrame"
@@ -20,7 +21,6 @@
 			<div class="minimap-wrapper" :class="{'hidden-minimap': !showMinimap}">
 				<Minimap :padName="padName"/>
 			</div>
-
 			<iframe
 					id="writerview"
 					v-bind:src="link"
@@ -32,6 +32,7 @@
 <script>
 import Minimap from "./minimap.vue";
 import Communication from "../classes/communication";
+import KPIs from "../components/kpis.vue";
 
 export default {
 	data: () => ({
@@ -40,6 +41,7 @@ export default {
 	}),
 	components: {
 		Minimap,
+		KPIs,
 	},
 	name: "EditorComponent",
 	computed: {

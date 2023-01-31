@@ -7,6 +7,11 @@ $string['modulename_help'] = 'Write Plugin';
 $string['pluginadministration'] = 'Administrator';
 $string['pluginname'] = 'Write';
 
+// Time
+$string['days'] = 'd';
+$string['hours'] = 'h';
+$string['minutes'] = 'min';
+
 // Unknown  error
 $string['unknown_error'] = 'Es ist ein unbekannter Fehler aufgetreten.';
 
@@ -52,13 +57,17 @@ $string['widgets.category.timecourse'] = 'Zeitverlauf';
 $string['widgets.category.activity'] = 'Aktivität';
 
 $string['widgets.groupParticipants'] = "Projektteilnehmende";
-$string['widgets.groupParticipants.group'] = "Gruppe";
+$string['widgets.groupParticipants.group'] = "Gruppe:";
 
 $string['widgets.cohesionDiagram.title'] = "Kohäsion (Interaktion zwischen Teilnehmenden)";
 
-// KPIs
-$string['kpi-countdown-text'] = 'Zeit bis zur Abgabefrist: ';
-$string['kpi-countdown-no-deadline'] = 'Keine Abgabefrist';
+// Countdown
+$string['kpi-countdown-text'] = 'Zeit bis Abgabefrist:';
+$string['kpi-countdown-no-deadline'] = 'Keine';
+
+// Document Metrics
+$string['document-metrics-chars'] = '# Zeichen:';
+$string['document-metrics-words'] = '# Wörter:';
 
 // Widgets Info-Texts
 $string['widget-info-authoringRatios_bar'] = 'Das Balkendiagramm zeigt den prozentualen Anteil pro Autor/-in am momentan bestehenden Text im Editor des Projekts.';
@@ -82,6 +91,9 @@ Die gerichteten Pfeile stehen für die Mitarbeit am Text anderer. Ein Pfeil von 
 <em><strong>Hinweis:</strong> Mit Klick auf die Legende können einzelne Teilnehmende hervorgehoben werden.</em>';
 
 $string['widget-info-etherViz'] = 'Das EtherViz Diagramm gibt dir eine Übersicht über die Texterstellung im zeitlichen Verlauf. Die y-Achse gibt Aufschluss über die Anzahl Buchstaben, die sich zu einem Stichtag im Text befinden. Die x-Achse zeigt dir so viele Revisionen an, wie das Projekt Tage hat.';
+
+// Dashboard
+$string['your-dashboard'] = 'Your Dashboard';
 
 // Operations widget
 $string['operationswidgettitle'] = 'Durchgeführte Operationen';

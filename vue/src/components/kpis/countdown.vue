@@ -1,6 +1,7 @@
 <template>
-    <div class="border rounded countdown" :class="{ danger: inDanger }">
-        {{ getStrings["kpi-countdown-text"] }} {{ timeLeft }}
+    <div :class="{ danger: inDanger }">
+        <u>{{ getStrings["kpi-countdown-text"] }}</u>
+        {{ timeLeft }}
     </div>
 </template>
 
@@ -10,6 +11,7 @@ import Communication from "../../classes/communication.js";
 export default {
     name: "countdown_kpi",
     components: {},
+    props: {},
     data: () => {
         return {
             deadline: 0,
@@ -29,14 +31,12 @@ export default {
                 let hours = Math.floor(milliseconds / 3600000);
                 milliseconds -= hours * 3600000;
                 let minutes = Math.floor(milliseconds / 60000);
-                milliseconds -= minutes * 60000;
-                let seconds = Math.floor(milliseconds / 1000);
                 // format
-                seconds = String(seconds).padStart(2, "0");
                 minutes = String(minutes).padStart(2, "0");
                 hours = String(hours).padStart(2, "0");
 
-                return `${days}:${hours}:${minutes}:${seconds}`;
+                return milliseconds >= 0 ? ` ${days} ${this.getStrings["days"]}, ${hours} ${this.getStrings["hours"]}, ${minutes} ${this.getStrings["minutes"]}`
+                    : ` 0 ${this.getStrings["days"]}, 0 ${this.getStrings["hours"]}, 0 ${this.getStrings["minutes"]}`;
             }
             return this.getStrings["kpi-countdown-no-deadline"];
         },
@@ -52,16 +52,12 @@ export default {
         this.deadline = task.deadline * 1000;
         window.setInterval(() => {
             this.currentTime = Date.now();
-        }, 1000)
+        }, 1000);
     },
 }
 </script>
  
-<style scopred lang="css">
-.countdown {
-    padding: 0px 10px 0px 10px;
-}
-
+<style scoped lang="css">
 .danger {
     color: red;
 }

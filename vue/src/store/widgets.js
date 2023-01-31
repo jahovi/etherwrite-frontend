@@ -38,14 +38,6 @@ export default {
 				defaultHeight: 10,
 			},
 			{
-				component: "groupParticipants",
-				categories: ["other"],
-				configuration: {},
-				moderatorWidget: false,
-				defaultWidth: 1,
-				defaultHeight: 1,
-			},
-			{
 				component: "operations_bar",
 				categories: ["activity"],
 				configuration: {},
@@ -76,14 +68,6 @@ export default {
 				moderatorWidget: false,
 				defaultWidth: 4,
 				defaultHeight: 17,
-			},
-			{
-				component: "documentMetrics",
-				categories: ["other"],
-				configuration: {},
-				moderatorWidget: false,
-				defaultWidth: 1,
-				defaultHeight: 1,
 			},
 
 		],

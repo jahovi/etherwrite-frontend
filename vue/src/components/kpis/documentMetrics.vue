@@ -1,21 +1,18 @@
 <template>
-	<div class="chart-outer-container">
-		<h3>{{ getStrings["documentMetricsWidgetTitle"] }}</h3>
-		<h4>{{ getStrings["documentMetricsWidgetNumChars"] }}</h4>
-		<h4>{{ numChars }}</h4>
-		<h4>{{ getStrings["documentMetricsWidgetNumWords"] }}</h4>
-		<h4>{{ numWords }}</h4>
+	<div>
+		<u>{{ getStrings["document-metrics-chars"] }}</u>
+		{{`${this.numChars}, `}}
+		<u>{{ getStrings["document-metrics-words"] }}</u>
+		{{`${this.numWords}` }}
 	</div>
 </template>
 
-<script>
+<script lang="js">
 import Communication from "../../classes/communication";
 
 export default {
 	name: "documentMetrics",
 	props: {
-		id: String,
-		isMock: Boolean,
 		padName: String,
 	},
 	data() {
@@ -34,15 +31,10 @@ export default {
 		},
 	},
 	mounted() {
-		if (!this.isMock) {
-			this.openSocket();
-		}
-		this.$emit("dashboardDimensions", this.getDashboardDimensions);
+		this.openSocket();
 	},
 	unmounted() {
-		if (!this.isMock) {
-			this.closeSocket();
-		}
+		this.closeSocket();
 	},
 	methods: {
 		openSocket() {
@@ -57,18 +49,10 @@ export default {
 		closeSocket() {
 			this.ws.disconnect();
 		},
-		getDashboardDimensions() {
-			return {w: 3, h: 6};
-		},
 	},
 };
-
 </script>
 
 <style scoped lang="css">
-.chart-outer-container {
-	height: 100%;
-	display: flex;
-	flex-direction: column;
-}
+
 </style>
