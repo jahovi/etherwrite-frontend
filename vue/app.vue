@@ -44,7 +44,7 @@ export default {
 	async mounted() {
 		await this.$store.dispatch("loadEditorBaseInfo");
 		await this.$store.dispatch("users/load");
-		// this.authorWebsocket = await this.$store.dispatch("users/initAuthorsWebsocket");
+		this.authorWebsocket = this.$store.dispatch("users/initAuthorsWebsocket");
 		this.baseInfoLoaded = true;
 	},
 	unmounted(){
