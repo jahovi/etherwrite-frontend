@@ -37,6 +37,7 @@ export default {
 		if (!this.isMock) {
 			this.openSocket();
 		}
+		this.$emit("dashboardDimensions", this.getDashboardDimensions);
 	},
 	unmounted() {
 		if (!this.isMock) {
@@ -48,7 +49,6 @@ export default {
 			this.ws = Communication.openSocket("wstest", {
 				padName: this.padName,
 			});
-			console.log("Socket opened for Metrics of "+this.padName);
 			this.ws.on("update", (msg) => {
 				this.numChars = msg[0];
 				this.numWords = msg[1];
@@ -56,6 +56,9 @@ export default {
 		},
 		closeSocket() {
 			this.ws.disconnect();
+		},
+		getDashboardDimensions() {
+			return {w: 3, h: 6};
 		},
 	},
 };

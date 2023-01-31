@@ -63,7 +63,12 @@ export default class Communication {
 		console.log(`Connecting socket to ${ipAddress}/${endpoint}`);
 
 		socket.on("connect", () => {
-			console.log("Socket connected to " + endpoint);
+			if("padName" in query){
+				console.log("Socket connected to " + endpoint + ", emitting padName: " + query.padName);
+				socket.emit("padName", query.padName);
+			} else {
+				console.log("Socket connected to " + endpoint);
+			}
 		});
 		socket.on("disconnect", (reason) => {
 			console.log("Socket to " + endpoint + " disconnected due to " + reason);
