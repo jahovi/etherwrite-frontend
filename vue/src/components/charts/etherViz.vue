@@ -79,7 +79,6 @@ export default {
 			widthOfSvg: 560,
 			heightOfSvg: 500,
 			focusedAuthor: null,
-			authorData: {},
 		};
 	},
 	components: {
@@ -135,23 +134,23 @@ export default {
 			return this.sliderMinValue > 0 || this.sliderMaxValue < this.numberOfRevisions;
 		},
 		authors() {
-			if (!this.authorData.nodes) {
+			if(!this.responseData || this.isMock){
 				return [];
-			} else {
-				const allAuthors = this.authorData.nodes.map(n => ({
-					epId: n.id,
-					fullName: n.name,
-					color: n.color,
-				}));
-				const authorIds = [];
-				this.etherVizData.forEach(d => {
-					if("rectangles" in d) {
-						d.rectangles.forEach(rect => authorIds.push(rect.authorId));
-					}
-				});
-				const onlyRelevantAuthors = allAuthors.filter(e => authorIds.includes(e.epId));
-				return onlyRelevantAuthors;
 			}
+			const authorIDs = new Set();
+			this.responseData.forEach(column => {
+				if ("rectangles" in column) {
+					column.rectangles.forEach(rect => authorIDs.add(rect.authorId));
+				}
+			});
+
+			const authorsMap = [...authorIDs].map(id => ({
+				epId: id,
+				fullName: store.getters["users/usersByEpId"][id].fullName,
+				color: store.getters["users/usersByEpId"][id].color,
+			}));
+
+			return authorsMap;
 		},
 	},
 	name: "etherViz",
@@ -231,8 +230,6 @@ export default {
 			}
 		},
 		async getData() {
-			this.authorData = await Communication.getFromEVA("getCohDiagData", {padName: this.padName});
-
 			return Communication.getFromEVA("getEtherVizData", {pad: this.padName})
 				.then(this.prepareData)
 				.catch(() => {
@@ -353,7 +350,7 @@ export default {
 								.attr("y", y(rectangle.upperLeft))
 								.attr("width", x.bandwidth())
 								.attr("height", y(rectangle.lowerLeft - rectangle.upperLeft + 1))
-								.attr("fill", rectangle.authorColor)
+								.attr("fill", rectangle.authorColor ? rectangle.authorColor : store.getters["users/usersByEpId"][rectangle.authorId].color)
 								.attr("opacity", rectangle.authorId == this.focusedAuthor || this.focusedAuthor === null ? 1 : 0.3);
 					});
 				} else if ("parallelograms" in d) {
@@ -371,7 +368,7 @@ export default {
 
 						svg.append("path")
 								.attr("d", areaFunc([0, heightOfPgram]))
-								.attr("fill", pgram.authorColor)
+								.attr("fill", pgram.authorColor ? pgram.authorColor : store.getters["users/usersByEpId"][pgram.authorId].color)
 								.attr("opacity", pgram.authorId == this.focusedAuthor || this.focusedAuthor === null ? 0.75 : 0.225);
 					});
 				}
