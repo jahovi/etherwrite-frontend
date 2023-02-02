@@ -65,18 +65,12 @@ export default {
 			}
 			return getters.usersById(userId);
 		},
-		async load({rootGetters, commit}) {
-			const cmid = rootGetters.getCMID;
-			const groups = await Communication.webservice("getAuthors", {cmid});
-			commit("setGroups", groups);
-		},
-		async initialize({dispatch}) {
-			await dispatch("load");
-			setInterval(() => dispatch("load"), 5000);
-		},
-		initAuthorsWebsocket({commit}){
+		initAuthorsWebsocket({rootGetters, commit}){
 			const websocket = Communication.openSocket("wsauthors");
-			websocket.on("update", data => {
+			const cmid = rootGetters.getCMID;
+			websocket.on("update", async data => {
+				const groups = await Communication.webservice("getAuthors", {cmid});
+				commit("setGroups", groups);
 				commit("setAuthorInfo", data);
 			});
 			return websocket;

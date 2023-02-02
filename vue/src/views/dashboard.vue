@@ -222,17 +222,16 @@ export default {
 	},
 	mounted() {
 		const cmid = this.$store.getters.getCMID;
-		this.$store.dispatch("users/initialize").then(() => {
-			Communication.webservice("getDashboards", {cmid}).then(result => {
-				this.projectCharts = result.project.map(this.transformWidget);
-				this.userCharts = result.user.map(this.transformWidget);
-				// Make the UI resize according to the rendered grid.
-				window.dispatchEvent(new Event("resize"));
-			});
 
-			document.addEventListener("keydown", this.onKeyDown);
-			document.addEventListener("keyup", this.onKeyUp);
+		Communication.webservice("getDashboards", {cmid}).then(result => {
+			this.projectCharts = result.project.map(this.transformWidget);
+			this.userCharts = result.user.map(this.transformWidget);
+			// Make the UI resize according to the rendered grid.
+			window.dispatchEvent(new Event("resize"));
 		});
+
+		document.addEventListener("keydown", this.onKeyDown);
+		document.addEventListener("keyup", this.onKeyUp);
 	},
 };
 </script>
