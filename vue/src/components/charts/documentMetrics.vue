@@ -1,9 +1,9 @@
 <template>
 	<div class="chart-outer-container">
-		<h3>Dokumentenmetriken</h3>
-		<h4>Anzahl der Zeichen:</h4>
+		<h3>{{ getStrings["documentMetricsWidgetTitle"] }}</h3>
+		<h4>{{ getStrings["documentMetricsWidgetNumChars"] }}</h4>
 		<h4>{{ numChars }}</h4>
-		<h4>Anzahl der Wörter:</h4>
+		<h4>{{ getStrings["documentMetricsWidgetNumWords"] }}</h4>
 		<h4>{{ numWords }}</h4>
 	</div>
 </template>
@@ -28,6 +28,9 @@ export default {
 	computed: {
 		elementId() {
 			return `documentMetrics_${this.id}`;
+		},
+		getStrings() {
+			return this.$store.getters.getStrings;
 		},
 	},
 	mounted() {

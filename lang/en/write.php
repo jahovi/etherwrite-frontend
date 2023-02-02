@@ -52,31 +52,29 @@ $string['widgets.groupParticipants.group'] = "Group";
 $string['widgets.cohesionDiagram.title'] = "Cohesion (Interaction between participants)";
 
 // KPIs
-$string['kpi-countdown-text'] = 'Time till deadline: ';
-$string['kpi-countdown-no-deadline'] = 'no deadline';
+$string['kpi-countdown-text'] = 'Time until deadline: ';
+$string['kpi-countdown-no-deadline'] = 'No deadline';
 
 // Widgets Info-Texts
-$string['widget-info-authoringRatios_bar'] = 'Description of of author ratios barchart.';
+$string['widget-info-authoringRatios_bar'] = 'Shows the proportion of the current text that has been written by each author';
 
-$string['widget-info-authoringRatios_pie'] = 'Description of author ratios piechart.';
+$string['widget-info-authoringRatios_pie'] = 'Shows the proportion of the current text that has been written by each author';
 
 $string['widget-info-participation_diagram'] = 'This chart shows attendee participation for individual hours or days.
 If the work is still very short, the participation is displayed for hours.
 For work that has been going on for some time, participation is displayed daily.
 The users are displayed in their respective color on the bar. For an hour / a day, where no work has been done, no bar exists. Otherwise, the total height of a bar is always 1.0 and refers to the work done in one hour / one day.';
 
-$string['widget-info-groupParticipants'] = 'Description of group participation chart.';
-
 $string['widget-info-operations_bar'] = 'This chart shows the number of operations performed.
 Participants will see their own performed operations and the average operations performed by all other participants.
 For moderators, the operations performed for all participants are displayed.
 Operations are: write, edit, copy and delete.';
 
-$string['widget-info-activityOverTime'] = 'Shows the amount of changes per user over time. If less than three days have passed since the beginning of the assignment, the activities will be grouped by hour, later by day.';
+$string['widget-info-activityOverTime'] = 'Shows the amount of activity per user over time. Activities are editing, writing, pasting from clipboard and deleting of text. If less than three days have passed since the beginning of the assignment, the activities will be grouped by hour, later by day.';
 
-$string['widget-info-cohesionDiagram'] = 'Shows the cohesion between the participants of the group. The distance between two circles represents the frequency in which the two participants worked together in the text. 
-Directional arrows represent collaboration on the text of others. An arrow from A to B indicates that participant(s) A added to or edited B\'s text. The thickness of the arrow shows the intensity of the collaboration.
-<em><strong>Note:</strong> With click on the legend an individual participant can be highlighted.</em>';
+$string['widget-info-cohesionDiagram'] = 'Shows the cohesion between the participants of the group. The distance between two circles represents the frequency in which the two participants worked together on the text. 
+Directional arrows represent collaboration on the text of others. An arrow from A to B indicates that participant A added to or edited B\'s text. The thickness of the arrow shows the intensity of the collaboration.
+<em><strong>Note:</strong> By clicking on the legend an individual participant can be highlighted.</em>';
 
 $string['widget-info-etherViz'] = 'The EtherViz diagram gives you an overview of the text creation over time. The y-axis shows the number of characters in the text at a given date. The x-axis shows you as many revisions as the project has days.';
 
@@ -101,3 +99,8 @@ $string['activityovertimewidgetyaxis'] = 'Activity';
 $string['activityovertimewidgetxaxis'] = 'Time';
 $string['activityovertimewidgetscalinglinear'] = 'Linear';
 $string['activityovertimewidgetscalinglogarithmic'] = 'Logarithmic';
+
+// DocumentMetrics widget
+$string['documentMetricsWidgetTitle'] = 'Document Metrics';
+$string['documentMetricsWidgetNumChars'] = 'Characters';
+$string['documentMetricsWidgetNumWords'] = 'Words';

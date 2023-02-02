@@ -199,12 +199,12 @@ export default {
                 .attr("transform",
                     "translate(" + margin.left + "," + margin.top + ")");
             // labels x- and y-axis
-            const offsetXWidth = this.isMock ? 0 : 25;
+            const offsetXWidth = this.isMock ? 0 : 40;
             svg.append("text")
                 .attr("class", "x label")
                 .attr("text-anchor", "center")
                 .attr("x", width - offsetXWidth)
-                .attr("y", height + 20)
+                .attr("y", height + 30)
                 .attr("font-size", "1.25em")
                 .text(this.getStrings[`operationswidgetxaxis${this.isModerator ? "teacher" : "student"}`]);
             svg.append("text")
