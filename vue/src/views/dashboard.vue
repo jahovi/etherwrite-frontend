@@ -60,9 +60,7 @@
               :key="item.i"
               :w="getWidthOfElement(item.w)"
               :h="getHeightOfElement(item.h)"
-              @dashboardDimensions="
-                (dimensions) => setDashboardDimensions(item, dimensions())
-              "
+              @rearrangeDashboard="() => doRearrangeDashboard(item)"
             >
             </ChartWrapper>
 
@@ -154,15 +152,20 @@ export default {
 				this.draggable = false;
 			}
 		},
-		setDashboardDimensions(item, dimensions) {
-			this.userCharts[this.userCharts.indexOf(item)].h = dimensions.h;
-			this.userCharts[this.userCharts.indexOf(item)].w = dimensions.w;
+		/**
+		 * Move existing widgets down to make room for a newly added one. Is called through an event bubbling up through the chart wrapper 
+		 * from the mounted() method of each widget.
+		 * 
+		 * @param {*} item The newly added widget to accommodate
+		 */
+		doRearrangeDashboard(item) {
 			if (this.userCharts.length > 1) {
 				this.userCharts.forEach((e) => {
 					if (e != item) {
-						e.y = e.y + dimensions.h;
+						e.y = e.y + item.h;
 					}
 				});
+				this.saveGrid();
 			}
 		},
 		removeItemFromGrid: function (val) {
@@ -184,15 +187,15 @@ export default {
 				configuration: Object,
 				x: Number,
 				y: Number,
-				minW: Number,
-				minH: Number,
+				defaultWidth: Number,
+				defaultHeight: Number,
 				w: Number,
 				h: Number,
 			} widget Widget to be added to dashboard.
 		 */
 		addWidget(newWidget) {
-			newWidget.w = newWidget.minW || newWidget.w;
-			newWidget.h = newWidget.minH || newWidget.h;
+			newWidget.w = newWidget.defaultWidth || newWidget.w;
+			newWidget.h = newWidget.defaultHeight || newWidget.h;
 			newWidget.x = 0;//newWidget.x || (this.userCharts.length * 2) % (this.colNum || 12);
 			newWidget.y = 0;//newWidget.y || this.userCharts.length + (this.colNum || 12);
 			// { "x": 0, "y": 0, "w": 2, "h": 2, "i": "0"} neccessary

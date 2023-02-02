@@ -8,7 +8,7 @@
 				:w="w"
 				:h="h"
 				@click.capture="stopEvents"
-				@dashboardDimensions="setDashboardDimensions"
+				@rearrangeDashboard="doRearrangeDashboard"
 				style="height: 100%; overflow-x: hidden; overflow-y: hidden"
 		/>
 		<slot name="btn"></slot>
@@ -66,8 +66,11 @@ export default {
 	mounted() {
 	},
 	methods: {
-		setDashboardDimensions(dimensions) {
-			this.$emit("dashboardDimensions", dimensions);
+		/**
+		 * Passes on the event from the mounted function of each widget to the dashboard. There it causes all existing widgets to be moved down when a widget is added.
+		 */
+		doRearrangeDashboard() {
+			this.$emit("rearrangeDashboard");
 		},
 		stopEvents(event) {
 			if (this.isMock) {

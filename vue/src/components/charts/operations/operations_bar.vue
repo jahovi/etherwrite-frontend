@@ -48,8 +48,8 @@ export default {
             ],
             operationsStrings: [],
             isModerator: false,
-            widthOfSvg: 560,
-            heightOfSvg: 500,
+            widthOfSvg: this.w || 560,
+            heightOfSvg: this.h || 500,
         };
     },
     computed: {
@@ -86,9 +86,6 @@ export default {
         /**
          * Get data from EVA and sum up edits, writes, pastes and deletes for each author.
          */
-        getDashboardDimensions() {
-            return { w: 10, h: 14 };
-        },
         async getData() {
             this.authorsToOperations = [];
             return Communication.getFromEVA(`activity/operations/${this.padName}`)
@@ -393,7 +390,7 @@ export default {
             this.getData().then(() =>
                 this.loadChart());
         }
-        this.$emit("dashboardDimensions", this.getDashboardDimensions);
+        this.$emit("rearrangeDashboard");
     },
 };
 </script>

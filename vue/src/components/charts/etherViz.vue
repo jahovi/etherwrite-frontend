@@ -76,8 +76,8 @@ export default {
 			numberOfRevisions: 1,
 			sliderHasBeenModified: false,
 			widthOfSlider: 560,
-			widthOfSvg: 560,
-			heightOfSvg: 500,
+			widthOfSvg: this.w || 560,
+			heightOfSvg: this.h || 500,
 			focusedAuthor: null,
 		};
 	},
@@ -164,7 +164,7 @@ export default {
 					this.loadEtherViz());
 
 			document.getElementById("dateSlider").classList.remove(".multi-range-slider");
-			this.$emit("dashboardDimensions", this.getDashboardDimensions);
+			this.$emit("rearrangeDashboard");
 		}	
 	},
 	watch: {
@@ -187,9 +187,6 @@ export default {
 		}
 	},
 	methods: {
-		getDashboardDimensions() {
-			return {w: 8, h: 17};
-		},
 		updateValues(e) {
             this.sliderMinValue = e.minValue;
             this.sliderMaxValue = e.maxValue;

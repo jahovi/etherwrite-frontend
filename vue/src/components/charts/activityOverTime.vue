@@ -28,8 +28,8 @@ export default {
 		return {
 			data: [],
 			scaling: "linear",
-			widthOfSvg: 1000,
-			heightOfSvg: 150,
+			widthOfSvg: this.w || 1000,
+			heightOfSvg: this.h || 150,
 		};
 	},
 	props: {
@@ -90,7 +90,7 @@ export default {
 			this.getData().then(() =>
 				this.loadLine());
 		}
-		this.$emit("dashboardDimensions", this.getDashboardDimensions);
+		this.$emit("rearrangeDashboard");
 	},
 	watch: {
 		padName() {
@@ -112,9 +112,6 @@ export default {
 		},
 	},
 	methods: {
-		getDashboardDimensions() {
-			return { w: 12, h: 10 };
-		},
 		async getData() {
 			return Communication.getFromEVA(`activity/activities/${this.padName}`)
 				.then(data => {

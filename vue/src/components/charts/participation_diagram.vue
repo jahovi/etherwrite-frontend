@@ -1,19 +1,19 @@
 <template>
-  <div class="chart-outer-container">
-    <h2>{{ getStrings["participationwidgettitle"] }}</h2>
-    <div class="chart-container">
-      <div class="chart" :id="elementId" ref="chart" style="width: 100%; height: 100%"></div>
-      <ul class="legend mt-3" v-if="authorSet.size">
-        <li v-for="author of Array.from(authorSet).reverse()" :key="author">
+	<div class="chart-outer-container">
+		<h2>{{ getStrings["participationwidgettitle"] }}</h2>
+		<div class="chart-container">
+			<div class="chart" :id="elementId" ref="chart" style="width: 100%; height: 100%"></div>
+			<ul class="legend mt-3" v-if="authorSet.size">
+				<li v-for="author of Array.from(authorSet).reverse()" :key="author">
           <i
             class="fa fa-square"
             :style="{ color: getAuthorColor(author) }"
           ></i>
-          {{ getUsername(author) }}
-        </li>
-      </ul>
-    </div>
-  </div>
+					{{ getUsername(author) }}
+				</li>
+			</ul>
+		</div>
+	</div>
 </template>
 
 <script lang="js">
@@ -37,8 +37,8 @@ export default {
 			authorColors: [],
 			authorSet: {},
 			hourlyTimestamp: false,
-			widthOfSvg: 560,
-			heightOfSvg: 500,
+			widthOfSvg: this.w || 560,
+			heightOfSvg: this.h || 500,
 		};
 	},
 	computed: {
@@ -46,8 +46,8 @@ export default {
 			return `participation_diagram_${this.id}`;
 		},
 		getStrings() {
-            return this.$store.getters.getStrings;
-        },
+			return this.$store.getters.getStrings;
+		},
 	},
 	mounted() {
 		if (this.isMock) {
@@ -77,13 +77,13 @@ export default {
 		} else {
 			this.getData().then(() => this.loadChart());
 		}
-		this.$emit("dashboardDimensions", this.getDashboardDimensions);
+		this.$emit("rearrangeDashboard");
 	},
 	watch: {
 		padName() {
 			if (!this.isMock) {
 				this.getData().then(() =>
-						this.loadChart());
+					this.loadChart());
 			}
 		},
 		w(val) {
@@ -96,20 +96,17 @@ export default {
 		},
 	},
 	methods: {
-		getDashboardDimensions() {
-			return {w: 12, h: 10};
-		},
 		getUsername(author) {
 			if (this.isMock) {
 				return author;
 			}
 			return store.getters["users/usersByEpId"][author].fullName;
-        },
-        getAuthorColor(author) {
-            const index = [...this.authorSet].indexOf(author);
-            return this.authorColors[index];
-        },
-        async getData() {
+		},
+		getAuthorColor(author) {
+			const index = [...this.authorSet].indexOf(author);
+			return this.authorColors[index];
+		},
+		async getData() {
 			let data = null;
 			try {
 				data = await Communication.getFromEVA(`activity/activities/${this.padName}`);
@@ -179,38 +176,38 @@ export default {
 
 			// init scales
 			const xScale = d3.scaleTime()
-					.domain([this.datasets[0].timestamp, this.datasets[this.datasets.length - 1].timestamp])
-					.range([margin.left, w]);	
+				.domain([this.datasets[0].timestamp, this.datasets[this.datasets.length - 1].timestamp])
+				.range([margin.left, w]);
 
 			const yScale = d3.scaleLinear()
-					.domain([0, 1])
-					.range([h, margin.bottom]);
+				.domain([0, 1])
+				.range([h, margin.bottom]);
 
 			const colorScale = d3.scaleOrdinal()
-					.domain(Array.from(this.authorSet))
-					.range(this.authorColors);
+				.domain(Array.from(this.authorSet))
+				.range(this.authorColors);
 
 			// svg object
 			let svg = d3.select(`#${this.elementId}`)
-					.append("svg")
-					.attr("width", w + margin.left + margin.right)
-					.attr("height", h + margin.top + margin.bottom);
+				.append("svg")
+				.attr("width", w + margin.left + margin.right)
+				.attr("height", h + margin.top + margin.bottom);
 
 			// labels for x- and y-axes
 			svg.append("text")
-                .attr("class", "x label")
-                .attr("text-anchor", "start")
-                .attr("x", w + 50)
-                .attr("y", h + 20)
+				.attr("class", "x label")
+				.attr("text-anchor", "start")
+				.attr("x", w + 50)
+				.attr("y", h + 20)
 				.attr("font-size", "1.1em")
-                .text(this.getStrings["participationwidgetxaxis"]);
-            svg.append("text")
-                .attr("class", "y label")
-                .attr("text-anchor", "start")
-                .attr("y", 10)
-                .attr("dy", ".75em")
+				.text(this.getStrings["participationwidgetxaxis"]);
+			svg.append("text")
+				.attr("class", "y label")
+				.attr("text-anchor", "start")
+				.attr("y", 10)
+				.attr("dy", ".75em")
 				.attr("font-size", "1.1em")
-                .text(this.getStrings["participationwidgetyaxis"]);
+				.text(this.getStrings["participationwidgetyaxis"]);
 
 			// define xAxis	
 			let daysWithActivities = [];
@@ -227,8 +224,8 @@ export default {
 			});
 
 			let xAxis = d3.axisBottom(xScale)
-					.tickSizeOuter(0)
-					.tickValues(daysWithActivities.map(d => d.timestamp));
+				.tickSizeOuter(0)
+				.tickValues(daysWithActivities.map(d => d.timestamp));
 			if (this.hourlyTimestamp) {
 				xAxis.tickFormat(d3.timeFormat("%H:%M"));
 			} else {
@@ -237,46 +234,46 @@ export default {
 
 			// append xAxis
 			svg.append("g")
-					.attr("transform", "translate(" + margin.left + "," + h + ")")
-					.call(xAxis)
-					.selectAll("text")
-					.attr("transform", "translate(-10, 2)rotate(-65)")
-					.style("text-anchor", "end")
-					.attr("font-size", "1.5em");
+				.attr("transform", "translate(" + margin.left + "," + h + ")")
+				.call(xAxis)
+				.selectAll("text")
+				.attr("transform", "translate(-10, 2)rotate(-65)")
+				.style("text-anchor", "end")
+				.attr("font-size", "1.5em");
 
 			// Add blank axis to bridge gap between x and y axis
 			let xAxisBlank = d3.axisBottom(xScale)
-					.tickValues([])
-					.tickSize(0);
+				.tickValues([])
+				.tickSize(0);
 			svg.append("g")
-					.attr("transform", "translate(" + 0 + "," + h + ")")
-					.call(xAxisBlank);
+				.attr("transform", "translate(" + 0 + "," + h + ")")
+				.call(xAxisBlank);
 
 			// append yAxis
 			let yAxis = d3.axisLeft(yScale)
-					.ticks(8);
+				.ticks(8);
 			svg.append("g")
-					.attr("transform", "translate(" + margin.left + "," + "0)")
-					.call(yAxis)
-					.attr("font-size", "1em");
+				.attr("transform", "translate(" + margin.left + "," + "0)")
+				.call(yAxis)
+				.attr("font-size", "1em");
 
 			// add group for each author series
 			const series = svg
-					//.select("g")
-					.selectAll("g.series")
-					.data(stackedData)
-					.join("g")
-					.style("fill", (d) => colorScale(d.key));
+				//.select("g")
+				.selectAll("g.series")
+				.data(stackedData)
+				.join("g")
+				.style("fill", (d) => colorScale(d.key));
 
 			// add rect for each activity in the series
 			series.selectAll("rect")
-					.data((d) => d)
-					.join("rect")
-					.attr("width", barWidth)
-					.attr("y", (d) => yScale(d[1]))
-					.attr("x", (d) => xScale(d.data.timestamp) - 0.5 * barWidth)
-					.attr("height", (d) => yScale(d[0]) - yScale(d[1]))
-					.attr("transform", "translate(" + margin.left + "," + 0 + ")");
+				.data((d) => d)
+				.join("rect")
+				.attr("width", barWidth)
+				.attr("y", (d) => yScale(d[1]))
+				.attr("x", (d) => xScale(d.data.timestamp) - 0.5 * barWidth)
+				.attr("height", (d) => yScale(d[0]) - yScale(d[1]))
+				.attr("transform", "translate(" + margin.left + "," + 0 + ")");
 		},
 	},
 };
@@ -284,27 +281,27 @@ export default {
 
 <style scoped lang="css">
 .chart-outer-container {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
 }
 
 .chart-container {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: center;
-  gap: 20px;
-  flex-grow: 1;
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-start;
+	align-items: center;
+	gap: 20px;
+	flex-grow: 1;
 }
 
 .chart {
-  width: 100%;
-  height: 100%;
+	width: 100%;
+	height: 100%;
 }
 
 .legend {
-  position: absolute;
-  right: 5px;
+	position: absolute;
+	right: 5px;
 }
 </style>
