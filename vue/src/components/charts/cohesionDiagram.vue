@@ -48,7 +48,7 @@ export default {
 	async mounted() {
 		this.loadData().then(() => {
 			this.buildDiagram();
-			this.$emit("dashboardDimensions", this.getDashboardDimensions);
+			this.$emit("rearrangeDashboard");
 		});
 	},
 	methods: {
@@ -59,9 +59,6 @@ export default {
 				this.diagramData = await Communication.getFromEVA("getCohDiagData", {padName: this.padName});
 				console.log("Calling Coh API");
 			}
-		},
-		getDashboardDimensions() {
-			return {w: 4, h: 17};
 		},
 		/**
 		 * Creates an SVG arrow head in the given "defs" section to be referenced when drawing a path.

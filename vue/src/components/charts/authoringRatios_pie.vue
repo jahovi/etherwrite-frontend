@@ -28,8 +28,8 @@ export default {
 			authors: [],
 			ratios: [],
 			colors: [],
-			widthOfSvg: 400,
-			heightOfSvg: 200,
+			widthOfSvg: this.w || 400,
+			heightOfSvg: this.h || 200,
 			radius: 1,
 		};
 	},
@@ -62,7 +62,7 @@ export default {
 			this.getData().then(() =>
 				this.loadPie());
 		}
-		this.$emit("dashboardDimensions", this.getDashboardDimensions);
+		this.$emit("rearrangeDashboard");
 	},
 	watch: {
 		padName() {
@@ -81,9 +81,6 @@ export default {
 		},
 	},
 	methods: {
-		getDashboardDimensions() {
-			return {w: 6, h: 10};
-		},
 		async getData() {
 			return Communication.getFromEVA("authoring_ratios", { pad: this.padName })
 				.then(data => {
