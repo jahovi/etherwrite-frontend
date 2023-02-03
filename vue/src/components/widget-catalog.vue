@@ -105,18 +105,11 @@ export default {
 			store.commit("setWidgetCatalogOpen");
 		},
 		addToDashboard(widget) {
-			/*const index = this.selectedWidgets.indexOf(widget);
-			if (index === -1) {
-				this.selectedWidgets.push(widget);
-			} else {
-				this.selectedWidgets.splice(index, 1);
-			}*/
 			this.$emit("add-widget-event", widget);
 			this.closeWidgetCatalog();
 		},
 	},
 	mounted() {
-		console.log("widget catalog mount");
 		this.category = this.$store.getters.getWidgetCategories[0];
 	},
 };
