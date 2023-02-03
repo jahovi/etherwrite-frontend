@@ -57,7 +57,6 @@ export default {
 				this.diagramData = this.mockData;
 			} else {
 				this.diagramData = await Communication.getFromEVA("getCohDiagData", {padName: this.padName});
-				console.log("Calling Coh API");
 			}
 		},
 		getDashboardDimensions() {
@@ -125,10 +124,10 @@ export default {
 			const nodeMaxDist = Math.min(width, height);
 
 			// Generate a color map from all nodes.
-			const colors = data.nodes.reduce((result, node) => ({
-				...result,
-				[node.id]: node.color ? node.color : store.getters["users/usersByEpId"][node.id].color,
-			}), {});
+			const colors = {};
+			this.authors.forEach(entry => {
+				colors[entry.epId] = entry.color;
+			})
 
 			const svg = this.createSvgElement(data, colors);
 

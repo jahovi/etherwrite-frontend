@@ -67,8 +67,8 @@ export default {
 		},
 		initAuthorsWebsocket({rootGetters, commit}){
 			const websocket = Communication.openSocket("wsauthors");
-			const cmid = rootGetters.getCMID;
 			websocket.on("update", async data => {
+				const cmid = rootGetters.getCMID;
 				const groups = await Communication.webservice("getAuthors", {cmid});
 				commit("setGroups", groups);
 				commit("setAuthorInfo", data);
