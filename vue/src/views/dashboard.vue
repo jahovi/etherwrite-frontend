@@ -73,7 +73,10 @@
         </GridLayout>
       </div>
     </div>
-    <WidgetCatalog @add-widget-event="addWidget($event)" />
+    <WidgetCatalog
+      @add-widget-event="addWidget($event)"
+      :selectedWidgets="userCharts"
+    />
   </div>
 </template>
 
@@ -194,6 +197,7 @@ export default {
 			newWidget.y = 0;//newWidget.y || this.userCharts.length + (this.colNum || 12);
 			// { "x": 0, "y": 0, "w": 2, "h": 2, "i": "0"} neccessary
 			newWidget.i = uuid();
+			console.log(newWidget);
 			this.userCharts.push(newWidget);
 			this.saveGrid();
 		},
