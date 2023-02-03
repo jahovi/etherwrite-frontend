@@ -57,6 +57,7 @@ export default {
 				this.diagramData = this.mockData;
 			} else {
 				this.diagramData = await Communication.getFromEVA("getCohDiagData", {padName: this.padName});
+				console.log("Calling Coh API");
 			}
 		},
 		getDashboardDimensions() {
