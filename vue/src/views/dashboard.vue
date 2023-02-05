@@ -73,7 +73,10 @@
         </GridLayout>
       </div>
     </div>
-    <WidgetCatalog @add-widget-event="addWidget($event)" />
+    <WidgetCatalog
+      @add-widget-event="addWidget($event)"
+      :selectedWidgets="userCharts"
+    />
   </div>
 </template>
 
