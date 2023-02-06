@@ -144,6 +144,9 @@ export default {
 		isLoading() {
 			return !this.$store.state.base.initialized;
 		},
+		isMacOS() {
+			return Communication.getOperatingSystem() === "MAC";
+		},
 	},
 	watch: {},
 	methods: {
