@@ -1,9 +1,9 @@
 <template>
   <div class="container-fluid">
-	<KPIs :padName="padName"/>
+    <KPIs :padName="padName"/>
     <!-- custom dashboard -->
-    <div id="custom-dashboard" class="row d-flex dashboard">
-      <h3 class="col-6 mr-auto p-2">{{ getStrings["your-dashboard"] }}</h3>
+    <div id="custom-dashboard" class="row d-flex align-items-center dashboard">
+      <h3 class="p-2 mr-3">{{ getStrings["your-dashboard"] }}</h3>
       <!-- Info on how to move widgets -->
       <small id="moveInfo" v-if="userCharts.length">
         <i class="fa fa-info-circle text-info mr-1"></i>

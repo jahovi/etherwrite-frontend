@@ -14,6 +14,8 @@ $string['minutes'] = 'min';
 
 // Unknown  error
 $string['unknown_error'] = 'Es ist ein unbekannter Fehler aufgetreten.';
+$string['eva_not_available'] = 'Der EtherWrite Datenanalyse-Knoten ist nicht verfügbar. Falls das Problem bestehen bleibt, kontaktieren Sie Ihre Administration. Sagen Sie ihnen, EVA antwortet nicht.';
+$string['eva_is_back'] = 'Der EtherWrite Datenanalyse-Knoten ist wieder online.';
 
 // Settings
 $string['serverurl'] = 'Etherpad Server URL';

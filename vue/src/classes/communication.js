@@ -11,22 +11,26 @@ import { io } from "socket.io-client";
  *
  */
 
+let evaNotAvailable = false;
+
 export default class Communication {
+
+
 	static webservice(method, param = {}) {
 		return new Promise(
-				(resolve, reject) => {
-					ajax.call([{
-						methodname: "mod_write_" + method,
-						args: param ? param : {},
-						timeout: 3000,
-						done: function (data) {
-							return resolve(data);
-						},
-						fail: function (error) {
-							return reject(error);
-						},
-					}]);
-				},
+			(resolve, reject) => {
+				ajax.call([{
+					methodname: "mod_write_" + method,
+					args: param ? param : {},
+					timeout: 3000,
+					done: function (data) {
+						return resolve(data);
+					},
+					fail: function (error) {
+						return reject(error);
+					},
+				}]);
+			},
 		);
 	}
 
@@ -38,8 +42,8 @@ export default class Communication {
 			jwt,
 		};
 		let queryString = Object.entries(myQuery)
-				.map(([param, value]) => `${param}=${value}`)
-				.join("&");
+			.map(([param, value]) => `${param}=${value}`)
+			.join("&");
 		return fetch(`${ipAddress}/${endpoint}?${queryString}`, {
 			method: "GET",
 			headers: {
@@ -47,8 +51,11 @@ export default class Communication {
 				"Accept": "application/json",
 			},
 		})
-				.then(response => response.json())
-				.catch(e => console.log("Error fetching EVA: " + e));
+			.then(response => {
+				this.evaIsBack();
+				return response.json();
+			})
+			.catch(e => console.log("Error fetching EVA: " + e));
 	}
 
 	static openSocket(endpoint, query = {}) {
@@ -63,18 +70,24 @@ export default class Communication {
 		console.log(`Connecting socket to ${ipAddress}/${endpoint}`);
 
 		socket.on("connect", () => {
-			if("padName" in query){
+			if ("padName" in query) {
 				console.log("Socket connected to " + endpoint + ", emitting padName: " + query.padName);
 				socket.emit("padName", query.padName);
 			} else {
 				console.log("Socket connected to " + endpoint);
 			}
+			this.evaIsBack();
 		});
 		socket.on("disconnect", (reason) => {
 			console.log("Socket to " + endpoint + " disconnected due to " + reason);
 		});
 		socket.on("connect_error", error => {
+			evaNotAvailable = true;
+			store.commit("setAlertPermanent", ["alert-danger", store.getters.getStrings.eva_not_available, 3000]);
 			console.log("Socket connection to " + endpoint + " could not be established: ", error.message);
+		});
+		socket.on("update", () => {
+			this.evaIsBack();
 		});
 
 		return socket;
@@ -98,6 +111,18 @@ export default class Communication {
 		}
 
 		return "ANY";
+	}
+
+	/**
+	 * Method to call when EVA is responding. If it was disconnected/erroneous before, a message will be spawned
+	 * to tell the user that the server is back online.
+	 */
+	static evaIsBack() {
+		if (evaNotAvailable) {
+			evaNotAvailable = false;
+			store.commit("removeAlert");
+			store.commit("setAlertWithTimeout", ["alert-success", store.getters.getStrings.eva_is_back, 3000]);
+		}
 	}
 
 }

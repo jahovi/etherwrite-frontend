@@ -12,8 +12,10 @@ $string['days'] = 'd';
 $string['hours'] = 'hr';
 $string['minutes'] = 'min';
 
-// Unknown  error
+// Errors
 $string['unknown_error'] = 'An unknown error has occurred.';
+$string['eva_not_available'] = 'The EtherWrite data analytics node is not available. If the problem persist, please contact your administrator. Tell them EVA does not respond.';
+$string['eva_is_back'] = 'The EtherWrite data analytics node is back online.';
 
 // Settings
 $string['serverurl'] = 'Etherpad Server URL.';
