@@ -16,7 +16,10 @@
   ],
   "rules": {
     "no-tabs": "off",
-    "indent": "off",
+    "indent": [
+      "warn",
+      "tab"
+    ],
     "quotes": [
       "error",
       "double"

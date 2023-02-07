@@ -76,13 +76,13 @@
               @resized="saveGrid"
           >
             <ChartWrapper
-              :component="item.component"
-              :padName="padName"
-              :id="item.i"
-              :key="item.i"
-              :w="getWidthOfElement(item.w)"
-              :h="getHeightOfElement(item.h)"
-              @rearrangeDashboard="() => doRearrangeDashboard(item)"
+                :component="item.component"
+                :padName="padName"
+                :id="item.i"
+                :key="item.i"
+                :w="getWidthOfElement(item.w)"
+                :h="getHeightOfElement(item.h)"
+                @rearrangeDashboard="() => doRearrangeDashboard(item)"
             >
             </ChartWrapper>
 
@@ -94,8 +94,8 @@
       </div>
     </div>
     <WidgetCatalog
-      @add-widget-event="addWidget($event)"
-      :selectedWidgets="userCharts"
+        @add-widget-event="addWidget($event)"
+        :selectedWidgets="userCharts"
     />
   </div>
 </template>
@@ -151,8 +151,8 @@ export default {
 	watch: {},
 	methods: {
 		/**
-		 * Save custom dashboard.
-		 */
+     * Save custom dashboard.
+     */
 		getWidthOfElement(width) {
 			const result = document.getElementById("custom-dashboard").clientWidth * (width / this.colNum);
 			return result;
@@ -178,11 +178,11 @@ export default {
 			}
 		},
 		/**
-		 * Move existing widgets down to make room for a newly added one. Is called through an event bubbling up through the chart wrapper 
-		 * from the mounted() method of each widget.
-		 * 
-		 * @param {*} item The newly added widget to accommodate
-		 */
+     * Move existing widgets down to make room for a newly added one. Is called through an event bubbling up through the chart wrapper
+     * from the mounted() method of each widget.
+     *
+     * @param {*} item The newly added widget to accommodate
+     */
 		doRearrangeDashboard(item) {
 			if (this.userCharts.length > 1) {
 				this.userCharts.forEach((e) => {
@@ -195,20 +195,20 @@ export default {
 		},
 		removeItemFromGrid: function (val) {
 			this.userCharts = this.userCharts
-					.filter(u => u !== val);
+				.filter(u => u !== val);
 			this.saveGrid();
 		},
 		/**
-		 * Open widget catalog.
-		 */
+     * Open widget catalog.
+     */
 		openWidgetCatalog() {
 			this.$store.commit("setWidgetCatalogOpen");
 		},
 		/**
-		 * Add widget to dashboard.
-		 * @param {
+     * Add widget to dashboard.
+     * @param {
 				component: String,
-				category: String,
+				categories: String[],
 				configuration: Object,
 				x: Number,
 				y: Number,
@@ -217,7 +217,7 @@ export default {
 				w: Number,
 				h: Number,
 			} widget Widget to be added to dashboard.
-		 */
+     */
 		addWidget(newWidget) {
 			newWidget.w = newWidget.defaultWidth || newWidget.w;
 			newWidget.h = newWidget.defaultHeight || newWidget.h;

@@ -47,10 +47,9 @@ $string['dashboard.nothingToSee.cta'] = "Just click this button to add widgets f
 $string['dashboard.move'] = "Move widgets with";
 
 // Widget categories
-$string['widgets.category.barchart'] = 'Bar chart';
-$string['widgets.category.piechart'] = 'Pie chart';
-$string['widgets.category.linechart'] = 'Line chart';
-$string['widgets.category.other'] = 'Other';
+$string['widgets.category.collaboration'] = 'Collaboration';
+$string['widgets.category.timecourse'] = 'Time course';
+$string['widgets.category.activity'] = 'Activity';
 
 $string['widgets.groupParticipants'] = "Project participants";
 $string['widgets.groupParticipants.group'] = "Group";

@@ -47,10 +47,9 @@ $string['dashboard.nothingToSee.cta'] = "Einfach mit diesem Button neue Widgets 
 $string['dashboard.move'] = "Widgets verschieben mit";
 
 // Widget categories
-$string['widgets.category.barchart'] = 'Balkendiagramm';
-$string['widgets.category.piechart'] = 'Kuchendiagramm';
-$string['widgets.category.linechart'] = 'Liniendiagramm';
-$string['widgets.category.other'] = 'Sonstige';
+$string['widgets.category.collaboration'] = 'Zusammenarbeit';
+$string['widgets.category.timecourse'] = 'Zeitverlauf';
+$string['widgets.category.activity'] = 'Aktivität';
 
 $string['widgets.groupParticipants'] = "Projektteilnehmende";
 $string['widgets.groupParticipants.group'] = "Gruppe";

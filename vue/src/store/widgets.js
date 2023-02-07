@@ -15,7 +15,7 @@ export default {
 		widgets: [
 			{
 				component: "authoringRatios_bar",
-				category: "barchart",
+				categories: ["activity"],
 				configuration: {},
 				moderatorWidget: false,
 				defaultWidth: 7,
@@ -23,7 +23,7 @@ export default {
 			},
 			{
 				component: "authoringRatios_pie",
-				category: "piechart",
+				categories: ["activity"],
 				configuration: {},
 				moderatorWidget: false,
 				defaultWidth: 6,
@@ -31,7 +31,7 @@ export default {
 			},
 			{
 				component: "participation_diagram",
-				category: "barchart",
+				categories: ["collaboration", "timecourse"],
 				configuration: {},
 				moderatorWidget: true,
 				defaultWidth: 12,
@@ -39,7 +39,7 @@ export default {
 			},
 			{
 				component: "groupParticipants",
-				category: "other",
+				categories: ["other"],
 				configuration: {},
 				moderatorWidget: false,
 				defaultWidth: 1,
@@ -47,7 +47,7 @@ export default {
 			},
 			{
 				component: "operations_bar",
-				category: "barchart",
+				categories: ["activity"],
 				configuration: {},
 				moderatorWidget: false,
 				defaultWidth: 10,
@@ -55,7 +55,7 @@ export default {
 			},
 			{
 				component: "activityOverTime",
-				category: "linechart",
+				categories: ["timecourse", "activity"],
 				configuration: {},
 				moderatorWidget: false,
 				defaultWidth: 12,
@@ -63,7 +63,7 @@ export default {
 			},
 			{
 				component: "etherViz",
-				category: "other",
+				categories: ["timecourse", "activity"],
 				configuration: {},
 				moderatorWidget: false,
 				defaultWidth: 8,
@@ -71,7 +71,7 @@ export default {
 			},
 			{
 				component: "cohesionDiagram",
-				category: "other",
+				categories: ["collaboration"],
 				configuration: {},
 				moderatorWidget: false,
 				defaultWidth: 4,
@@ -79,7 +79,7 @@ export default {
 			},
 			{
 				component: "documentMetrics",
-				category: "other",
+				categories: ["other"],
 				configuration: {},
 				moderatorWidget: false,
 				defaultWidth: 1,
@@ -98,22 +98,23 @@ export default {
 			}
 		},
 		getWidgetCategories: function (state, getters, rootState) {
-			let categories = [];
 			// return widget categories based on user role
+			let widgets;
 			if (rootState.base.isModerator) {
-				state.widgets.forEach(widget => {
-					if (!categories.includes(widget.category)) {
-						categories.push(widget.category);
-					}
-				});
+				widgets = state.widgets;
 			} else {
-				state.widgets.filter(widget => widget.moderatorWidget === false).forEach(widget => {
+				widgets = state.widgets
+						.filter(widget => widget.moderatorWidget === false);
+			}
 
-					if (!categories.includes(widget.category)) {
-						categories.push(widget.category);
+			const categories = [];
+			widgets.forEach(widget => {
+				widget.categories.forEach(category => {
+					if (!categories.includes(category)) {
+						categories.push(category);
 					}
 				});
-			}
+			});
 			return categories;
 		},
 	},

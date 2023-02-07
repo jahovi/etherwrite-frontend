@@ -1,25 +1,25 @@
 <template>
   <div id="widget-catalog">
     <div
-      class="widget-catalog-backdrop"
-      @click.prevent="closeWidgetCatalog"
-      v-if="isWidgetCatalogOpen"
+        class="widget-catalog-backdrop"
+        @click.prevent="closeWidgetCatalog"
+        v-if="isWidgetCatalogOpen"
     ></div>
     <div class="widget-catalog-panel border rounded" v-if="isWidgetCatalogOpen">
       <!-- tabs nav -->
       <ul class="nav nav-tabs mb-3 col-10" id="ex1" role="tablist">
         <li
-          class="nav-item"
-          :class="{ active: cat === category }"
-          v-for="(cat, key) in categories"
-          :key="key"
+            class="nav-item"
+            :class="{ active: cat === category }"
+            v-for="(cat, key) in categories"
+            :key="key"
         >
           <a
-            class="nav-link"
-            role="tab"
-            href="#"
-            @click="category = cat"
-            aria-selected="true"
+              class="nav-link"
+              role="tab"
+              href="#"
+              @click="category = cat"
+              aria-selected="true"
           >
             {{ i18n[`widgets.category.${cat}`] }}
           </a>
@@ -28,18 +28,18 @@
       <!-- tabs content -->
       <div role="tabpanel" v-if="category">
         <ChartWrapper
-          class="wrapper border rounded"
-          v-for="(widget, key) in widgetsOfCurrentCategory"
-          :isMock="true"
-          :component="widget.component"
-          :id="widget.id"
-          :key="key"
+            class="wrapper border rounded"
+            v-for="(widget, key) in widgetsOfCurrentCategory"
+            :isMock="true"
+            :component="widget.component"
+            :id="widget.id"
+            :key="key"
         >
           <template #btn>
             <button
-              :id="'add-widget-btn-' + widget.id"
-              class="btn btn-success rounded btn-add-widget"
-              @click.prevent="addToDashboard(widget)"
+                :id="'add-widget-btn-' + widget.id"
+                class="btn btn-success rounded btn-add-widget"
+                @click.prevent="addToDashboard(widget)"
             >
               <i class="fa fa-plus"></i>
             </button>
@@ -48,9 +48,9 @@
       </div>
       <!-- close widget-catalog button -->
       <button
-        id="close-widget-catalog-btn"
-        class="btn rounded btn-danger"
-        @click.prevent="closeWidgetCatalog"
+          id="close-widget-catalog-btn"
+          class="btn rounded btn-danger"
+          @click.prevent="closeWidgetCatalog"
       >
         <i class="fa fa-close"></i>
       </button>
@@ -79,21 +79,21 @@ export default {
 			return this.$store.getters.isWidgetCatalogOpen;
 		},
 		/**
-		 * get widgets from widget-store.
-		 */
+     * get widgets from widget-store.
+     */
 		widgets() {
 			return this.$store.getters.getWidgets;
 		},
 		/**
-		 * Get categories from widget-store.
-		 */
+     * Get categories from widget-store.
+     */
 		categories() {
 			return this.$store.getters.getWidgetCategories;
 		},
 		widgetsOfCurrentCategory() {
 			return this.widgets
-					.filter(widget => widget.category === this.category.toLowerCase())
-					.filter(widget => !this.selectedWidgets.map(w => w.component).includes(widget.component));
+				.filter(widget => widget.categories.includes(this.category.toLowerCase()))
+				.filter(widget => !this.selectedWidgets.map(w => w.component).includes(widget.component));
 		},
 		i18n() {
 			return this.$store.getters.getStrings;
