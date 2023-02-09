@@ -32,6 +32,7 @@ import participation_diagram from "./charts/participation_diagram.vue";
 import activityOverTime from "./charts/activityOverTime.vue";
 import etherViz from "./charts/etherViz.vue";
 import cohesionDiagram from "./charts/cohesionDiagram.vue";
+import operations_bar from "./charts/operations/operations_bar.vue";
 
 export default {
 	name: "chart-wrapper",
@@ -42,6 +43,7 @@ export default {
 		activityOverTime,
 		etherViz,
 		cohesionDiagram,
+		operations_bar,
 	},
 	props: {
 		component: String,
