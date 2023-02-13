@@ -18,13 +18,17 @@ $string['eva_not_available'] = 'Der EtherWrite Datenanalyse-Knoten ist nicht ver
 $string['eva_is_back'] = 'Der EtherWrite Datenanalyse-Knoten ist wieder online.';
 
 // Settings
-$string['serverurl'] = 'Etherpad Server URL';
+$string['serverurl'] = 'Etherpad Server URL XX';
 $string['serverurldescription'] = 'Die Server-URL der Etherpad-Instanz.';
 $string['apikey'] = 'Etherpad API-Schlüssel';
 $string['apikeydescription'] = 'Der API-Schlüssel für die Etherpad-Instanz.';
 $string['localinstallation'] = 'Lokale Installation';
 $string['localinstallationdescription'] = 'Wählen Sie diese Option, sofern Moodle und Etherpad als Docker-Container auf dem gleichen Host betrieben werden.';
 $string['nogroupselect'] = "(Gruppierung auswählen)";
+$string['evaurl'] = 'EVA Server URL';
+$string['evaurldescription'] = 'URL zur EVA-Instanz für die Datenanalyse.';
+$string['evasecret'] = 'EVA API-Schlüssel';
+$string['evasecretdescription'] = 'Schlüssel für den Datenaustausch zwischen Moodle und EVA. Der gleiche Schlüssel muss auch in der EVA-Instanz hinterlegt werden.';
 
 // CM
 $string['grouping'] = 'Gruppierung';
@@ -44,6 +48,8 @@ $string['couldnotfetchgrouppads'] = 'Liste der Pads der Etherpad-Gruppe konnten 
 $string['couldnotcreatepad'] = 'Etherpad-Pad konnte nicht erstellt werden.';
 $string['couldnotcreateauthor'] = 'Konnte Etherpad-Autor/-in nicht erstellen.';
 $string['couldnotcreatesession'] = 'Die Etherpad-Sitzung konnte nicht erstellt werden.';
+$string['novalidevakey'] = 'Ungültiger EVA-Schlüssel';
+$string['novalidevaurl'] = 'Ungültige EVA-URL';
 
 $string['legend'] = 'Legende';
 $string['legend.click-to-highlight'] = 'Zum Hervorheben klicken';

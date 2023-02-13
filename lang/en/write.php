@@ -25,6 +25,10 @@ $string['apikeydescription'] = 'The API key for the Etherpad instance.';
 $string['localinstallation'] = 'Local installation';
 $string['localinstallationdescription'] = 'Select this option if the installation is located locally on your computer.';
 $string['nogroupselect'] = "(Select grouping)";
+$string['evaurl'] = 'EVA Server URL';
+$string['evaurldescription'] = 'URL to the EVA instance for data analytics.';
+$string['evasecret'] = 'EVA API-Key';
+$string['evasecretdescription'] = 'Key for the data exchange between Moodle and EVA. The same key has to be configured for the EVA instance.';
 
 // CM
 $string['grouping'] = 'Grouping';
@@ -44,6 +48,8 @@ $string['couldnotfetchgrouppads'] = 'Could not fetch pads of Etherpad group.';
 $string['couldnotcreatepad'] = 'Could not create Etherpad pad.';
 $string['couldnotcreateauthor'] = 'Could not create Etherpad author.';
 $string['couldnotcreatesession'] = 'Could not create Etherpad session.';
+$string['novalidevakey'] = 'Invalid EVA key';
+$string['novalidevaurl'] = 'Invalid EVA URL';
 
 $string['legend'] = 'Legend';
 $string['legend.click-to-highlight'] = 'Click to highlight';

@@ -59,10 +59,8 @@ class mod_write_external extends external_api
 
         if ($config->localinstallation == 1) {
             $uri = "http://localhost:9001";
-            $eva = "http://localhost:8083";
         } else {
             $uri = rtrim($url, '/');
-            $eva = rtrim('http://' . $_SERVER['SERVER_NAME'] . ':9002', '/');
         }
 
         // Get the apikey.
@@ -73,6 +71,16 @@ class mod_write_external extends external_api
         if (strlen($apikey) <= 0) {
             throw new Exception(get_string('novalidapikey', 'mod_write'));
         }
+
+        // Get EVA URL
+        if (!isset($config->evaurl) || is_null($config->evaurl) || !is_string($config->evaurl)) {
+            throw new Exception(get_string('novalidevaurl', 'mod_write'));
+        }
+        $eva = rtrim(str_replace(' ', '', $config->evaurl), '/');
+        if (strlen($eva) <= 0) {
+            throw new Exception(get_string('novalidevaurl', 'mod_write'));
+        }
+
         // Now we need the cm data.
         $cm = get_coursemodule_from_id('write', $cmid, 0, false, MUST_EXIST); // Coursemodule
         $write = $DB->get_record('write', array('id' => $cm->instance), '*', MUST_EXIST); // Data stored in the db for the cm (see e.g. install.xml).

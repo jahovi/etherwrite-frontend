@@ -437,7 +437,15 @@ class client
      */
     public static function generateJWT(array $content): string
     {
-        $privateKey = '0c26bee8-f114-4a59-ad65-15092de45df9';
+        $config = get_config('write');
+
+        if (!isset($config->evajwtsecretkey) || is_null($config->evajwtsecretkey) || !is_string($config->evajwtsecretkey)) {
+            throw new Exception(get_string('novalidevakey', 'mod_write'));
+        }
+        $privateKey = rtrim(str_replace(' ', '', $config->evajwtsecretkey));
+        if (strlen($privateKey) <= 0) {
+            throw new Exception(get_string('novalidevakey', 'mod_write'));
+        }
 
         // Create token header as a JSON string
         $header = json_encode(['typ' => 'JWT', 'alg' => 'HS256']);
