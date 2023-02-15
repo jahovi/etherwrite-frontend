@@ -38,7 +38,7 @@ export default {
 	},
 	methods: {
 		openSocket() {
-			this.ws = Communication.openSocket("wstest", {
+			this.ws = Communication.openSocket("documentmetrics", {
 				padName: this.padName,
 			});
 			this.ws.on("update", (msg) => {

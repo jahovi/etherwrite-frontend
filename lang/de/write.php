@@ -18,7 +18,7 @@ $string['eva_not_available'] = 'Der EtherWrite Datenanalyse-Knoten ist nicht ver
 $string['eva_is_back'] = 'Der EtherWrite Datenanalyse-Knoten ist wieder online.';
 
 // Settings
-$string['serverurl'] = 'Etherpad Server URL XX';
+$string['serverurl'] = 'Etherpad Server URL';
 $string['serverurldescription'] = 'Die Server-URL der Etherpad-Instanz.';
 $string['apikey'] = 'Etherpad API-Schlüssel';
 $string['apikeydescription'] = 'Der API-Schlüssel für die Etherpad-Instanz.';

@@ -66,7 +66,7 @@ export default {
 			return getters.usersById(userId);
 		},
 		initAuthorsWebsocket({rootGetters, commit}){
-			const websocket = Communication.openSocket("wsauthors");
+			const websocket = Communication.openSocket("authors");
 			const cmid = rootGetters.getCMID;
 			websocket.on("update", async data => {
 				const groups = await Communication.webservice("getAuthors", {cmid});
