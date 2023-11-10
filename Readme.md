@@ -24,7 +24,7 @@ Als nächstes stellen Sie bitte sicher, dass in der config.php-Datei Ihrer Moodl
 vorhanden ist. 
 
 Um das Plugin zu installieren, führen Sie bitte folgende Schritte aus:
-* Navigieren Sie mit der Git Bash in den Ordner `{moodle-pfad}/mod` und klonen Sie dieses Repository mit <br />`git clone ***REMOVED***`.
+* Navigieren Sie mit der Git Bash in den Ordner `{moodle-pfad}/mod` und klonen Sie dieses Repository.
 * Navigieren Sie in den dadurch erstellten `write/vue`-Ordner und führen Sie den Befehl `npm install` aus. Hierbei werden alle benötigten JavaScript-Module durch den `Node Package Manager` installiert. Mehr informationen zum Package Manager finden Sie [hier](https://www.npmjs.com/).
 * Navigieren Sie zur Moodle-Hauptseite und folgen Sie dem angezeigten Dialog zur Installation des Plugins.
 
